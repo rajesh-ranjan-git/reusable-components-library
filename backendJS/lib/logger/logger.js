@@ -10,7 +10,7 @@ export const logger = {
     print(
       "info",
       ansiConfig.blue,
-      `📢 INFO | ⏰ [${getTransformedDate(Date.now())}]`,
+      `⏰ [${getTransformedDate(Date.now())}] 📢 [ INFO ]`,
       args,
     );
   },
@@ -19,7 +19,7 @@ export const logger = {
     print(
       "log",
       ansiConfig.green,
-      `✅ SUCCESS | ⏰ [${getTransformedDate(Date.now())}]`,
+      `⏰ [${getTransformedDate(Date.now())}] ✅ [ SUCCESS ]`,
       args,
     );
   },
@@ -28,7 +28,7 @@ export const logger = {
     print(
       "log",
       ansiConfig.green,
-      `📝 LOG | ⏰ [${getTransformedDate(Date.now())}]`,
+      `⏰ [${getTransformedDate(Date.now())}] 📝 [ LOG ]`,
       args,
     );
   },
@@ -37,7 +37,7 @@ export const logger = {
     print(
       "debug",
       ansiConfig.magenta,
-      `🐞 DEBUG | ⏰ [${getTransformedDate(Date.now())}]`,
+      `⏰ [${getTransformedDate(Date.now())}] 🐞 [ DEBUG ]`,
       args,
     );
   },
@@ -46,7 +46,7 @@ export const logger = {
     print(
       "warn",
       ansiConfig.yellow,
-      `🚨 WARNING | ⏰ [${getTransformedDate(Date.now())}]`,
+      `⏰ [${getTransformedDate(Date.now())}] 🚨 [ WARNING ]`,
       args,
     );
   },
@@ -55,7 +55,7 @@ export const logger = {
     print(
       "error",
       ansiConfig.red,
-      `❌ ERROR | ⏰ [${getTransformedDate(Date.now())}]`,
+      `⏰ [${getTransformedDate(Date.now())}] ❌ [ ERROR ]`,
       args,
     );
   },

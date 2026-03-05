@@ -172,7 +172,7 @@ errors_config = to_namespace(
             "type": error_types_config.networkError,
             "title": "Network Connection Failed",
             "message": "We are currently experiencing network difficulties. Please try again later.",
-            "statusCode": http_status_config.internalServerError,
+            "statusCode": http_status_config.internalServerError.statusCode,
         },
         "database_configuration_error": {
             "type": error_types_config.dbConfigError,

@@ -4,6 +4,7 @@ import boxen from "boxen";
 
 import {
   appConfig,
+  bannerFontsConfig,
   bannerThemesConfig,
   errorsConfig,
 } from "../../config/config.js";
@@ -39,7 +40,7 @@ export const showBanner = async (port = process.env.PORT) => {
 
     figlet.text(
       appConfig.name.toUpperCase(),
-      { font: bannerFonts.ansiShadow },
+      { font: bannerFontsConfig.ansiShadow.name },
       async (error, data) => {
         const output = bannerGradient.multiline(data);
         const desc = bannerDescGradient.multiline(appConfig.description);
