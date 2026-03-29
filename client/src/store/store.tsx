@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 import { create } from "zustand";
-import { themeConfig } from "@/config/config";
+import { themeConfig } from "@/config/common.config";
 import { ContextMenuTypes, SheetTypes, ThemeTypes } from "@/types/types";
 
 type AppState = {

@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { staticImages } from "@/config/config";
+import { staticImages } from "@/config/common.config";
 
 type AuthLayoutProps = {
   children: ReactNode;

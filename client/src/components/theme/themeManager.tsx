@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { themeConfig } from "@/config/config";
+import { themeConfig } from "@/config/common.config";
 import { ThemeTypes } from "@/types/types";
 import { useWebStorage } from "@/hooks/useWebStorage";
 import { useAppStore } from "@/store/store";

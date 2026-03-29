@@ -7,8 +7,7 @@ import {
   inter,
   poppins,
   tourney,
-  errorsConfig,
-} from "@/config/config";
+} from "@/config/common.config";
 import { ToastProvider } from "@/hooks/toast";
 import ThemeManager from "@/components/theme/themeManager";
 import DefaultAnimatedBackground from "@/components/background/defaultAnimatedBackground";
@@ -27,7 +26,7 @@ export default function GlobalError() {
             <div className="relative flex justify-center items-center w-full h-dvh overflow-hidden font-arima">
               <div className="flex flex-col justify-center items-center gap-8 bg-error-bg p-2 border border-error-border rounded-xl w-full max-w-7xl h-[95%] text-error-text-primary">
                 <h2 className="font-bold text-2xl text-center">
-                  {errorsConfig.internalServerError.message}
+                  Something went wrong!
                 </h2>
                 <button
                   type="button"

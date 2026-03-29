@@ -384,7 +384,7 @@ class AuthService {
     try {
       await ActivityLog.create({ user: userId, action, metadata, ipAddress });
     } catch {
-      console.log("Unable to create activity log!");
+      logger.error("Unable to create activity log!");
     }
   }
 }

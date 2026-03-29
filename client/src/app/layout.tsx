@@ -1,7 +1,13 @@
 import "@/app/globals.css";
 import "@/lib/logger/logger";
 import type { Metadata } from "next";
-import { alkatra, arima, inter, poppins, tourney } from "@/config/config";
+import {
+  alkatra,
+  arima,
+  inter,
+  poppins,
+  tourney,
+} from "@/config/common.config";
 import { ReactNodeProps } from "@/types/propTypes";
 import { ToastProvider } from "@/hooks/toast";
 import Banner from "@/lib/banner/banner";

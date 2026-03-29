@@ -1,4 +1,4 @@
-import { staticImages } from "@/config/config";
+import { staticImages } from "@/config/common.config";
 import Image from "next/image";
 import Link from "next/link";
 import { LuGithub, LuLinkedin, LuTwitter } from "react-icons/lu";

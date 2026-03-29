@@ -83,21 +83,6 @@ export const getUrlString = (text?: string) => {
   return `/${text.toLowerCase().split(" ").join("-").split("_").join("-")}`;
 };
 
-export const getTransformedDate = (dateString?: string | Date) => {
-  if (!dateString) return "N/A";
-
-  return new Date(dateString)
-    .toLocaleDateString("en-IN", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    })
-    .replace(/\b(am|pm)\b/gi, (m) => m.toUpperCase());
-};
-
 export const sanitizeList = (arr: string[]) =>
   arr.map((v) => v.trim()).filter((v) => v.length > 0);
 

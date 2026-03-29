@@ -1,4 +1,4 @@
-import { storageConfig, themeConfig } from "@/config/config";
+import { storageConfig, themeConfig } from "@/config/common.config";
 
 export type SheetTypes = "requests" | "connections" | null;
 

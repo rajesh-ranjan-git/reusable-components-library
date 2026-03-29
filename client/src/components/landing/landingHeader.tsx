@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { LuMenu } from "react-icons/lu";
 import Image from "next/image";
-import { staticImages } from "@/config/config";
+import { staticImages } from "@/config/common.config";
 import ThemeToggle from "@/components/theme/themeToggle";
 
 export default function LandingHeader() {

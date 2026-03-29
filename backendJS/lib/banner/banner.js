@@ -44,7 +44,7 @@ export const showBanner = async (port = BACKEND_PORT) => {
       },
     );
   } catch (error) {
-    logger.warn(`🚨 [BANNER_FAILED] Unable to show banner:`, error);
+    logger.warn(`🚨 [BANNER FAILED] Unable to show banner:`, error);
     return;
   }
 };

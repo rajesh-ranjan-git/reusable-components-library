@@ -9,15 +9,11 @@ import {
   appConfig,
   bannerFontsConfig,
   bannerThemesConfig,
-  errorsConfig,
-} from "@/config/config";
+} from "@/config/common.config";
 import { BannerProps } from "@/types/propTypes";
 import { TOAST_VARIANTS, useToast } from "@/hooks/toast";
-import {
-  getRandomItem,
-  getTransformedDate,
-  toTitleCase,
-} from "@/lib/utils/utils";
+import { getRandomItem, toTitleCase } from "@/utils/common.utils";
+import { getDateToShow } from "@/utils/date.utils";
 
 const systemInfo = (nodeVersion: string) => {
   const env = process.env.NEXT_PUBLIC_MODE_ENV;
@@ -26,7 +22,7 @@ const systemInfo = (nodeVersion: string) => {
     Node: ${nodeVersion}
     Port: ${process.env.NEXT_PUBLIC_CLIENT_PORT}
     Mode: ${toTitleCase(env)}
-    Time: ${getTransformedDate(new Date())}
+    Time: ${getDateToShow(new Date())}
   `;
 
   return boxen(info, {
@@ -55,13 +51,10 @@ const Banner = ({ nodeVersion }: BannerProps) => {
           { font: bannerFontsConfig.ansiShadow.name },
           async (error: any, data: any) => {
             if (error) {
-              console.warn(
-                "🚨 WARNING :: An error occurred while creating console banner :",
-                error,
-              );
+              logger.warn(`🚨 [BANNER FAILED] Unable to show banner:`, error);
               showToast({
-                title: errorsConfig.bannerError.title,
-                message: errorsConfig.bannerError.message,
+                title: "BANNER ERROR",
+                message: "An error occurred while creating console banner",
                 variant: TOAST_VARIANTS.error,
               });
               return;
@@ -76,13 +69,11 @@ const Banner = ({ nodeVersion }: BannerProps) => {
           },
         );
       })
-      .catch((err) => {
-        console.warn(
-          `🚨 WARNING :: ${errorsConfig.bannerError.title} - ${errorsConfig.bannerError.message} : ${err}`,
-        );
+      .catch((error) => {
+        logger.warn(`🚨 [BANNER FAILED] Unable to show banner:`, error);
         showToast({
-          title: errorsConfig.bannerError.title,
-          message: errorsConfig.bannerError.message,
+          title: "BANNER ERROR",
+          message: "An error occurred while creating console banner",
           variant: TOAST_VARIANTS.error,
         });
       });

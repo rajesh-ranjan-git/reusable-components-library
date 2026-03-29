@@ -16,7 +16,7 @@ import Link from "next/link";
 import InputField from "@/components/auth/inputField";
 import SocialButton from "@/components/auth/socialButton";
 import Image from "next/image";
-import { staticImages } from "@/config/config";
+import { staticImages } from "@/config/common.config";
 
 const GoogleIcon = ({ size }: { size: number }) => (
   <svg

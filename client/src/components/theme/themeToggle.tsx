@@ -1,6 +1,6 @@
 "use client";
 
-import { themeConfig } from "@/config/config";
+import { themeConfig } from "@/config/common.config";
 import { useAppStore } from "@/store/store";
 
 const ThemeToggle = () => {

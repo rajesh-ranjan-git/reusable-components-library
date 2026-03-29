@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { UseWebStorageProps } from "@/types/propTypes";
-import { storageConfig } from "@/config/config";
+import { storageConfig } from "@/config/common.config";
 import { StoredDataType } from "@/types/types";
 
 export const useWebStorage = <T,>({

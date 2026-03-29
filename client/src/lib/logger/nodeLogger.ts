@@ -1,4 +1,4 @@
-import { getTransformedDate } from "../utils/utils";
+import { getDateToShow } from "../../utils/date.utils";
 
 export const ansiConfig = {
   blue: "\x1b[38;2;56;248;248m",
@@ -22,7 +22,7 @@ export const nodeLogger = {
     nodePrint(
       "info",
       ansiConfig.blue,
-      `⏰ [${getTransformedDate(new Date())}] 📢 [ INFO ]`,
+      `⏰ [${getDateToShow(new Date())}] 📢 [ INFO ]`,
       args,
     );
   },
@@ -31,7 +31,7 @@ export const nodeLogger = {
     nodePrint(
       "log",
       ansiConfig.green,
-      `⏰ [${getTransformedDate(new Date())}] ✅ [ SUCCESS ]`,
+      `⏰ [${getDateToShow(new Date())}] ✅ [ SUCCESS ]`,
       args,
     );
   },
@@ -40,7 +40,7 @@ export const nodeLogger = {
     nodePrint(
       "log",
       ansiConfig.green,
-      `⏰ [${getTransformedDate(new Date())}] 📝 [ LOG ]`,
+      `⏰ [${getDateToShow(new Date())}] 📝 [ LOG ]`,
       args,
     );
   },
@@ -49,7 +49,7 @@ export const nodeLogger = {
     nodePrint(
       "debug",
       ansiConfig.magenta,
-      `⏰ [${getTransformedDate(new Date())}] 🐞 [ DEBUG ]`,
+      `⏰ [${getDateToShow(new Date())}] 🐞 [ DEBUG ]`,
       args,
     );
   },
@@ -58,7 +58,7 @@ export const nodeLogger = {
     nodePrint(
       "warn",
       ansiConfig.yellow,
-      `⏰ [${getTransformedDate(new Date())}] 🚨 [ WARNING ]`,
+      `⏰ [${getDateToShow(new Date())}] 🚨 [ WARNING ]`,
       args,
     );
   },
@@ -67,7 +67,7 @@ export const nodeLogger = {
     nodePrint(
       "error",
       ansiConfig.red,
-      `⏰ [${getTransformedDate(new Date())}] ❌ [ ERROR ]`,
+      `⏰ [${getDateToShow(new Date())}] ❌ [ ERROR ]`,
       args,
     );
   },

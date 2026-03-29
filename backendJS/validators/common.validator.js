@@ -11,11 +11,11 @@ export const regexPropertiesValidator = (property, regex) => {
   if (typeof property !== "string") {
     return {
       isPropertyValid: false,
-      message: `${platform} must be a string URL!`,
+      message: `${property} must be a string URL!`,
     };
   }
 
-  incomingProperty = property.trim();
+  const incomingProperty = property.trim();
 
   if (!regex.test(incomingProperty)) {
     return {
