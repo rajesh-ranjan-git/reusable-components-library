@@ -70,7 +70,7 @@ export default function PricingCard({
       </div>
 
       <Link
-        href="/payment"
+        href="/subscription/payment"
         className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl font-medium transition-all z-10 ${
           highlighted
             ? "bg-primary hover:bg-indigo-600 active:bg-indigo-700 text-white shadow-lg"

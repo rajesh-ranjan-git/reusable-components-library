@@ -127,7 +127,7 @@ export default function SubscriptionPage({
       className={`text-text-primary selection:bg-primary/30 pb-20 ${hideHeader ? "" : "min-h-screen"}`}
     >
       {!hideHeader && (
-        <header className="top-0 z-50 sticky flex items-center bg-bg/80 backdrop-blur-md px-4 md:px-8 border-white/10 border-b h-20">
+        <header className="top-0 z-50 sticky flex items-center backdrop-blur-md px-4 md:px-8 border-white/10 border-b h-20">
           <button
             onClick={() => router.back()}
             className="group flex items-center gap-2 px-2 py-1 text-text-secondary hover:text-white transition-colors"

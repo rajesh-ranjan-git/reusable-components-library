@@ -35,10 +35,10 @@ export default function LandingHeader() {
             Community
           </a>
           <a
-            href="#pricing"
+            href="/subscription"
             className="font-medium text-text-secondary hover:text-white text-sm transition-colors"
           >
-            Pricing
+            Subscription
           </a>
         </nav>
 

@@ -39,7 +39,7 @@ export default function InputField({
           value={value}
           onChange={onChange}
           placeholder={placeholder}
-          required={required}
+          // required={required}
           className={`w-full bg-black/20 border ${error ? "border-red-500/50 focus:border-red-500 focus:ring-red-500/30" : "border-white/10 focus:border-primary focus:ring-primary/30"} 
             rounded-lg px-4 py-2.5 text-sm text-white placeholder-text-secondary focus:outline-none focus:ring-2 transition-all pr-16`}
         />
