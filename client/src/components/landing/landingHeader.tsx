@@ -46,13 +46,13 @@ export default function LandingHeader() {
           <ThemeToggle />
           <Link
             href="/login"
-            className="px-4 py-2 font-medium text-text-primary hover:text-primary text-sm transition-colors"
+            className="px-4 py-2 font-medium text-text-secondary hover:text-text-primary text-sm transition-colors"
           >
             Log in
           </Link>
           <Link
             href="/discover"
-            className="bg-primary hover:bg-primary/80 shadow-md shadow-primary/20 hover:shadow-primary/40 px-5 py-2.5 rounded-lg focus:ring-2 focus:ring-primary/50 font-medium text-white text-sm transition-all"
+            className="bg-primary/80 hover:bg-primary shadow-md shadow-primary/20 hover:shadow-primary/40 px-5 py-2.5 rounded-lg focus:ring-2 focus:ring-primary/50 font-medium text-white text-sm transition-all"
           >
             Open App
           </Link>

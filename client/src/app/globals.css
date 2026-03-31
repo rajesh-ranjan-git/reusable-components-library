@@ -43,8 +43,8 @@
   --app-surface: #151a2a;
   --app-primary: #4f46e5;
   --app-accent: #8b5cf6;
-  --app-text-primary: #94a3b8;
-  --app-text-secondary: #f1f5f9;
+  --app-text-primary: #f1f5f9;
+  --app-text-secondary: #94a3b8;
   --app-border: rgba(148, 163, 184, 0.12);
   --app-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.06);
 

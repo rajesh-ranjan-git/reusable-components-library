@@ -153,7 +153,7 @@ export default function AuthPage() {
                   <div className="w-full md:w-auto">
                     <button
                       onClick={handleToggleMode}
-                      className="inline-block hover:bg-white/10 px-6 md:px-8 py-2 md:py-2.5 border-2 border-white rounded-full w-full md:w-auto font-medium text-white text-sm md:text-base transition-colors"
+                      className="inline-block hover:bg-white/10 px-6 md:px-8 py-2 md:py-2.5 border-2 border-white rounded-full md:w-auto font-medium text-white text-sm md:text-base transition-colors"
                     >
                       {isLogin ? "Register" : "Login"}
                     </button>
