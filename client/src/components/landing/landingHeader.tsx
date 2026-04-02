@@ -11,9 +11,9 @@ export default function LandingHeader() {
           <Image
             src={staticImages.mainLogo.src}
             alt={staticImages.mainLogo.alt}
-            width={50}
-            height={50}
-            className="shadow-md rounded-full w-8 md:w-auto h-8 md:h-auto select-none"
+            width={100}
+            height={100}
+            className="shadow-md rounded-full w-10 md:w-12 h-auto select-none"
           />
           <span className="font-tourney font-semibold text-gradient text-xl md:text-3xl tracking-tight">
             App Name
