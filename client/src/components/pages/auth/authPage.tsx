@@ -121,7 +121,7 @@ export default function AuthPage() {
                   />
                 </div>
                 <div className="flex flex-col items-start md:items-center gap-0 md:gap-1 mt-0 md:mt-2">
-                  <span className="font-tourney font-bold text-text-primary text-2xl md:text-4xl leading-none tracking-wide">
+                  <span className="font-tourney font-bold text-text-on-accent text-2xl md:text-4xl leading-none tracking-wide">
                     App Name
                   </span>
                 </div>
@@ -136,10 +136,10 @@ export default function AuthPage() {
                   transition={{ duration: 0.5 }}
                   className="flex flex-col items-center gap-2 w-full"
                 >
-                  <p className="font-medium text-text-primary text-sm md:text-xl tracking-wide">
+                  <p className="font-medium text-text-on-accent text-sm md:text-xl tracking-wide">
                     Welcome!
                   </p>
-                  <p className="font-medium text-text-primary/80 text-sm md:text-base">
+                  <p className="font-medium text-text-on-accent/80 text-sm md:text-base">
                     {isLogin
                       ? "Don't have an account?"
                       : "Already have an account?"}
@@ -304,17 +304,17 @@ export default function AuthPage() {
                       </div>
 
                       <div className="mt-1 mb-4 text-text-secondary text-xs text-center leading-relaxed">
-                        By signing up, you agree to our{" "}
+                        By signing up, you agree to our&nbsp;
                         <Link
                           href="#"
-                          className="text-text-on-accent hover:text-primary underline"
+                          className="text-text-link hover:text-text-link-hover underline"
                         >
                           Terms
-                        </Link>{" "}
-                        and{" "}
+                        </Link>
+                        &nbsp;and&nbsp;
                         <Link
                           href="#"
-                          className="text-text-on-accent hover:text-primary underline"
+                          className="text-text-link hover:text-text-link-hover underline"
                         >
                           Privacy Policy
                         </Link>
