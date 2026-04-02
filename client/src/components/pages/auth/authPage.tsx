@@ -172,7 +172,7 @@ export default function AuthPage() {
                         <label>Username / Email</label>
                         <input
                           type="email"
-                          placeholder="test@gmail.com"
+                          placeholder="you@example.com"
                           value={formData.email}
                           onChange={(e: ChangeEvent<HTMLInputElement>) =>
                             handleChange("email", e.target.value)
@@ -263,7 +263,7 @@ export default function AuthPage() {
                         <label>Username / Email</label>
                         <input
                           type="email"
-                          placeholder="test@gmail.com"
+                          placeholder="you@example.com"
                           value={formData.email}
                           onChange={(e: ChangeEvent<HTMLInputElement>) =>
                             handleChange("email", e.target.value)
