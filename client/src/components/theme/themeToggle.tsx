@@ -16,7 +16,7 @@ const ThemeToggle = () => {
   };
 
   return (
-    <div className="flex items-center shadow-md shadow-shadow p-1 border border-border rounded-full transition-all ease-in-out">
+    <div className="p-1 rounded-full btn btn-secondary">
       <input
         type="checkbox"
         id="theme-toggle"

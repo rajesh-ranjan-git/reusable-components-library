@@ -60,36 +60,33 @@ const comparisonData: ComparisonData = {
 
 export default function ComparisonTable() {
   return (
-    <div className="hidden md:block mx-auto mt-24 max-w-250 overflow-x-auto custom-scrollbar">
+    <div className="hidden md:block mx-auto mt-30 max-w-250 overflow-x-auto custom-scrollbar">
       <div className="mb-12 text-center">
-        <h2 className="mb-4 font-bold text-white text-3xl">
-          Compare all features
-        </h2>
-        <p className="text-text-secondary">
-          Everything you need to know to make the right choice.
-        </p>
+        <h2 className="mb-4">Compare all features</h2>
+        <p>Everything you need to know to make the right choice.</p>
       </div>
 
       <div className="w-full min-w-175">
-        <div className="top-0 z-10 sticky gap-4 grid grid-cols-4 bg-bg/50 backdrop-blur-md p-4 border-white/10 border-b">
+        <div className="top-0 z-10 sticky gap-4 grid grid-cols-4 bg-glass-bg hover:bg-glass-bg-hover backdrop-blur-md p-4 rounded-t-md text-lg">
           <div className="col-span-1"></div>
-          <div className="font-bold text-white text-center">Free</div>
-          <div className="font-bold text-primary text-center">Pro</div>
-          <div className="font-bold text-accent text-center">Premium</div>
+          <div className="font-bold text-text-secondary text-center">Free</div>
+          <div className="font-bold text-center">Pro</div>
+          <div className="font-bold text-center text-accent-purple">
+            Premium
+          </div>
         </div>
 
-        {/* Table Body */}
         <div className="flex flex-col">
           {comparisonData.categories.map((category, idx) => (
             <div key={idx} className="w-full">
-              <div className="bg-white/5 px-4 py-3 font-semibold text-white text-xs uppercase tracking-wide">
+              <div className="bg-glass-bg-strong px-4 py-3 font-bold text-sm uppercase tracking-widest">
                 {category.name}
               </div>
 
               {category.features.map((feature, fIdx) => (
                 <div
                   key={fIdx}
-                  className="items-center gap-4 grid grid-cols-4 hover:bg-white/5 p-4 border-white/5 border-b text-sm transition-colors"
+                  className="items-center gap-4 grid grid-cols-4 hover:bg-glass-bg p-4 border-glass-border border-b text-sm transition-colors"
                 >
                   <div className="col-span-1 px-2 font-medium text-text-primary">
                     {feature.name}
@@ -102,7 +99,7 @@ export default function ComparisonTable() {
                       return (
                         <div key={tier} className="flex justify-center">
                           {value ? (
-                            <div className="flex justify-center items-center bg-primary/20 rounded-full w-6 h-6">
+                            <div className="flex justify-center items-center rounded-full w-6 h-6">
                               <LuCheck size={14} className="text-primary" />
                             </div>
                           ) : (

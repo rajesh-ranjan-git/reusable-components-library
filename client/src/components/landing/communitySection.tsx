@@ -79,13 +79,11 @@ export default function CommunitySection() {
   };
 
   return (
-    <section id="community" className="relative py-24">
+    <section id="community" className="relative pt-30">
       <div className="mx-auto px-6 md:px-8 max-w-7xl">
         <div className="mx-auto mb-16 max-w-3xl text-center">
-          <h2 className="mb-6 font-bold text-white text-3xl md:text-5xl tracking-tight">
-            Loved by the community.
-          </h2>
-          <p className="text-text-secondary text-lg">
+          <h2 className="mb-6">Loved by the community.</h2>
+          <p>
             Join thousands of developers, designers, and founders who are
             already building the future together through Your App Name.
           </p>
@@ -94,16 +92,16 @@ export default function CommunitySection() {
         <div
           ref={scrollRef}
           onScroll={handleScroll}
-          className="[&::-webkit-scrollbar]:hidden flex items-stretch gap-6 lg:grid lg:grid-cols-4 -mx-6 md:-mx-8 lg:mx-auto px-6 md:px-8 lg:px-0 pt-4 pb-8 [-ms-overflow-style:none] overflow-x-auto scroll-smooth snap-mandatory snap-x [scrollbar-width:none]"
+          className="[&::-webkit-scrollbar]:hidden flex items-stretch gap-6 lg:grid lg:grid-cols-4 -mx-6 md:-mx-8 lg:mx-auto px-6 md:px-8 pt-4 pb-12 [-ms-overflow-style:none] overflow-x-auto scroll-smooth snap-mandatory snap-x [scrollbar-width:none]"
         >
           {testimonials.map((testimonial, idx) => (
             <div
               key={idx}
-              className="group flex flex-col flex-none justify-between bg-surface/50 hover:bg-white/10 backdrop-blur-md lg:last:mr-0 last:mr-auto lg:first:ml-0 first:ml-auto p-8 border border-white/5 hover:border-white/20 rounded-2xl w-[85vw] sm:w-85 lg:w-auto h-auto transition-all hover:-translate-y-2 duration-300 snap-center"
+              className="group flex flex-col flex-none justify-between lg:last:mr-0 last:mr-auto lg:first:ml-0 first:ml-auto p-8 border w-[85vw] sm:w-85 lg:w-auto h-auto transition-all hover:-translate-y-2 duration-300 snap-center glass-interactive"
             >
               <div>
-                <LuQuote className="mb-4 w-8 h-8 text-primary/40 group-hover:text-white transition-colors" />
-                <p className="mb-8 text-text-secondary text-sm italic leading-relaxed">
+                <LuQuote className="mb-4 w-8 h-8" />
+                <p className="mb-8 text-sm italic leading-relaxed">
                   "{testimonial.quote}"
                 </p>
               </div>
@@ -115,9 +113,7 @@ export default function CommunitySection() {
                   className="border border-white/10 rounded-full w-10 h-10 object-cover"
                 />
                 <div>
-                  <h4 className="font-bold text-white text-sm">
-                    {testimonial.name}
-                  </h4>
+                  <h4 className="font-bold text-sm">{testimonial.name}</h4>
                   <p className="font-medium text-primary text-xs">
                     {testimonial.role}
                   </p>
@@ -131,7 +127,7 @@ export default function CommunitySection() {
           {testimonials.map((_, idx) => (
             <div
               key={idx}
-              className={`h-2 rounded-full transition-all duration-300 ${activeIndex === idx ? "w-6 bg-primary" : "w-2 bg-white/20"}`}
+              className={`h-2 rounded-full transition-all duration-300 ${activeIndex === idx ? "w-6 bg-accent-purple-dark" : "w-2 bg-accent-purple/20"}`}
             />
           ))}
         </div>

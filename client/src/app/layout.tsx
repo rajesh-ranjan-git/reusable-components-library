@@ -15,6 +15,7 @@ import ThemeManager from "@/components/theme/themeManager";
 import DefaultAnimatedBackground from "@/components/background/defaultAnimatedBackground";
 import Flash from "@/components/flash/flash";
 import ErrorWrapper from "@/components/errors/errorWrapper";
+import Orb from "@/components/background/orb";
 
 export const metadata: Metadata = {
   title: {
@@ -35,7 +36,8 @@ export default function RootLayout({ children }: Readonly<ReactNodeProps>) {
         <ToastProvider>
           <Banner nodeVersion={process.version} />
           <ThemeManager />
-          <DefaultAnimatedBackground />
+          {/* <DefaultAnimatedBackground /> */}
+          <Orb />
           <Flash />
           <ErrorWrapper>{children}</ErrorWrapper>
         </ToastProvider>

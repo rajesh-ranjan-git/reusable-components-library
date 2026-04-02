@@ -7,9 +7,9 @@ import SubscriptionPage from "@/components/pages/subscription/subscriptionPage";
 
 export default function LandingPage() {
   return (
-    <div className="selection:bg-primary/30 min-h-screen text-text-primary">
+    <div>
       <LandingHeader />
-      <main>
+      <main className="bg-bg-page min-h-dvh overflow-x-hidden font-poppins text-text-primary">
         <HeroSection />
         <FeaturesSection />
         <CommunitySection />

@@ -5,44 +5,42 @@ import { LuGithub, LuLinkedin, LuTwitter } from "react-icons/lu";
 
 export default function Footer() {
   return (
-    <footer className="mt-auto pt-20 pb-10 border-white/10 border-t">
+    <footer className="mt-auto pt-20 pb-10 border-glass-border border-t">
       <div className="mx-auto px-6 max-w-7xl">
         <div className="gap-12 grid grid-cols-1 md:grid-cols-4 mb-16">
           <div className="md:col-span-1">
             <Link href="/discover" className="flex items-center gap-2 mb-6">
-              <div className="flex justify-center items-center from-primary to-accent rounded w-8 h-8">
-                <Image
-                  src={staticImages.mainLogo.src}
-                  alt={staticImages.mainLogo.alt}
-                  width={50}
-                  height={50}
-                  className="shadow-md rounded-full select-none"
-                />
-              </div>
-              <span className="font-bold text-white text-xl tracking-tight">
-                Your App Name
+              <Image
+                src={staticImages.mainLogo.src}
+                alt={staticImages.mainLogo.alt}
+                width={32}
+                height={32}
+                className="shadow-md rounded-full select-none"
+              />
+              <span className="font-tourney font-bold text-gradient text-xl tracking-wide">
+                App Name
               </span>
             </Link>
-            <p className="mb-6 text-text-secondary text-sm leading-relaxed">
+            <p className="mb-6 text-sm leading-relaxed">
               Building the future of developer networking. Connect, pair
               program, and launch products together.
             </p>
             <div className="flex items-center gap-4">
               <a
                 href="#"
-                className="text-text-secondary hover:text-white transition-colors"
+                className="text-text-secondary hover:text-text-primary transition-colors"
               >
                 <LuGithub size={20} />
               </a>
               <a
                 href="#"
-                className="text-text-secondary hover:text-white transition-colors"
+                className="text-text-secondary hover:text-text-primary transition-colors"
               >
                 <LuTwitter size={20} />
               </a>
               <a
                 href="#"
-                className="text-text-secondary hover:text-white transition-colors"
+                className="text-text-secondary hover:text-text-primary transition-colors"
               >
                 <LuLinkedin size={20} />
               </a>
@@ -50,12 +48,12 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="mb-6 font-semibold text-white">Product</h4>
+            <h4 className="mb-6 font-semibold text-primary">Product</h4>
             <ul className="space-y-4">
               <li>
                 <a
                   href="#"
-                  className="text-text-secondary hover:text-white text-sm transition-colors"
+                  className="text-text-secondary hover:text-text-primary text-sm transition-colors"
                 >
                   Features
                 </a>
@@ -63,7 +61,7 @@ export default function Footer() {
               <li>
                 <a
                   href="#"
-                  className="text-text-secondary hover:text-white text-sm transition-colors"
+                  className="text-text-secondary hover:text-text-primary text-sm transition-colors"
                 >
                   Match Algorithm
                 </a>
@@ -71,7 +69,7 @@ export default function Footer() {
               <li>
                 <a
                   href="#"
-                  className="text-text-secondary hover:text-white text-sm transition-colors"
+                  className="text-text-secondary hover:text-text-primary text-sm transition-colors"
                 >
                   Pricing
                 </a>
@@ -79,7 +77,7 @@ export default function Footer() {
               <li>
                 <a
                   href="#"
-                  className="text-text-secondary hover:text-white text-sm transition-colors"
+                  className="text-text-secondary hover:text-text-primary text-sm transition-colors"
                 >
                   Changelog
                 </a>
@@ -88,12 +86,12 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="mb-6 font-semibold text-white">Resources</h4>
+            <h4 className="mb-6 font-semibold text-text-primary">Resources</h4>
             <ul className="space-y-4">
               <li>
                 <a
                   href="#"
-                  className="text-text-secondary hover:text-white text-sm transition-colors"
+                  className="text-text-secondary hover:text-text-primary text-sm transition-colors"
                 >
                   Documentation
                 </a>
@@ -101,7 +99,7 @@ export default function Footer() {
               <li>
                 <a
                   href="#"
-                  className="text-text-secondary hover:text-white text-sm transition-colors"
+                  className="text-text-secondary hover:text-text-primary text-sm transition-colors"
                 >
                   API Reference
                 </a>
@@ -109,7 +107,7 @@ export default function Footer() {
               <li>
                 <a
                   href="#"
-                  className="text-text-secondary hover:text-white text-sm transition-colors"
+                  className="text-text-secondary hover:text-text-primary text-sm transition-colors"
                 >
                   Blog
                 </a>
@@ -117,7 +115,7 @@ export default function Footer() {
               <li>
                 <a
                   href="#"
-                  className="text-text-secondary hover:text-white text-sm transition-colors"
+                  className="text-text-secondary hover:text-text-primary text-sm transition-colors"
                 >
                   Community
                 </a>
@@ -126,12 +124,12 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="mb-6 font-semibold text-white">Company</h4>
+            <h4 className="mb-6 font-semibold text-text-primary">Company</h4>
             <ul className="space-y-4">
               <li>
                 <a
                   href="#"
-                  className="text-text-secondary hover:text-white text-sm transition-colors"
+                  className="text-text-secondary hover:text-text-primary text-sm transition-colors"
                 >
                   About Us
                 </a>
@@ -139,7 +137,7 @@ export default function Footer() {
               <li>
                 <a
                   href="#"
-                  className="text-text-secondary hover:text-white text-sm transition-colors"
+                  className="text-text-secondary hover:text-text-primary text-sm transition-colors"
                 >
                   Careers
                 </a>
@@ -147,7 +145,7 @@ export default function Footer() {
               <li>
                 <a
                   href="#"
-                  className="text-text-secondary hover:text-white text-sm transition-colors"
+                  className="text-text-secondary hover:text-text-primary text-sm transition-colors"
                 >
                   Privacy Policy
                 </a>
@@ -155,7 +153,7 @@ export default function Footer() {
               <li>
                 <a
                   href="#"
-                  className="text-text-secondary hover:text-white text-sm transition-colors"
+                  className="text-text-secondary hover:text-text-primary text-sm transition-colors"
                 >
                   Terms of Service
                 </a>
@@ -164,13 +162,13 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="flex md:flex-row flex-col justify-between items-center gap-4 pt-8 border-white/10 border-t">
+        <div className="flex md:flex-row flex-col justify-between items-center gap-4 pt-8 border-glass-border border-t">
           <p className="text-text-secondary text-sm">
             &copy; {new Date().getFullYear()} Your App Name Inc. All rights
             reserved.
           </p>
           <div className="flex items-center gap-2 text-sm">
-            <span className="flex bg-green-500 rounded-full w-2 h-2"></span>
+            <span className="flex bg-status-success-text rounded-full w-2 h-2"></span>
             <span className="text-text-secondary">All systems operational</span>
           </div>
         </div>

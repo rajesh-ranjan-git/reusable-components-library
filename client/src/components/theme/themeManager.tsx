@@ -24,6 +24,11 @@ export default function ThemeManager() {
   useEffect(() => {
     const isDark = activeTheme === themeConfig.dark;
 
+    document.documentElement.setAttribute(
+      "data-theme",
+      isDark ? "dark" : "light",
+    );
+
     document.documentElement.classList.toggle(themeConfig.dark, isDark);
     document.documentElement.classList.toggle(themeConfig.light, !isDark);
 
@@ -32,6 +37,8 @@ export default function ThemeManager() {
     }
 
     return () => {
+      document.documentElement.removeAttribute("data-theme");
+
       document.documentElement.classList.remove(
         themeConfig.dark,
         themeConfig.light,

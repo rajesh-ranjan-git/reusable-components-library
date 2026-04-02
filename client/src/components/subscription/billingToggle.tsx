@@ -10,27 +10,27 @@ export default function BillingToggle({
   return (
     <div className="flex justify-center items-center gap-4 mb-12">
       <span
-        className={`text-sm font-medium transition-colors ${!isYearly ? "text-white" : "text-text-secondary"}`}
+        className={`text-sm font-medium transition-colors ${!isYearly ? "text-text-primary" : "text-text-secondary"}`}
       >
         Monthly
       </span>
 
       <button
         onClick={() => setIsYearly(!isYearly)}
-        className="relative bg-surface border border-white/10 rounded-full focus:outline-none focus:ring-2 focus:ring-primary/50 w-14 h-7 transition-colors"
+        className="relative border border-accent-purple-light rounded-full focus:outline-none focus:ring-1 w-14 h-7 transition-colors focus:ring-accent-purple-dark"
       >
         <div
-          className={`absolute top-1 left-1 w-5 h-5 rounded-full bg-primary transition-transform duration-300 shadow-md ${isYearly ? "translate-x-7 bg-accent" : ""}`}
+          className={`absolute left-1 w-5 h-5 rounded-full bg-accent-purple-dark transition-transform duration-300 shadow-md ${isYearly ? "translate-x-6.75" : ""}`}
         />
       </button>
 
-      <div className="flex items-center gap-2">
+      <div className="flex justify-center items-center gap-2">
         <span
-          className={`text-sm font-medium transition-colors ${isYearly ? "text-white" : "text-text-secondary"}`}
+          className={`text-sm font-medium transition-colors ${isYearly ? "text-primary" : "text-text-secondary"}`}
         >
           Yearly
         </span>
-        <span className="bg-green-400/10 px-2 py-0.5 border border-green-400/20 rounded-full font-bold text-[10px] text-green-400">
+        <span className="bg-status-success-bg px-2 py-0.5 border border-status-success-border rounded-full font-bold text-[10px] text-status-success-text">
           Save 20%
         </span>
       </div>

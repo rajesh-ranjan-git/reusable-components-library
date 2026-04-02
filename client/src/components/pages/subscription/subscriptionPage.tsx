@@ -73,6 +73,7 @@ export default function SubscriptionPage({
 }) {
   const router = useRouter();
   const [isYearly, setIsYearly] = useState(false);
+  const [isSubscriptionPage, setIsSubscriptionPage] = useState(false);
   const [activeIndex, setActiveIndex] = useState(1);
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
@@ -127,10 +128,10 @@ export default function SubscriptionPage({
       className={`text-text-primary selection:bg-primary/30 pb-20 ${hideHeader ? "" : "min-h-screen"}`}
     >
       {!hideHeader && (
-        <header className="top-0 z-50 sticky flex items-center backdrop-blur-md px-4 md:px-8 border-white/10 border-b h-20">
+        <header className="top-0 z-(--z-sticky) fixed flex items-center backdrop-blur-sm w-full glass-nav px-4 md:px-8 h-16">
           <button
             onClick={() => router.back()}
-            className="group flex items-center gap-2 px-2 py-1 text-text-secondary hover:text-white transition-colors"
+            className="group flex items-center gap-2 px-2 py-1 text-text-secondary transition-colors hover:text-accent-purple-dark"
           >
             <LuArrowLeft
               size={20}
@@ -141,12 +142,10 @@ export default function SubscriptionPage({
         </header>
       )}
 
-      <main className="mx-auto px-6 md:px-8 pt-12 md:pt-20 max-w-7xl">
+      <main className="mx-auto px-6 md:px-8 pt-30 max-w-7xl">
         <div className="mx-auto mb-12 max-w-2xl text-center">
-          <h1 className="mb-4 font-bold text-white text-4xl md:text-5xl tracking-tight">
-            Invest in your network
-          </h1>
-          <p className="text-text-secondary text-base md:text-lg leading-relaxed">
+          <h1 className="mb-4">Invest in your network</h1>
+          <p>
             Choose the clear path to better collaborations. Upgrade to unlock
             powerful matching tools and increased visibility.
           </p>
@@ -157,7 +156,7 @@ export default function SubscriptionPage({
         <div
           ref={scrollRef}
           onScroll={handleScroll}
-          className="[&::-webkit-scrollbar]:hidden flex items-center gap-6 lg:gap-8 lg:grid lg:grid-cols-3 -mx-6 md:-mx-8 lg:mx-auto px-6 md:px-8 lg:px-0 pt-4 pb-4 max-w-6xl [-ms-overflow-style:none] overflow-x-auto scroll-smooth snap-mandatory snap-x [scrollbar-width:none]"
+          className="[&::-webkit-scrollbar]:hidden flex items-center gap-6 lg:gap-8 lg:grid lg:grid-cols-3 -mx-6 md:-mx-8 lg:mx-auto px-6 md:px-8 py-8 max-w-6xl [-ms-overflow-style:none] overflow-x-auto scroll-smooth snap-mandatory snap-x [scrollbar-width:none]"
         >
           {pricingPlans.map((plan) => (
             <div
@@ -173,7 +172,7 @@ export default function SubscriptionPage({
           {pricingPlans.map((_, idx) => (
             <div
               key={idx}
-              className={`h-2 rounded-full transition-all duration-300 ${activeIndex === idx ? "w-6 bg-primary" : "w-2 bg-white/20"}`}
+              className={`h-2 rounded-full transition-all duration-300 ${activeIndex === idx ? "w-6 bg-accent-purple-dark" : "w-2 bg-accent-purple/20"}`}
             />
           ))}
         </div>
