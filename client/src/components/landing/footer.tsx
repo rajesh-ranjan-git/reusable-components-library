@@ -5,22 +5,26 @@ import { LuGithub, LuLinkedin, LuTwitter } from "react-icons/lu";
 
 export default function Footer() {
   return (
-    <footer className="mt-auto pt-20 pb-10 border-glass-border border-t">
+    <footer className="mt-auto pt-10 pb-10 border-glass-border border-t">
       <div className="mx-auto px-6 max-w-7xl">
         <div className="gap-12 grid grid-cols-1 md:grid-cols-4 mb-16">
           <div className="md:col-span-1">
-            <Link href="/discover" className="flex items-center gap-2 mb-6">
+            <Link
+              href="/discover"
+              className="group flex items-center gap-2 mb-6"
+            >
               <Image
                 src={staticImages.mainLogo.src}
                 alt={staticImages.mainLogo.alt}
-                width={32}
-                height={32}
-                className="shadow-md rounded-full select-none"
+                width={100}
+                height={100}
+                className="shadow-glass-bg shadow-md rounded-full w-10 md:w-12 h-auto select-none"
               />
-              <span className="font-tourney font-bold text-gradient text-xl tracking-wide">
+              <span className="font-tourney font-semibold text-gradient text-2xl md:text-3xl tracking-tight">
                 App Name
               </span>
             </Link>
+
             <p className="mb-6 text-sm leading-relaxed">
               Building the future of developer networking. Connect, pair
               program, and launch products together.

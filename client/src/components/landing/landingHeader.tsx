@@ -13,9 +13,9 @@ export default function LandingHeader() {
             alt={staticImages.mainLogo.alt}
             width={100}
             height={100}
-            className="shadow-md rounded-full w-10 md:w-12 h-auto select-none"
+            className="shadow-glass-bg shadow-md rounded-full w-10 md:w-12 h-auto select-none"
           />
-          <span className="font-tourney font-semibold text-gradient text-xl md:text-3xl tracking-tight">
+          <span className="font-tourney font-semibold text-gradient text-2xl md:text-3xl tracking-tight">
             App Name
           </span>
         </Link>
@@ -58,10 +58,10 @@ export default function LandingHeader() {
           </Link>
         </div>
 
-        <div className="md:hidden flex items-center gap-1">
+        <div className="md:hidden flex items-center gap-2">
           <ThemeToggle />
 
-          <Link href="/login" className="px-4 py-1 btn btn-secondary">
+          <Link href="/login" className="text-sm btn btn-secondary">
             Log in
           </Link>
         </div>
