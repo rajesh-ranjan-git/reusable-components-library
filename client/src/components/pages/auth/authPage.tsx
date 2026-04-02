@@ -2,18 +2,10 @@
 
 import { ChangeEvent, SubmitEvent, useState } from "react";
 import { motion, AnimatePresence, Variants, LayoutGroup } from "motion/react";
-import {
-  LuGithub,
-  LuUser,
-  LuLock,
-  LuMail,
-  LuFacebook,
-  LuLinkedin,
-} from "react-icons/lu";
+import { LuGithub, LuFacebook, LuLinkedin } from "react-icons/lu";
 import { TbLoader3 } from "react-icons/tb";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
-import InputField from "@/components/auth/inputField";
 import SocialButton from "@/components/auth/socialButton";
 import Image from "next/image";
 import { staticImages } from "@/config/common.config";
