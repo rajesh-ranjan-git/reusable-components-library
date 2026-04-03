@@ -1,11 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { useRouter } from "next/navigation";
-import { LuMessageCircle, LuUserPlus } from "react-icons/lu";
+import { LuMessageCircle, LuSearch, LuUserPlus } from "react-icons/lu";
 import Image from "next/image";
 import { staticImages } from "@/config/common.config";
+
+interface AppSidebarProps {
+  setIsSidebarOpen?: Dispatch<SetStateAction<boolean>>;
+}
 
 type SwipeDirection = "left" | "right" | "super";
 
@@ -43,7 +47,7 @@ const initialMockRequests: Request[] = [
   },
 ];
 
-export default function AppSidebar() {
+export default function AppSidebar({ setIsSidebarOpen }: AppSidebarProps) {
   const router = useRouter();
   const [showAllRequests, setShowAllRequests] = useState(false);
   const [requests, setRequests] = useState(initialMockRequests);
@@ -62,8 +66,18 @@ export default function AppSidebar() {
 
   return (
     <div className="flex flex-col border-glass-border border-r border-b-0 md:w-64 lg:w-72 h-full glass-nav shrink-0">
-      <div className="p-2 pb-1 border-glass-border border-b">
-        <h3>Network</h3>
+      <div className="p-2 pt-3 border-glass-border border-b">
+        <h2 className="font-arima md:text-3xl tracking-wider">Network</h2>
+      </div>
+      <div className="md:hidden p-2 pb-0 md:">
+        <div className="relative flex-1 max-w-md">
+          <LuSearch className="top-1/2 left-3 absolute w-4 h-4 text-text-secondary -translate-y-1/2 shrink-0 z-(--z-raised)" />
+          <input
+            type="search"
+            className="py-1 pl-9 rounded-full"
+            placeholder="Search developers, skills..."
+          />
+        </div>
       </div>
       <div className="flex-1 p-2 overflow-y-auto custom-scrollbar">
         <div className="mb-2">
@@ -117,7 +131,7 @@ export default function AppSidebar() {
                       <div className="p-0 rounded-md alert alert-success">
                         <button
                           onClick={() => handleAction(req.id, "right")}
-                          className="w-8 h-8 font-medium text-status-success-text text-sm"
+                          className="p-0 w-8 h-8 font-medium text-status-success-text text-sm"
                         >
                           ✓
                         </button>
@@ -125,7 +139,7 @@ export default function AppSidebar() {
                       <div className="p-0 rounded-md alert alert-error">
                         <button
                           onClick={() => handleAction(req.id, "left")}
-                          className="w-8 h-8 font-medium text-status-error-text text-sm"
+                          className="p-0 w-8 h-8 font-medium text-status-error-text text-sm"
                         >
                           ✕
                         </button>
@@ -184,7 +198,11 @@ export default function AppSidebar() {
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      console.log("debug from chat button");
+
+                      if (setIsSidebarOpen) {
+                        setIsSidebarOpen(false);
+                      }
+
                       router.push("/chat");
                     }}
                     className="p-0 w-8 h-8 font-medium text-status-info-text text-sm"

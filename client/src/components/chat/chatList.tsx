@@ -117,10 +117,10 @@ export default function ChatList({
 }: ChatListProps) {
   return (
     <div className="flex flex-col bg-surface md:bg-transparent border-glass-border md:border-r w-full md:w-72 lg:w-80 h-full shrink-0">
-      <div className="bg-glass-bg p-4 border-glass-border border-b">
+      <div className="bg-glass-bg p-4 pb-2 border-glass-border border-b">
         <h4 className="mb-2 font-arima tracking-wider">Messages</h4>
         <div className="relative flex-1 max-w-md">
-          <LuSearch className="top-1/2 left-3 absolute w-4 h-4 text-text-secondary -translate-y-1/2" />
+          <LuSearch className="top-1/2 left-3 absolute w-4 h-4 text-text-secondary -translate-y-1/2 shrink-0 z-(--z-raised)" />
           <input
             type="search"
             className="py-1 pl-9 rounded-full"

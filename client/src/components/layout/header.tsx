@@ -17,12 +17,22 @@ export default function Header() {
 
   const toggleProfileMenu = (e: MouseEvent) => {
     e.stopPropagation();
+
+    if (isSidebarOpen) {
+      setIsSidebarOpen(false);
+    }
+
     setIsProfileMenuOpen(!isProfileMenuOpen);
     setIsNotificationMenuOpen(false);
   };
 
   const toggleNotificationMenu = (e: MouseEvent) => {
     e.stopPropagation();
+
+    if (isSidebarOpen) {
+      setIsSidebarOpen(false);
+    }
+
     setIsNotificationMenuOpen(!isNotificationMenuOpen);
     setIsProfileMenuOpen(false);
   };
@@ -33,7 +43,7 @@ export default function Header() {
         <div className="flex items-center gap-2 md:gap-4">
           <button
             onClick={() => setIsSidebarOpen(true)}
-            className="md:hidden px-0 py-1 text-text-secondary hover:text-white transition-colors"
+            className="md:hidden px-0 py-1 text-text-secondary hover:text-text-primary transition-colors"
           >
             <LuMenu size={24} />
           </button>
@@ -43,7 +53,7 @@ export default function Header() {
               alt={staticImages.mainLogo.alt}
               width={100}
               height={100}
-              className="shadow-glass-bg shadow-md rounded-full w-10 md:w-12 h-auto select-none"
+              className="shadow-glass-bg shadow-md rounded-full w-10 h-auto select-none"
             />
             <span className="font-tourney font-semibold text-gradient text-xl md:text-3xl tracking-tight">
               App Name
@@ -78,7 +88,7 @@ export default function Header() {
             />
           </div>
 
-          <div className="relative">
+          <div className="relative pt-1 md:pt-0">
             <button
               onClick={toggleProfileMenu}
               className={`relative w-10 h-10 rounded-full glass overflow-hidden border transition-all shadow-md focus:outline-none focus:ring-1 focus:ring-accent-purple-dark z-(--z-raised) ${isProfileMenuOpen ? "border-accent-purple-dark" : "border-glass-border hover:border-glass-border-accent"}`}
@@ -100,7 +110,7 @@ export default function Header() {
       </header>
 
       <div
-        className={`fixed inset-0 z-(--z-dropdown) bg-black/60 backdrop-blur-sm transition-opacity duration-300 md:hidden ${isSidebarOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
+        className={`fixed inset-0 z-(--z-dropdown) backdrop-blur-sm transition-opacity duration-300 md:hidden ${isSidebarOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
         onClick={() => setIsSidebarOpen(false)}
       />
 
@@ -115,8 +125,8 @@ export default function Header() {
             <LuX size={20} />
           </button>
         </div>
-        <div className="pt-2 w-full h-full overflow-hidden">
-          <AppSidebar />
+        <div className="w-full h-full overflow-hidden">
+          <AppSidebar setIsSidebarOpen={setIsSidebarOpen} />
         </div>
       </div>
     </>

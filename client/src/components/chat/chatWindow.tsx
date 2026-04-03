@@ -8,6 +8,9 @@ import {
 } from "react-icons/lu";
 import { IoMdMore } from "react-icons/io";
 import MessageBubble from "@/components/chat/messageBubble";
+import Image from "next/image";
+import { staticImages } from "@/config/common.config";
+import { KeyboardEvent, useRef } from "react";
 
 type Chat = {
   id: number;
@@ -50,53 +53,89 @@ const mockMessages: Message[] = [
 ];
 
 export default function ChatWindow({ chat, onBack }: ChatWindowProps) {
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const handleInput = () => {
+    const el = textareaRef.current;
+    if (!el) return;
+
+    el.style.height = "auto";
+
+    const lineHeight = parseInt(window.getComputedStyle(el).lineHeight);
+
+    const maxHeight = lineHeight * 3;
+
+    el.style.height = Math.min(el.scrollHeight, maxHeight) + "px";
+  };
+
+  const resetHeight = () => {
+    const el = textareaRef.current;
+    if (!el) return;
+
+    el.style.height = "auto";
+  };
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+
+      resetHeight();
+    }
+  };
+
   if (!chat) {
     return (
-      <div className="hidden relative md:flex flex-col flex-1 justify-center items-center bg-bg">
-        <div className="flex justify-center items-center bg-black/5 dark:bg-white/5 shadow-sm dark:shadow-lg mb-4 border border-black/10 dark:border-white/10 rounded-full w-16 h-16 text-text-secondary">
+      <div className="hidden relative md:flex flex-col flex-1 justify-center items-center gap-2">
+        <div className="flex justify-center items-center mb-4 rounded-full w-16 h-16 text-text-secondary glass">
           <LuMessageSquare size={32} />
         </div>
-        <h3 className="mb-2 font-medium text-text-primary text-xl">
-          Your Messages
-        </h3>
-        <p className="text-text-secondary">Select a chat to start messaging</p>
+        <h3>Your Messages</h3>
+        <p className="text-text-secondary">
+          Select a chat to start messaging...
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="relative flex flex-col flex-1 bg-bg w-full h-full">
-      {/* Header */}
-      <div className="z-(--z-raised) flex justify-between items-center bg-white/90 dark:bg-surface/50 backdrop-blur-md px-4 border-black/10 dark:border-white/10 border-b w-full h-16">
-        <div className="flex items-center gap-3">
+    <div className="relative flex flex-col flex-1 w-full h-full">
+      <div className="z-(--z-raised) flex justify-between items-center px-4 glass-nav h-16">
+        <div className="flex items-center gap-2 md:gap-3">
           <button
             onClick={onBack}
-            className="md:hidden p-1 text-text-secondary hover:text-text-primary transition-colors"
+            className="md:hidden -m-2 p-0 pr-2 text-text-secondary hover:text-text-primary transition-colors"
           >
-            <LuArrowLeft size={20} />
+            <LuArrowLeft size={28} />
           </button>
-          <img
-            src={chat.avatar}
-            alt={chat.name}
-            className="rounded-full w-10 h-10 object-cover"
-          />
+          <div className="relative shrink-0">
+            <Image
+              src={staticImages.avatarPlaceholder.src}
+              alt={staticImages.avatarPlaceholder.alt}
+              width={100}
+              height={100}
+              className="shadow-glass rounded-full w-10 h-10 object-cover shrink-0"
+            />
+            {chat.online && (
+              <span className="right-0 bottom-0 absolute bg-green-500 border-[#0B0F1A] border-2 rounded-full w-3 h-3"></span>
+            )}
+          </div>
           <div>
-            <h3 className="font-medium text-text-primary text-sm md:text-base">
+            <h6 className="font-medium text-text-primary truncate">
               {chat.name}
-            </h3>
-            <p className="text-text-secondary text-xs">
+            </h6>
+            <p className="text-status-success-text text-xs">
               {chat.online ? "Online" : "Offline"}
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-2 md:gap-4 text-text-secondary">
-          <button className="p-2 hover:text-text-primary transition-colors">
+        <div className="flex items-center gap-2 md:gap-3 text-text-secondary">
+          <button className="p-2 rounded-lg text-text-secondary hover:text-text-primary glass">
             <LuPhone size={20} />
           </button>
-          <button className="p-2 hover:text-text-primary transition-colors">
+          <button className="p-2 rounded-lg text-text-secondary hover:text-text-primary glass">
             <LuVideo size={20} />
           </button>
-          <button className="p-2 hover:text-text-primary transition-colors">
+          <button className="p-2 rounded-lg text-text-secondary hover:text-text-primary glass">
             <IoMdMore size={20} />
           </button>
         </div>
@@ -117,20 +156,25 @@ export default function ChatWindow({ chat, onBack }: ChatWindowProps) {
         ))}
       </div>
 
-      <div className="bottom-0 z-(--z-raised) md:static absolute bg-white/80 dark:bg-surface/80 backdrop-blur-xl p-3 md:p-4 border-black/10 dark:border-white/10 border-t w-full">
-        <div className="flex items-center gap-2 bg-black/5 dark:bg-white/5 px-2 py-2 border border-black/10 focus-within:border-primary/50 dark:border-white/10 rounded-xl transition-colors">
-          <button className="hover:bg-black/10 dark:hover:bg-white/10 p-2 rounded-lg text-text-secondary hover:text-text-primary transition-colors">
-            <LuPaperclip size={20} />
-          </button>
-          <input
-            type="text"
+      <div className="bottom-0 z-(--z-raised) md:static gap-2 md:gap-3 flex items-center absolute p-2 pb-1 glass-nav border-glass-border border-b-0 border-t border w-full">
+        <button className="p-2.5 rounded-full h-max text-text-secondary hover:text-text-primary glass">
+          <LuPaperclip size={20} />
+        </button>
+
+        <div className="w-full">
+          <textarea
+            rows={1}
+            ref={textareaRef}
+            onInput={handleInput}
+            onKeyDown={handleKeyDown}
             placeholder="Type a message..."
-            className="flex-1 bg-transparent border-none focus:outline-none focus:ring-0 w-full placeholder-text-secondary text-text-primary text-sm"
+            className="[&::-webkit-scrollbar]:hidden mt-1 pl-4 h-auto [-ms-overflow-style:none] overflow-y-auto resize-none [scrollbar-width:none]"
           />
-          <button className="flex justify-center items-center bg-primary hover:bg-indigo-700 shadow-md p-2.5 rounded-lg text-white transition-all">
-            <LuSend size={16} className="mt-0.5 -ml-0.5" />
-          </button>
         </div>
+
+        <button className="p-2.5 rounded-full h-max text-text-secondary hover:text-text-primary glass">
+          <LuSend size={20} />
+        </button>
       </div>
     </div>
   );
