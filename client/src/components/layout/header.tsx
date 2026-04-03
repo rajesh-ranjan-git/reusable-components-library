@@ -98,6 +98,7 @@ export default function Header() {
                 src={staticImages.avatarPlaceholder.src}
                 alt={staticImages.avatarPlaceholder.alt}
                 fill
+                sizes="2.5rem"
                 className="shadow-glass-bg shadow-md rounded-full w-full h-full object-cover select-none"
               />
             </button>

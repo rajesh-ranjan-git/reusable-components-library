@@ -61,10 +61,12 @@ export default function SwipeCard({
           src={profile.image}
           alt={profile.name}
           fill
+          sizes="(max-width: 640px) 100vw,
+                (max-width: 1024px) 90vw,
+                (max-width: 1280px) 600px,
+                700px"
           className="w-full h-full object-cover pointer-events-none"
         />
-
-        {/* <div className="absolute inset-0 bg-linear-to-t from-black/95 via-black/80 to-transparent pointer-events-none"></div> */}
 
         <div className="absolute inset-0 bg-linear-to-t from-white/90 dark:from-black/95 via-white/40 dark:via-black/60 to-transparent pointer-events-none"></div>
 

@@ -27,7 +27,7 @@ export const metadata: Metadata = {
 
 const RootLayout = ({ children }: Readonly<ReactNodeProps>) => {
   return (
-    <html lang="en">
+    <html lang="en" data-scroll-behavior="smooth">
       <body
         className={`${alkatra.variable} ${arima.variable} ${inter.variable} ${poppins.variable} ${tourney.variable} antialiased`}
         suppressHydrationWarning
