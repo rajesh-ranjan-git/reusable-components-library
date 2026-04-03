@@ -1,15 +1,17 @@
 "use client";
 
 import { ChangeEvent, SubmitEvent, useState } from "react";
-import { motion, AnimatePresence, Variants, LayoutGroup } from "motion/react";
-import { LuGithub, LuFacebook, LuLinkedin } from "react-icons/lu";
-import { TbLoader3 } from "react-icons/tb";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
-import SocialButton from "@/components/auth/socialButton";
-import Image from "next/image";
+import { motion, AnimatePresence, Variants, LayoutGroup } from "motion/react";
+import { LuGithub, LuFacebook, LuLinkedin, LuEyeClosed } from "react-icons/lu";
+import { TbLoader3 } from "react-icons/tb";
 import { staticImages } from "@/config/common.config";
 import { FcGoogle } from "react-icons/fc";
+import { FaRegEye, FaUser } from "react-icons/fa";
+import { IoMail } from "react-icons/io5";
+import SocialButton from "@/components/auth/socialButton";
 
 const DecorativeRings = () => (
   <div className="-z-1 absolute inset-0 flex justify-center items-center overflow-hidden pointer-events-none">
@@ -41,6 +43,7 @@ export default function AuthPage() {
   const isLogin = isLoginState;
 
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -168,28 +171,42 @@ export default function AuthPage() {
                     <form onSubmit={handleSubmit}>
                       <h2 className="mb-4 text-center">Login</h2>
 
-                      <div className="flex flex-col gap-1 mb-2">
+                      <div className="relative flex flex-col gap-1 mb-2">
                         <label>Username / Email</label>
                         <input
                           type="email"
                           placeholder="you@example.com"
                           value={formData.email}
+                          className="pr-8"
                           onChange={(e: ChangeEvent<HTMLInputElement>) =>
                             handleChange("email", e.target.value)
                           }
                         />
+                        <FaUser className="right-3 bottom-2 absolute w-4 h-4 text-text-secondary -translate-y-1/2" />
                       </div>
 
-                      <div className="flex flex-col gap-1 mb-2">
+                      <div className="relative flex flex-col gap-1 mb-2">
                         <label>Password</label>
                         <input
-                          type="password"
+                          type={showPassword ? "text" : "password"}
                           placeholder="Password"
                           value={formData.password}
+                          className="pr-8"
                           onChange={(e: ChangeEvent<HTMLInputElement>) =>
                             handleChange("password", e.target.value)
                           }
                         />
+                        {showPassword ? (
+                          <LuEyeClosed
+                            className="right-3 bottom-2 absolute w-4 h-4 text-text-secondary -translate-y-1/2"
+                            onClick={() => setShowPassword((prev) => !prev)}
+                          />
+                        ) : (
+                          <FaRegEye
+                            className="right-3 bottom-2 absolute w-4 h-4 text-text-secondary -translate-y-1/2"
+                            onClick={() => setShowPassword((prev) => !prev)}
+                          />
+                        )}
                       </div>
 
                       <div className="flex justify-center mt-1 md:mt-2 mb-4 md:mb-6">
@@ -259,40 +276,56 @@ export default function AuthPage() {
                     <form onSubmit={handleSubmit}>
                       <h2 className="mb-2 text-center">Register</h2>
 
-                      <div className="flex flex-col gap-1 mb-2">
+                      <div className="relative flex flex-col gap-1 mb-2">
                         <label>Username / Email</label>
                         <input
                           type="email"
                           placeholder="you@example.com"
                           value={formData.email}
+                          className="pr-8"
                           onChange={(e: ChangeEvent<HTMLInputElement>) =>
                             handleChange("email", e.target.value)
                           }
                         />
+                        <IoMail className="right-3 bottom-2 absolute w-4 h-4 text-text-secondary -translate-y-1/2" />
                       </div>
 
-                      <div className="flex flex-col gap-1 mb-2">
+                      <div className="relative flex flex-col gap-1 mb-2">
                         <label>Full Name</label>
                         <input
                           type="text"
                           placeholder="Full Name"
-                          value={formData.password}
+                          value={formData.name}
+                          className="pr-8"
                           onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                            handleChange("password", e.target.value)
+                            handleChange("name", e.target.value)
                           }
                         />
+                        <FaUser className="right-3 bottom-2 absolute w-4 h-4 text-text-secondary -translate-y-1/2" />
                       </div>
 
-                      <div className="flex flex-col gap-1 mb-2">
+                      <div className="relative flex flex-col gap-1 mb-2">
                         <label>Password</label>
                         <input
-                          type="password"
+                          type={showPassword ? "text" : "password"}
                           placeholder="Password"
                           value={formData.password}
+                          className="pr-8"
                           onChange={(e: ChangeEvent<HTMLInputElement>) =>
                             handleChange("password", e.target.value)
                           }
                         />
+                        {showPassword ? (
+                          <LuEyeClosed
+                            className="right-3 bottom-2 absolute w-4 h-4 text-text-secondary -translate-y-1/2"
+                            onClick={() => setShowPassword((prev) => !prev)}
+                          />
+                        ) : (
+                          <FaRegEye
+                            className="right-3 bottom-2 absolute w-4 h-4 text-text-secondary -translate-y-1/2"
+                            onClick={() => setShowPassword((prev) => !prev)}
+                          />
+                        )}
                       </div>
 
                       <div className="mt-1 mb-4 text-text-secondary text-xs text-center leading-relaxed">
