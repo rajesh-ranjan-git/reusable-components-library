@@ -11,7 +11,7 @@ export default function HeroSection() {
           className="flex items-center gap-1.5 shadow-md hover:shadow-lg w-max transition-shadow ease-in-out badge badge-gradient"
         >
           <FaStar className="text-status-success-text" />
-          Your App Name v1.0 is now live
+          App Name v1.0 is now live
           <LuChevronRight size={14} className="ml-1" />
         </Link>
       </div>

@@ -14,6 +14,7 @@ import { FaEdit, FaLink } from "react-icons/fa";
 import { FiMoreHorizontal } from "react-icons/fi";
 import CameraModal from "@/components/shared/cameraModal";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 type User = {
   name: string;
@@ -39,9 +40,10 @@ export default function ProfileHeader({
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [currentImageTarget, setCurrentImageTarget] =
     useState<ImageTarget>(null);
-
   const [localAvatar, setLocalAvatar] = useState(user.avatar);
   const [localCover, setLocalCover] = useState(user.coverImage);
+
+  const router = useRouter();
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -171,7 +173,10 @@ export default function ProfileHeader({
                   <LuUserPlus size={16} />
                   Connect
                 </button>
-                <button className="flex items-center gap-2 p-3 focus:ring-1 focus:ring-accent-purple-light glass">
+                <button
+                  className="flex items-center gap-2 p-3 focus:ring-1 focus:ring-accent-purple-light glass"
+                  onClick={() => router.push("/chat")}
+                >
                   <LuMessageSquare size={16} />
                 </button>
                 <button className="flex items-center gap-2 p-3 focus:ring-1 focus:ring-accent-purple-light glass">

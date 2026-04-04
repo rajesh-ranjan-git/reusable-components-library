@@ -9,7 +9,7 @@ const testimonials = [
     role: "Full Stack Founder",
     avatar: "https://i.pravatar.cc/150?u=alex",
     quote:
-      "We needed a React specialist to help scale our dashboard MVP. Through Your App Name, I found Sara in under an hour. We've been collaborating for 6 months now.",
+      "We needed a React specialist to help scale our dashboard MVP. Through App Name, I found Sara in under an hour. We've been collaborating for 6 months now.",
   },
   {
     name: "Jamie Lin",
@@ -85,7 +85,7 @@ export default function CommunitySection() {
           <h2 className="mb-6">Loved by the community.</h2>
           <p>
             Join thousands of developers, designers, and founders who are
-            already building the future together through Your App Name.
+            already building the future together through App Name.
           </p>
         </div>
 

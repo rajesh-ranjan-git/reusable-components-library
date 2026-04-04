@@ -1,6 +1,6 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { FaHome } from "react-icons/fa";
 import { IoBarChart } from "react-icons/io5";
 import {
@@ -11,16 +11,22 @@ import {
   LuSettings,
   LuUsers,
 } from "react-icons/lu";
+import Image from "next/image";
+import { staticImages } from "@/config/common.config";
 
 export default function AdminSidebar({
-  isMobileOpen,
-  setMobileOpen,
+  isSidebarOpen,
+  setIsSidebarOpen,
+  collapsed,
+  setCollapsed,
 }: {
-  isMobileOpen: boolean;
-  setMobileOpen: Dispatch<SetStateAction<boolean>>;
+  isSidebarOpen: boolean;
+  setIsSidebarOpen: Dispatch<SetStateAction<boolean>>;
+  collapsed: boolean;
+  setCollapsed: Dispatch<SetStateAction<boolean>>;
 }) {
-  const [collapsed, setCollapsed] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
 
   const navItems = [
     { label: "Overview", icon: FaHome, path: "/admin" },
@@ -32,40 +38,48 @@ export default function AdminSidebar({
 
   return (
     <>
-      {isMobileOpen && (
+      {isSidebarOpen && (
         <div
-          className="md:hidden z-40 fixed inset-0 bg-black/50 backdrop-blur-sm"
-          onClick={() => setMobileOpen(false)}
+          className="md:hidden fixed inset-0 z-(--z-modal) backdrop-blur-sm"
+          onClick={() => setIsSidebarOpen(false)}
         />
       )}
 
       <aside
         className={`
-        fixed inset-y-0 left-0 z-(--z-dropdown) bg-bg/95 backdrop-blur-md border-r border-white/10 flex flex-col transition-all duration-300
-        ${collapsed ? "w-20" : "w-64"}
-        ${isMobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
+        fixed inset-y-0 left-0 z-(--z-modal) flex flex-col border-glass-border border-r border-b-0 glass-nav transition-all duration-500
+        ${collapsed ? "w-18" : "w-64"}
+        ${isSidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
       `}
       >
-        <div className="flex justify-between items-center px-4 border-white/10 border-b h-16">
-          <Link
-            href="/discover"
-            className="flex items-center gap-2 overflow-hidden"
-          >
-            <div className="flex justify-center items-center bg-linear-to-br from-primary to-accent rounded-lg w-8 h-8 shrink-0">
-              <span className="font-bold text-white text-xs">DM</span>
-            </div>
-            {!collapsed && (
-              <span className="font-bold text-white text-lg tracking-tight whitespace-nowrap">
+        <div className="flex justify-between items-center px-4 border-glass-border border-b h-16">
+          {!collapsed && (
+            <Link
+              href="/admin"
+              className="flex items-center gap-2 overflow-hidden"
+            >
+              <div className="flex justify-center items-center rounded-full w-8 h-8 shrink-0">
+                <Image
+                  src={staticImages.mainLogo.src}
+                  alt={staticImages.mainLogo.alt}
+                  width={100}
+                  height={100}
+                  className="shadow-glass-bg shadow-md rounded-full w-10 h-auto select-none"
+                />
+              </div>
+              <h2 className="font-poppins md:text-xl text-nowrap">
                 Admin Panel
-              </span>
-            )}
-          </Link>
+              </h2>
+            </Link>
+          )}
           <button
             onClick={() => setCollapsed(!collapsed)}
-            className="hidden md:flex p-1 text-text-secondary hover:text-white transition-colors"
+            className="hidden md:flex p-1 text-text-secondary hover:text-text-primary transition-colors"
           >
             {collapsed ? (
-              <LuPanelLeft size={20} />
+              <div className="p-1">
+                <LuPanelLeft size={20} />
+              </div>
             ) : (
               <LuPanelLeftClose size={20} />
             )}
@@ -84,17 +98,19 @@ export default function AdminSidebar({
               <Link
                 key={item.label}
                 href={item.path}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all border ${
+                className={`grid grid-cols-[auto_1fr] items-center gap-3 transition-all border p-3 ${
+                  collapsed ? "rounded-full" : "rounded-lg"
+                } ${
                   isActive
-                    ? "bg-primary/10 text-primary border-primary/20"
-                    : "text-text-secondary border-transparent hover:text-white hover:bg-white/5"
+                    ? "bg-glass-bg-strong text-text-primary border-glass-border glass"
+                    : "text-text-secondary border-transparent hover:text-text-primary hover:bg-glass-bg-hover"
                 }`}
                 title={collapsed ? item.label : undefined}
-                onClick={() => setMobileOpen(false)}
+                onClick={() => setIsSidebarOpen(false)}
               >
-                <Icon size={20} className={isActive ? "text-primary" : ""} />
+                <Icon size={20} className="self-center shrink-0" />
                 {!collapsed && (
-                  <span className="font-medium whitespace-nowrap">
+                  <span className="font-medium leading-none whitespace-nowrap">
                     {item.label}
                   </span>
                 )}
@@ -103,11 +119,16 @@ export default function AdminSidebar({
           })}
         </nav>
 
-        <div className="p-4 border-white/10 border-t">
-          <button className="flex items-center gap-3 hover:bg-red-500/10 px-3 py-2 rounded-lg w-full overflow-hidden text-text-secondary hover:text-red-400 transition-colors">
-            <LuLogOut size={20} className="shrink-0" />
+        <div className="px-3 py-2 border-glass-border border-t">
+          <button
+            className={`group flex justify-center items-center gap-3 hover:bg-status-error-bg p-2 border border-transparent hover:border-status-error-border overflow-hidden text-text-secondary hover:text-status-error-text transition-colors ${collapsed ? "rounded-full w-max" : "rounded-lg w-full"}`}
+            onClick={() => router.push("/")}
+          >
+            <LuLogOut size={20} className="group-hover:scale-110 shrink-0" />
             {!collapsed && (
-              <span className="font-medium whitespace-nowrap">Sign Out</span>
+              <span className="font-medium whitespace-nowrap group-hover:scale-105">
+                Sign Out
+              </span>
             )}
           </button>
         </div>

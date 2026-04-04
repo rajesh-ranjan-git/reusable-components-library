@@ -12,6 +12,7 @@ import {
 import { FaHome } from "react-icons/fa";
 import Image from "next/image";
 import { staticImages } from "@/config/common.config";
+import { MdSpaceDashboard } from "react-icons/md";
 
 type HeaderProfileMenuProps = {
   isOpen: boolean;
@@ -127,24 +128,38 @@ export default function HeaderProfileMenu({
                 Subscriptions
               </p>
             </li>
-          </ul>
-
-          <hr className="my-2 text-text-secondary divider" />
-
-          <ul>
+            <li
+              onClick={() => handleNavigation("/admin")}
+              className="flex items-center gap-3 hover:bg-glass-bg-hover px-4 py-1 w-full text-left transition-colors"
+            >
+              <div className="mt-0.5 p-1.5 border border-accent-purple-dark/30 rounded-full">
+                <MdSpaceDashboard size={16} className="text-text-secondary" />
+              </div>
+              <p className="text-text-primary text-sm leading-snug">
+                Admin Dashboard
+              </p>
+            </li>
             <li
               onClick={onClose}
-              className="flex justify-center items-center gap-2 hover:bg-glass-bg-hover px-4 py-1 w-full text-left transition-colors"
+              className="flex items-center gap-2 hover:bg-glass-bg-hover px-4 py-1 w-full text-left transition-colors"
             >
-              <div className="mt-0.5 p-1.5 rounded-full">
+              <div className="mt-0.5 p-1.5 border border-accent-purple-dark/30 rounded-full">
                 <LuSettings size={16} className="text-text-secondary" />
               </div>
               <p className="text-text-primary text-sm leading-snug">
                 Account Settings
               </p>
             </li>
+          </ul>
+
+          <hr className="mt-2 mb-0 text-text-secondary divider" />
+
+          <ul>
             <li
-              onClick={onClose}
+              onClick={() => {
+                router.push("/");
+                onClose();
+              }}
               className="flex justify-center items-center gap-2 hover:bg-status-error-bg px-4 py-1 w-full text-status-error-text text-left cursor-pointer"
             >
               <div className="mt-0.5 p-1.5 rounded-full">

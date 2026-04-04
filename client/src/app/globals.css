@@ -794,8 +794,24 @@
     background: var(--glass-bg-hover);
   }
 
+  select option {
+    background: var(--glass-bg);
+    color: var(--text-on-glass);
+    font-family: var(--font-poppins);
+    font-size: 0.9375rem;
+  }
+
+  select option:hover {
+    background: var(--accent-purple);
+    color: white;
+  }
+
+  select option:checked {
+    background: var(--accent-purple);
+    color: white;
+  }
+
   label {
-    /* display: block; */
     font-size: 0.875rem;
     font-weight: 500;
     color: var(--text-secondary);

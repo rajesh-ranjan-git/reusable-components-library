@@ -168,8 +168,7 @@ export default function Footer() {
 
         <div className="flex md:flex-row flex-col justify-between items-center gap-4 pt-8 border-glass-border border-t">
           <p className="text-text-secondary text-sm">
-            &copy; {new Date().getFullYear()} Your App Name Inc. All rights
-            reserved.
+            &copy; {new Date().getFullYear()} App Name Inc. All rights reserved.
           </p>
           <div className="flex items-center gap-2 text-sm">
             <span className="flex bg-status-success-text rounded-full w-2 h-2"></span>

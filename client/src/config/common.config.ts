@@ -29,7 +29,7 @@ export const staticImages: StaticImageType = {
 };
 
 export const appConfig = {
-  name: "Your App Name",
+  name: "App Name",
   description: "Your applications's description.",
 };
 

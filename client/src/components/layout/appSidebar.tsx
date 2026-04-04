@@ -65,7 +65,7 @@ export default function AppSidebar({ setIsSidebarOpen }: AppSidebarProps) {
   const visibleRequests = showAllRequests ? requests : requests.slice(0, 2);
 
   return (
-    <div className="flex flex-col border-glass-border border-r border-b-0 md:w-64 lg:w-72 h-full glass-nav shrink-0">
+    <aside className="flex flex-col border-glass-border border-r border-b-0 md:w-64 lg:w-72 h-full transition-all duration-500 glass-nav shrink-0">
       <div className="p-2 pt-3 border-glass-border border-b">
         <h2 className="font-arima md:text-3xl tracking-wider">Network</h2>
       </div>
@@ -215,6 +215,6 @@ export default function AppSidebar({ setIsSidebarOpen }: AppSidebarProps) {
           </div>
         </div>
       </div>
-    </div>
+    </aside>
   );
 }

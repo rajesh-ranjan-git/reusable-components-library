@@ -19,8 +19,8 @@ import Orb from "@/components/background/orb";
 export const metadata: Metadata = {
   title: {
     absolute: "",
-    default: "Your App Name",
-    template: "%s | Your App Name",
+    default: "App Name",
+    template: "%s | App Name",
   },
   description: "Your application's description.",
 };

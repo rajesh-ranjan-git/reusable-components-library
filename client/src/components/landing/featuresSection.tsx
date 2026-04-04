@@ -99,8 +99,8 @@ export default function FeaturesSection() {
         <div className="mx-auto mb-16 max-w-3xl text-center">
           <h2 className="mb-6">Built for engineers, by engineers.</h2>
           <p>
-            Your App Name isn't just a networking site. It's a full suite of
-            tools designed to help you find the right people to build the right
+            App Name isn't just a networking site. It's a full suite of tools
+            designed to help you find the right people to build the right
             products.
           </p>
         </div>

@@ -116,6 +116,13 @@ export default function Header() {
         onClick={() => setIsSidebarOpen(false)}
       />
 
+      {isSidebarOpen && (
+        <div
+          className="md:hidden fixed inset-0 z-(--z-modal) backdrop-blur-sm"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
       <div
         className={`fixed top-0 left-0 h-dvh w-72 sm:w-80 bg-[#0B0F1A] md:hidden z-(--z-toast) transition-transform duration-300 shadow-2xl ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}`}
       >
@@ -127,6 +134,7 @@ export default function Header() {
             <LuX size={20} />
           </button>
         </div>
+
         <div className="w-full h-full overflow-hidden">
           <AppSidebar setIsSidebarOpen={setIsSidebarOpen} />
         </div>

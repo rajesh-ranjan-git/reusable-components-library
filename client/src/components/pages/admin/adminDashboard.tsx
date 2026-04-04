@@ -15,33 +15,39 @@ import ChartCard from "@/components/admin/chartCard";
 import StatCard from "@/components/admin/statCard";
 
 export default function AdminDashboard() {
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
 
   return (
-    <div className="flex bg-bg selection:bg-primary/30 min-h-dvh overflow-hidden text-text-primary">
-      <AdminSidebar isMobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
+    <div className="flex bg-bg-page selection:bg-primary/30 min-h-dvh overflow-hidden text-text-primary">
+      <AdminSidebar
+        isSidebarOpen={isSidebarOpen}
+        setIsSidebarOpen={setIsSidebarOpen}
+        collapsed={collapsed}
+        setCollapsed={setCollapsed}
+      />
 
-      <div className="flex flex-col flex-1 md:ml-20 lg:ml-64 w-full h-dvh overflow-hidden transition-all duration-300">
-        <AdminHeader setMobileOpen={setMobileOpen} />
+      <div
+        className={`flex flex-col flex-1 md:ml-18 w-full h-dvh overflow-hidden ${!collapsed ? "lg:ml-64" : ""}`}
+      >
+        <AdminHeader
+          isSidebarOpen={isSidebarOpen}
+          setIsSidebarOpen={setIsSidebarOpen}
+        />
 
         <main className="flex-1 p-4 md:p-6 lg:p-8 overflow-y-auto custom-scrollbar">
           <div className="space-y-6 md:space-y-8 mx-auto pb-10 max-w-7xl">
             <div className="flex sm:flex-row flex-col justify-between sm:items-end gap-4">
               <div>
-                <h1 className="font-bold text-white text-2xl md:text-3xl tracking-tight">
-                  Overview
-                </h1>
-                <p className="mt-1 text-text-secondary text-sm md:text-base">
-                  Monitor platform metrics and activity.
-                </p>
+                <h1 className="md:text-4xl">Overview</h1>
+                <p className="mt-1">Monitor platform metrics and activity.</p>
               </div>
-              <button className="inline-flex justify-center items-center gap-2 bg-primary hover:bg-indigo-600 shadow-md shadow-primary/20 px-4 py-2.5 rounded-lg font-medium text-white text-sm transition-all">
+              <button className="ibtn btn-secondary">
                 <LuDownload size={16} />
                 Generate Report
               </button>
             </div>
 
-            {/* KPI Stats Row */}
             <div className="gap-4 md:gap-6 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4">
               <StatCard
                 title="Total Users"

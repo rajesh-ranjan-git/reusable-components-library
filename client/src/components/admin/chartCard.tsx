@@ -1,3 +1,5 @@
+import { useEffect, useRef, useState } from "react";
+import { LuChevronDown } from "react-icons/lu";
 import {
   LineChart,
   Line,
@@ -18,22 +20,100 @@ const data = [
 ];
 
 export default function ChartCard() {
+  const [isTimelineDropdownOpen, setIsTimelineDropdownOpen] = useState(false);
+  const [selectedRole, setSelectedRole] = useState("");
+
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsTimelineDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   return (
-    <div className="flex flex-col lg:col-span-2 bg-surface/50 shadow-lg backdrop-blur-md p-6 border border-white/5 rounded-xl">
-      <div className="flex justify-between items-center mb-6">
+    <div className="flex flex-col lg:col-span-2 p-6 glass">
+      <div className="flex flex-col gap-3 mb-6">
+        <div className="flex justify-between items-start sm:items-center w-full">
+          <div className="w-full">
+            <h4>Platform Engagement</h4>
+          </div>
+
+          <div className="relative mb-4 min-w-38" ref={dropdownRef}>
+            <label className="sr-only">Timeline</label>
+            <button
+              type="button"
+              onClick={() => setIsTimelineDropdownOpen(!isTimelineDropdownOpen)}
+              className={`w-full flex items-center justify-between gap-2 text-left font-poppins text-sm px-3 py-2.5 rounded-md border transition-all duration-200 backdrop-blur-md outline-none
+                ${
+                  isTimelineDropdownOpen
+                    ? "border-accent-purple shadow-focus bg-glass-bg-hover"
+                    : "hover:bg-glass-bg-strong hover:border-glass-border-accent"
+                }
+                ${selectedRole ? "text-text-on-glass" : "text-text-muted"}
+              `}
+            >
+              {selectedRole || "Timeline"}
+
+              <div
+                className={`transition-transform  duration-300 ${
+                  isTimelineDropdownOpen
+                    ? "rotate-180 text-accent-purple"
+                    : "text-text-secondary"
+                }`}
+              >
+                <LuChevronDown size={16} className="shrink-0" />
+              </div>
+            </button>
+
+            <div
+              className={`absolute z-(--z-dropdown) w-full mt-2 backdrop-blur-md border border-glass-border overflow-hidden transition-all duration-300 origin-top
+                ${
+                  isTimelineDropdownOpen
+                    ? "opacity-100 scale-y-100 translate-y-0"
+                    : "opacity-0 scale-y-95 -translate-y-2 pointer-events-none"
+                }`}
+              style={{ borderRadius: "var(--border-radius-md)" }}
+            >
+              <ul className="flex flex-col m-0 py-2 max-h-60 overflow-y-auto list-none">
+                {["Last 6 Months", "This Year", "All Time"].map((role) => (
+                  <li key={role}>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+
+                        setSelectedRole(role);
+                        setIsTimelineDropdownOpen(false);
+                      }}
+                      className={`w-full text-left px-4 py-2.5 bg-transparent border-none text-[0.9375rem] transition-all hover:bg-glass-bg-hover hover:text-accent-purple
+                          ${
+                            selectedRole === role
+                              ? "text-accent-purple bg-status-info-bg"
+                              : "text-text-on-glass"
+                          }
+                        `}
+                    >
+                      {role}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
         <div>
-          <h3 className="font-semibold text-white text-lg">
-            Platform Engagement
-          </h3>
           <p className="text-text-secondary text-sm">
             Active users vs New matches over 6 months
           </p>
         </div>
-        <select className="bg-bg/50 px-3 py-1.5 border border-white/10 focus:border-primary rounded-lg focus:outline-none text-white text-sm cursor-pointer">
-          <option>Last 6 Months</option>
-          <option>This Year</option>
-          <option>All Time</option>
-        </select>
       </div>
 
       <div className="flex-1 w-full min-h-75">
