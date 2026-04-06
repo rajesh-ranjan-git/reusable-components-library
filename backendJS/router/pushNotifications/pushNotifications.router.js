@@ -4,6 +4,10 @@ import { subscribe } from "../../controllers/pushNotifications/pushNotifications
 
 const pushNotificationsRouter = express.Router();
 
-pushNotificationsRouter.post("/subscribe", validateRequest(), subscribe);
+pushNotificationsRouter.post(
+  "/subscribe",
+  validateRequest({ requireBody: true }),
+  subscribe,
+);
 
 export default pushNotificationsRouter;

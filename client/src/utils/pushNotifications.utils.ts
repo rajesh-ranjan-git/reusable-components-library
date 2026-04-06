@@ -1,5 +1,3 @@
-import { saveRequest } from "@/utils/indexedDb.utils";
-
 export const subscribeToPush = async () => {
   const registration = await navigator.serviceWorker.ready;
 

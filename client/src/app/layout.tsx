@@ -1,6 +1,6 @@
 import "@/app/globals.css";
 import "@/lib/logger/logger";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import {
   alkatra,
   arima,
@@ -25,6 +25,9 @@ export const metadata: Metadata = {
   },
   description: "App's description.",
   manifest: "/manifest/manifest.json",
+};
+
+export const viewport: Viewport = {
   themeColor: "#6366f1",
 };
 
