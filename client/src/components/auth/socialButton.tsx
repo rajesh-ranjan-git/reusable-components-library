@@ -7,12 +7,12 @@ type SocialButtonProps = {
   iconOnly: boolean;
 };
 
-export default function SocialButton({
+const SocialButton = ({
   provider,
   onClick,
   icon: Icon,
   iconOnly = false,
-}: SocialButtonProps) {
+}: SocialButtonProps) => {
   return (
     <button
       type="button"
@@ -24,4 +24,6 @@ export default function SocialButton({
       {!iconOnly && <span>Continue with {provider}</span>}
     </button>
   );
-}
+};
+
+export default SocialButton;

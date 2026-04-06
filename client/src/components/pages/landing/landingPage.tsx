@@ -5,7 +5,7 @@ import CommunitySection from "@/components/landing/communitySection";
 import Footer from "@/components/landing/footer";
 import SubscriptionPage from "@/components/pages/subscription/subscriptionPage";
 
-export default function LandingPage() {
+const LandingPage = () => {
   return (
     <div>
       <LandingHeader />
@@ -18,4 +18,6 @@ export default function LandingPage() {
       <Footer />
     </div>
   );
-}
+};
+
+export default LandingPage;

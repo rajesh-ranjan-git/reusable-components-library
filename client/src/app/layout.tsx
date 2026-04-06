@@ -10,12 +10,12 @@ import {
 } from "@/config/common.config";
 import { ReactNodeProps } from "@/types/propTypes";
 import Banner from "@/lib/banner/banner";
-import ServiceWorkerRegister from "@/components/serviceWorker/serviceWorker";
+import ServiceWorkerRegister from "@/components/serviceWorker/serviceWorkerRegister";
+import Orb from "@/components/background/orb";
 import { ToastProvider } from "@/hooks/toast";
 import ThemeManager from "@/components/theme/themeManager";
 import Flash from "@/components/flash/flash";
 import ErrorWrapper from "@/components/errors/errorWrapper";
-import Orb from "@/components/background/orb";
 
 export const metadata: Metadata = {
   title: {

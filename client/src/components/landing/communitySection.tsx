@@ -34,7 +34,7 @@ const testimonials = [
   },
 ];
 
-export default function CommunitySection() {
+const CommunitySection = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
@@ -134,4 +134,6 @@ export default function CommunitySection() {
       </div>
     </section>
   );
-}
+};
+
+export default CommunitySection;

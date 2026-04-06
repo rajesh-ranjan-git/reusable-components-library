@@ -1,7 +1,9 @@
 import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { motion, AnimatePresence } from "motion/react";
 import { FiCheckCircle } from "react-icons/fi";
+import { MdSpaceDashboard } from "react-icons/md";
 import {
   LuCreditCard,
   LuLogOut,
@@ -10,9 +12,7 @@ import {
   LuUser,
 } from "react-icons/lu";
 import { FaHome } from "react-icons/fa";
-import Image from "next/image";
 import { staticImages } from "@/config/common.config";
-import { MdSpaceDashboard } from "react-icons/md";
 
 type HeaderProfileMenuProps = {
   isOpen: boolean;
@@ -20,11 +20,11 @@ type HeaderProfileMenuProps = {
   positionClass?: string;
 };
 
-export default function HeaderProfileMenu({
+const HeaderProfileMenu = ({
   isOpen,
   onClose,
   positionClass = "top-full right-0 mt-3",
-}: HeaderProfileMenuProps) {
+}: HeaderProfileMenuProps) => {
   const menuRef = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
 
@@ -174,4 +174,6 @@ export default function HeaderProfileMenu({
       )}
     </AnimatePresence>
   );
-}
+};
+
+export default HeaderProfileMenu;

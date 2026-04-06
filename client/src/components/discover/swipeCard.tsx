@@ -1,6 +1,6 @@
-import { motion, useMotionValue, useTransform, PanInfo } from "motion/react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
+import { motion, useMotionValue, useTransform, PanInfo } from "motion/react";
 import { LuBriefcase, LuMapPin } from "react-icons/lu";
 
 type Profile = {
@@ -23,11 +23,7 @@ type SwipeCardProps = {
   active: boolean;
 };
 
-export default function SwipeCard({
-  profile,
-  onSwipe,
-  active,
-}: SwipeCardProps) {
+const SwipeCard = ({ profile, onSwipe, active }: SwipeCardProps) => {
   const router = useRouter();
   const x = useMotionValue(0);
   const opacity = useTransform(x, [-200, 0, 200], [0.5, 1, 0.5]);
@@ -124,4 +120,6 @@ export default function SwipeCard({
       </div>
     </motion.div>
   );
-}
+};
+
+export default SwipeCard;

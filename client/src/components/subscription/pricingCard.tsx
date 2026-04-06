@@ -11,13 +11,13 @@ type PricingPlan = {
   features: string[];
 };
 
-export default function PricingCard({
+const PricingCard = ({
   plan,
   isYearly,
 }: {
   plan: PricingPlan;
   isYearly: boolean;
-}) {
+}) => {
   const {
     name,
     monthlyPrice,
@@ -76,4 +76,6 @@ export default function PricingCard({
       </Link>
     </div>
   );
-}
+};
+
+export default PricingCard;

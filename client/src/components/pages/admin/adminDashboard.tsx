@@ -14,7 +14,7 @@ import AdminSidebar from "@/components/admin/adminSidebar";
 import ChartCard from "@/components/admin/chartCard";
 import StatCard from "@/components/admin/statCard";
 
-export default function AdminDashboard() {
+const AdminDashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
 
@@ -88,4 +88,6 @@ export default function AdminDashboard() {
       </div>
     </div>
   );
-}
+};
+
+export default AdminDashboard;

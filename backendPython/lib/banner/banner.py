@@ -103,12 +103,12 @@ def create_box(
 
     top_border = (
         f"{color}{chars['tl']}{chars['h'] * inner_width}{chars['tr']}{reset}"
-        if os.getenv("PORT", "5000") == "5000"
+        if os.getenv("PORT", "1995") == "1995"
         else f"{color}{chars['tl']}{chars['h'] * (inner_width + padding_left + padding_right + 1)}{chars['tr']}{reset}"
     )
     bottom_border = (
         f"{color}{chars['bl']}{chars['h'] * inner_width}{chars['br']}{reset}"
-        if os.getenv("PORT", "5000") == "5000"
+        if os.getenv("PORT", "1995") == "1995"
         else f"{color}{chars['bl']}{chars['h'] * (inner_width + padding_left + padding_right + 1)}{chars['br']}{reset}"
     )
 
@@ -141,8 +141,8 @@ def format_system_info(python_version: str, port: str, mode: str, time: str) -> 
 
 
 def get_system_info_data() -> Dict[str, str]:
-    port = get_env_or_default("PORT", "5000")
-    mode = "Development" if port == "5000" else "Production"
+    port = get_env_or_default("PORT", "1995")
+    mode = "Development" if port == "1995" else "Production"
 
     return {
         "python_version": sys.version.split()[0],
@@ -153,7 +153,7 @@ def get_system_info_data() -> Dict[str, str]:
 
 
 def system_info(port: str = None) -> str:
-    port = port or get_env_or_default("PORT", "5000")
+    port = port or get_env_or_default("PORT", "1995")
     data = get_system_info_data()
     info_text = format_system_info(
         data["python_version"], port, data["mode"], data["time"]
@@ -189,7 +189,7 @@ def try_except_wrapper(func: Callable, error_message: str) -> Callable:
 
 
 def banner(port: str = None) -> None:
-    port = port or get_env_or_default("PORT", "5000")
+    port = port or get_env_or_default("PORT", "1995")
 
     banner_theme = get_random_item(banner_themes_config)
     desc_theme = get_random_item(banner_themes_config)
@@ -203,7 +203,7 @@ def banner(port: str = None) -> None:
 
     output = compose_banner_output(colored_figlet, colored_desc, sys_info)
 
-    if os.getenv("PORT", "5000") == "5000":
+    if os.getenv("PORT", "1995") == "1995":
         print(output)
     else:
         for line in reversed(output.splitlines()):

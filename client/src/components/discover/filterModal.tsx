@@ -2,7 +2,7 @@ import { LuX } from "react-icons/lu";
 
 type FilterModalProps = { isOpen: boolean; onClose: () => void };
 
-export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
+const FilterModal = ({ isOpen, onClose }: FilterModalProps) => {
   if (!isOpen) return null;
 
   return (
@@ -98,4 +98,6 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
       </div>
     </div>
   );
-}
+};
+
+export default FilterModal;

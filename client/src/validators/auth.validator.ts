@@ -2,12 +2,11 @@ import {
   ALLOWED_SPECIAL_CHARACTERS_REGEX,
   EMAIL_REGEX,
   LOWER_CASE_REGEX,
-  NAME_REGEX,
   NUMBER_REGEX,
   UPPER_CASE_REGEX,
   USERNAME_REGEX,
 } from "@/constants/common.constants";
-import { propertyConstraints, userProperties } from "@/config/common.config";
+import { propertyConstraints } from "@/config/common.config";
 
 export const userNameValidator = (userName?: string) => {
   const value = userName?.trim().toLowerCase();

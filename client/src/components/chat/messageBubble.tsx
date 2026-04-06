@@ -7,7 +7,7 @@ type Message = {
 
 type MessageBubbleProps = { message: Message; isOwn: boolean };
 
-export default function MessageBubble({ message, isOwn }: MessageBubbleProps) {
+const MessageBubble = ({ message, isOwn }: MessageBubbleProps) => {
   return (
     <div
       className={`flex w-full mb-4 ${isOwn ? "justify-end" : "justify-start"}`}
@@ -28,4 +28,6 @@ export default function MessageBubble({ message, isOwn }: MessageBubbleProps) {
       </div>
     </div>
   );
-}
+};
+
+export default MessageBubble;

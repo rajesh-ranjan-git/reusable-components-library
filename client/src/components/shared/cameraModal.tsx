@@ -1,9 +1,9 @@
 import { useRef, useCallback, useState } from "react";
 import { createPortal } from "react-dom";
+import Image from "next/image";
 import Webcam from "react-webcam";
 import { motion, AnimatePresence } from "motion/react";
 import { LuCamera, LuCameraOff, LuRefreshCw, LuX } from "react-icons/lu";
-import Image from "next/image";
 
 type CameraModalProps = {
   isOpen: boolean;
@@ -11,11 +11,7 @@ type CameraModalProps = {
   onCapture: (imgSrc: string) => void;
 };
 
-export default function CameraModal({
-  isOpen,
-  onClose,
-  onCapture,
-}: CameraModalProps) {
+const CameraModal = ({ isOpen, onClose, onCapture }: CameraModalProps) => {
   const webcamRef = useRef<Webcam | null>(null);
   const [imgSrc, setImgSrc] = useState<string | null>(null);
   const [webcamError, setWebcamError] = useState(false);
@@ -146,4 +142,6 @@ export default function CameraModal({
     </AnimatePresence>,
     document.body,
   );
-}
+};
+
+export default CameraModal;

@@ -1,7 +1,8 @@
 import { useState, useRef, ChangeEvent } from "react";
 import { createPortal } from "react-dom";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { motion, AnimatePresence } from "motion/react";
-import ImageUploadMenu from "../shared/imageUploadMenu";
 import {
   LuCalendar,
   LuCamera,
@@ -12,9 +13,8 @@ import {
 } from "react-icons/lu";
 import { FaEdit, FaLink } from "react-icons/fa";
 import { FiMoreHorizontal } from "react-icons/fi";
+import ImageUploadMenu from "@/components/shared/imageUploadMenu";
 import CameraModal from "@/components/shared/cameraModal";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
 
 type User = {
   name: string;
@@ -31,10 +31,7 @@ type ImageTarget = "cover" | "avatar" | null;
 
 type ProfileHeaderProps = { isOwnProfile: boolean; user: User };
 
-export default function ProfileHeader({
-  isOwnProfile,
-  user,
-}: ProfileHeaderProps) {
+const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
   const [activeMenu, setActiveMenu] = useState<ImageTarget>(null);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
@@ -272,4 +269,6 @@ export default function ProfileHeader({
         )}
     </div>
   );
-}
+};
+
+export default ProfileHeader;

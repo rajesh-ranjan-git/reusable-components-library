@@ -3,11 +3,15 @@
 import { RefObject, useEffect, useRef } from "react";
 import { UseOutsideClickProps } from "@/types/propTypes";
 
-const useOutsideClick = ({ ref, when, callback }: UseOutsideClickProps) => {
+export const useOutsideClick = ({
+  ref,
+  when,
+  callback,
+}: UseOutsideClickProps) => {
   const savedCallback = useRef(callback);
 
   const refs = (Array.isArray(ref) ? ref : [ref]).filter(
-    (r): r is RefObject<HTMLElement> => !!r
+    (r): r is RefObject<HTMLElement> => !!r,
   );
 
   const handleOutsideClick = (event: MouseEvent | TouchEvent) => {
@@ -35,5 +39,3 @@ const useOutsideClick = ({ ref, when, callback }: UseOutsideClickProps) => {
     savedCallback.current = callback;
   });
 };
-
-export default useOutsideClick;

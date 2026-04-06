@@ -8,7 +8,7 @@ type Skill = {
 
 type TechStackProps = { skills: Skill[] };
 
-export default function TechStack({ skills }: TechStackProps) {
+const TechStack = ({ skills }: TechStackProps) => {
   return (
     <div className="mb-6 p-6 glass">
       <h3 className="mb-4">Tech Stack & Expertise</h3>
@@ -41,4 +41,6 @@ export default function TechStack({ skills }: TechStackProps) {
       </div>
     </div>
   );
-}
+};
+
+export default TechStack;

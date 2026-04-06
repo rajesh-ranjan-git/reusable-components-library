@@ -3,7 +3,7 @@ import Image from "next/image";
 import { staticImages } from "@/config/common.config";
 import ThemeToggle from "@/components/theme/themeToggle";
 
-export default function LandingHeader() {
+const LandingHeader = () => {
   return (
     <header className="top-0 right-0 left-0 fixed md:px-6 w-full glass-nav z-(--z-sticky) backdrop-blur-sm h-16 md:h-20">
       <div className="flex justify-between items-center mx-auto px-6 md:px-8 max-w-7xl h-full">
@@ -68,4 +68,6 @@ export default function LandingHeader() {
       </div>
     </header>
   );
-}
+};
+
+export default LandingHeader;

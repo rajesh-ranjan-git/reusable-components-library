@@ -9,11 +9,7 @@ type AuthLayoutProps = {
   subtitle: string;
 };
 
-export default function AuthLayout({
-  children,
-  title,
-  subtitle,
-}: AuthLayoutProps) {
+const AuthLayout = ({ children, title, subtitle }: AuthLayoutProps) => {
   return (
     <div className="relative flex justify-center items-start md:items-center px-4 md:px-4 py-20 h-dvh overflow-hidden">
       <div className="z-(--z-raised) relative w-full max-w-md">
@@ -45,4 +41,6 @@ export default function AuthLayout({
       </div>
     </div>
   );
-}
+};
+
+export default AuthLayout;

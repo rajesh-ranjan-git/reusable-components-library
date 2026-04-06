@@ -16,7 +16,7 @@ type Chat = {
   online: boolean;
 };
 
-export default function ChatPage() {
+const ChatPage = () => {
   const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
 
   return (
@@ -46,4 +46,6 @@ export default function ChatPage() {
       <BottomNav activeTab="chats" hidden={!!selectedChat} />
     </div>
   );
-}
+};
+
+export default ChatPage;

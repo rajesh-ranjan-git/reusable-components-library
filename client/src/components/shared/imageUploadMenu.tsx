@@ -10,13 +10,13 @@ type ImageUploadMenuProps = {
   onCameraClick: () => void;
 };
 
-export default function ImageUploadMenu({
+const ImageUploadMenu = ({
   isOpen,
   onClose,
   onUploadClick,
   onCameraClick,
   positionClass = "top-full right-0 mt-2",
-}: ImageUploadMenuProps) {
+}: ImageUploadMenuProps) => {
   const menuRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -98,4 +98,6 @@ export default function ImageUploadMenu({
       )}
     </AnimatePresence>
   );
-}
+};
+
+export default ImageUploadMenu;

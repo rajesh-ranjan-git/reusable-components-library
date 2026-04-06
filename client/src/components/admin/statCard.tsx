@@ -8,13 +8,13 @@ type StatCardProps = {
   icon: ElementType;
 };
 
-export default function StatCard({
+const StatCard = ({
   title,
   value,
   change,
   trend = "up",
   icon: Icon,
-}: StatCardProps) {
+}: StatCardProps) => {
   return (
     <div className="p-6 transition-all hover:-translate-y-1 glass">
       <div className="flex justify-between items-start mb-4">
@@ -36,4 +36,6 @@ export default function StatCard({
       </div>
     </div>
   );
-}
+};
+
+export default StatCard;

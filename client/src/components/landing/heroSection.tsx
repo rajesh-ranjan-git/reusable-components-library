@@ -2,7 +2,7 @@ import Link from "next/link";
 import { FaArrowRight, FaStar } from "react-icons/fa6";
 import { LuChevronRight, LuCode } from "react-icons/lu";
 
-export default function HeroSection() {
+const HeroSection = () => {
   return (
     <section className="pt-30 text-center animate-fade-in container">
       <div className="flex justify-center mb-4">
@@ -61,4 +61,6 @@ export default function HeroSection() {
       </div>
     </section>
   );
-}
+};
+
+export default HeroSection;

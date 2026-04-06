@@ -1,6 +1,8 @@
 "use client";
 
 import "@/app/globals.css";
+import Image from "next/image";
+import { MdError } from "react-icons/md";
 import {
   alkatra,
   arima,
@@ -15,9 +17,7 @@ import Orb from "@/components/background/orb";
 import Flash from "@/components/flash/flash";
 import Header from "@/components/layout/header";
 import AppSidebar from "@/components/layout/appSidebar";
-import Image from "next/image";
-import { MdError } from "react-icons/md";
-import ReloadButton from "@/components/errors/reloadButton";
+import ReloadButton from "@/components/ui/buttons/reloadButton";
 
 const GlobalError = () => {
   return (

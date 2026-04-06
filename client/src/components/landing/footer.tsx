@@ -1,9 +1,9 @@
-import { staticImages } from "@/config/common.config";
 import Image from "next/image";
 import Link from "next/link";
 import { LuGithub, LuLinkedin, LuTwitter } from "react-icons/lu";
+import { staticImages } from "@/config/common.config";
 
-export default function Footer() {
+const Footer = () => {
   return (
     <footer className="mt-auto pt-10 pb-10 border-glass-border border-t">
       <div className="mx-auto px-6 max-w-7xl">
@@ -178,4 +178,6 @@ export default function Footer() {
       </div>
     </footer>
   );
-}
+};
+
+export default Footer;

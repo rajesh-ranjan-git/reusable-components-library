@@ -6,7 +6,7 @@ type ActionBarProps = {
   onSwipe: (direction: SwipeDirection, id?: number) => void;
 };
 
-export default function ActionBar({ onSwipe }: ActionBarProps) {
+const ActionBar = ({ onSwipe }: ActionBarProps) => {
   return (
     <div className="z-(--z-raised) flex justify-center items-center gap-6 mt-6 px-4 w-full max-w-sm">
       <button
@@ -31,4 +31,6 @@ export default function ActionBar({ onSwipe }: ActionBarProps) {
       </button>
     </div>
   );
-}
+};
+
+export default ActionBar;

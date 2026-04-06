@@ -15,7 +15,7 @@ type Activity = {
 
 type ActivitySectionProps = { activities: Activity[] };
 
-export default function ActivitySection({ activities }: ActivitySectionProps) {
+const ActivitySection = ({ activities }: ActivitySectionProps) => {
   return (
     <div className="mb-8 md:mb-6 p-6 glass">
       <h3 className="mb-4">Recent Activities</h3>
@@ -72,4 +72,6 @@ export default function ActivitySection({ activities }: ActivitySectionProps) {
       </div>
     </div>
   );
-}
+};
+
+export default ActivitySection;

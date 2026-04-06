@@ -9,9 +9,9 @@
   ],
   "author": "Rajesh Ranjan",
   "scripts": {
-    "dev": "concurrently --names \"🧩 CLIENT 🧩,🤖 BACKEND 🤖\" --prefix \"[{name}]\" --timestamp --timestamp-format \"HH:mm:ss\" --prefix-colors \"yellow,green\" \"cross-env NODE_ENV=development next dev\" \"cross-env NODE_ENV=development CONCURRENTLY=true nodemon --quiet ../backendJS/src/server.js\"",
+    "dev": "concurrently --names \"🧩 CLIENT 🧩,🤖 BACKEND 🤖\" --prefix \"[{name}]\" --timestamp --timestamp-format \"HH:mm:ss\" --prefix-colors \"yellow,green\" \"cross-env PORT=1997 NODE_ENV=development next dev\" \"cross-env NODE_ENV=development CONCURRENTLY=true nodemon --quiet ../backendJS/src/server.js\"",
     "build": "next build",
-    "start": "concurrently --names \"🧩 CLIENT  🧩,🤖 BACKEND 🤖\" --prefix \"[{name}]\" --timestamp --timestamp-format \"HH:mm:ss\" --prefix-colors \"yellow,green\" \"cross-env NODE_ENV=development next start\" \"cross-env NODE_ENV=development CONCURRENTLY=true nodemon --quiet ../backendJS/src/server.js\"",
+    "start": "concurrently --names \"🧩 CLIENT  🧩,🤖 BACKEND 🤖\" --prefix \"[{name}]\" --timestamp --timestamp-format \"HH:mm:ss\" --prefix-colors \"yellow,green\" \"cross-env PORT=1997 NODE_ENV=development next start\" \"cross-env NODE_ENV=development CONCURRENTLY=true nodemon --quiet ../backendJS/src/server.js\"",
     "lint": "eslint"
   },
   "dependencies": {

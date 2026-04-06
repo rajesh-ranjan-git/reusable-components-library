@@ -3,7 +3,7 @@ import { IoIosWarning } from "react-icons/io";
 import { staticImages } from "@/config/common.config";
 import Header from "@/components/layout/header";
 import AppSidebar from "@/components/layout/appSidebar";
-import GoBackButton from "@/components/errors/goBackButton";
+import GoBackButton from "@/components/ui/buttons/goBackButton";
 
 const NotFound = () => {
   return (

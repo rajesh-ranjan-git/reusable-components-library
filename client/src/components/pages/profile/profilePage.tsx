@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import Header from "@/components/layout/header";
 import AppSidebar from "@/components/layout/appSidebar";
 import BottomNav from "@/components/layout/bottomNav";
-import Header from "@/components/layout/header";
 import ActivitySection from "@/components/profile/activitySection";
 import ProfileHeader from "@/components/profile/profileHeader";
 import TechStack from "@/components/profile/techStack";
@@ -99,7 +99,7 @@ const mockActivities = [
   },
 ];
 
-export default function ProfilePage() {
+const ProfilePage = () => {
   const [isOwnProfile] = useState(true);
 
   return (
@@ -132,4 +132,6 @@ export default function ProfilePage() {
       <BottomNav activeTab="profile" />
     </div>
   );
-}
+};
+
+export default ProfilePage;

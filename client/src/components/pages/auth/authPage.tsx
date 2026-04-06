@@ -7,14 +7,14 @@ import Link from "next/link";
 import { motion, AnimatePresence, Variants, LayoutGroup } from "motion/react";
 import { LuGithub, LuFacebook, LuLinkedin, LuEyeClosed } from "react-icons/lu";
 import { TbLoader3 } from "react-icons/tb";
-import { staticImages } from "@/config/common.config";
 import { FcGoogle } from "react-icons/fc";
 import { FaRegEye, FaUser } from "react-icons/fa";
 import { IoMail } from "react-icons/io5";
+import { staticImages } from "@/config/common.config";
 import SocialButton from "@/components/auth/socialButton";
 
 const DecorativeRings = () => (
-  <div className="-z-1 absolute inset-0 flex justify-center items-center overflow-hidden pointer-events-none">
+  <div className="z-(--z-background) absolute inset-0 flex justify-center items-center overflow-hidden pointer-events-none">
     {[1, 2, 3].map((i) => (
       <motion.div
         key={i}
@@ -35,7 +35,7 @@ const DecorativeRings = () => (
   </div>
 );
 
-export default function AuthPage() {
+const AuthPage = () => {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -398,4 +398,6 @@ export default function AuthPage() {
       </div>
     </LayoutGroup>
   );
-}
+};
+
+export default AuthPage;

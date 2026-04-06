@@ -1,4 +1,4 @@
-import { sanitizeList } from "../utils/common.utils";
+import { sanitizeList } from "@/utils/common.utils";
 
 type ValidationResult<T> =
   | { isPropertyValid: true; validatedProperty: T | null }

@@ -1,9 +1,9 @@
 "use client";
 
 import { useParams } from "next/navigation";
+import Header from "@/components/layout/header";
 import AppSidebar from "@/components/layout/appSidebar";
 import BottomNav from "@/components/layout/bottomNav";
-import Header from "@/components/layout/header";
 import ActivitySection from "@/components/profile/activitySection";
 import ProfileHeader from "@/components/profile/profileHeader";
 import TechStack from "@/components/profile/techStack";
@@ -82,7 +82,7 @@ const mockActivities: Activity[] = [
   },
 ];
 
-export default function UserProfilePage() {
+const UserProfilePage = () => {
   const { id } = useParams();
 
   const isOwnProfile = false;
@@ -117,4 +117,6 @@ export default function UserProfilePage() {
       <BottomNav activeTab="discover" />
     </div>
   );
-}
+};
+
+export default UserProfilePage;

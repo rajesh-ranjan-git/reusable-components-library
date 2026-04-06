@@ -49,7 +49,7 @@ const features = [
   },
 ];
 
-export default function FeaturesSection() {
+const FeaturesSection = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
@@ -139,4 +139,6 @@ export default function FeaturesSection() {
       </div>
     </section>
   );
-}
+};
+
+export default FeaturesSection;

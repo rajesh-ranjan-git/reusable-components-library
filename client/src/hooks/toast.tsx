@@ -285,7 +285,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
       title: config.title,
       message: config.message,
       variant: config.variant || TOAST_VARIANTS.info,
-      duration: config.duration || 3000,
+      duration: config.duration || 1997,
       toastProgressPosition:
         config.toastProgressPosition || TOAST_PROGRESS_POSITIONS.bottom,
       toastProgressDirection:

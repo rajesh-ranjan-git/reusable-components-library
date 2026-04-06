@@ -55,7 +55,7 @@ const activities = [
   },
 ];
 
-export default function ActivityFeed() {
+const ActivityFeed = () => {
   return (
     <div className="flex flex-col bg-bg-page-alt p-6 glass">
       <div className="flex justify-between items-center mb-6">
@@ -97,4 +97,6 @@ export default function ActivityFeed() {
       </div>
     </div>
   );
-}
+};
+
+export default ActivityFeed;

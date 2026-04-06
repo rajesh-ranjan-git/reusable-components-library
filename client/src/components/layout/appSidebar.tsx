@@ -1,10 +1,10 @@
 "use client";
 
 import { Dispatch, SetStateAction, useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
-import { useRouter } from "next/navigation";
-import { LuMessageCircle, LuSearch, LuUserPlus } from "react-icons/lu";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "motion/react";
+import { LuMessageCircle, LuSearch, LuUserPlus } from "react-icons/lu";
 import { staticImages } from "@/config/common.config";
 
 interface AppSidebarProps {
@@ -47,7 +47,7 @@ const initialMockRequests: Request[] = [
   },
 ];
 
-export default function AppSidebar({ setIsSidebarOpen }: AppSidebarProps) {
+const AppSidebar = ({ setIsSidebarOpen }: AppSidebarProps) => {
   const router = useRouter();
   const [showAllRequests, setShowAllRequests] = useState(false);
   const [requests, setRequests] = useState(initialMockRequests);
@@ -217,4 +217,6 @@ export default function AppSidebar({ setIsSidebarOpen }: AppSidebarProps) {
       </div>
     </aside>
   );
-}
+};
+
+export default AppSidebar;

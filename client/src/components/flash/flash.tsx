@@ -10,7 +10,7 @@ interface FlashMessage {
   authenticated: boolean;
 }
 
-export default function Flash() {
+const Flash = () => {
   const { showToast } = useToast();
 
   useEffect(() => {
@@ -53,4 +53,6 @@ export default function Flash() {
   }, []);
 
   return null;
-}
+};
+
+export default Flash;

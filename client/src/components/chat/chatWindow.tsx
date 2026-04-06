@@ -1,3 +1,5 @@
+import { useRef, KeyboardEvent } from "react";
+import Image from "next/image";
 import {
   LuArrowLeft,
   LuMessageSquare,
@@ -7,10 +9,8 @@ import {
   LuVideo,
 } from "react-icons/lu";
 import { IoMdMore } from "react-icons/io";
-import MessageBubble from "@/components/chat/messageBubble";
-import Image from "next/image";
 import { staticImages } from "@/config/common.config";
-import { KeyboardEvent, useRef } from "react";
+import MessageBubble from "@/components/chat/messageBubble";
 
 type Chat = {
   id: number;
@@ -52,7 +52,7 @@ const mockMessages: Message[] = [
   },
 ];
 
-export default function ChatWindow({ chat, onBack }: ChatWindowProps) {
+const ChatWindow = ({ chat, onBack }: ChatWindowProps) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleInput = () => {
@@ -178,4 +178,6 @@ export default function ChatWindow({ chat, onBack }: ChatWindowProps) {
       </div>
     </div>
   );
-}
+};
+
+export default ChatWindow;

@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import ActionBar from "@/components/discover/actionBar";
-import SwipeCard from "@/components/discover/swipeCard";
+import Header from "@/components/layout/header";
 import AppSidebar from "@/components/layout/appSidebar";
 import BottomNav from "@/components/layout/bottomNav";
-import Header from "@/components/layout/header";
+import ActionBar from "@/components/discover/actionBar";
+import SwipeCard from "@/components/discover/swipeCard";
 
 type Profile = {
   id: number;
@@ -60,7 +60,7 @@ const mockProfiles: Profile[] = [
   },
 ];
 
-export default function DiscoverPage() {
+const DiscoverPage = () => {
   const [profiles, setProfiles] = useState(mockProfiles);
 
   const handleSwipe = (direction: SwipeDirection, id?: number) => {
@@ -115,4 +115,6 @@ export default function DiscoverPage() {
       <BottomNav activeTab="discover" />
     </div>
   );
-}
+};
+
+export default DiscoverPage;

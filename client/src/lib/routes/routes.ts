@@ -1,6 +1,6 @@
 export const defaultRoutes = {
   home: "/",
-  explore: "explore",
+  discover: "discover",
 };
 
 export const authRoutes = {
@@ -11,4 +11,11 @@ export const authRoutes = {
 
 export const profileRoutes = {
   profile: "profile",
+};
+
+export const chatRoutes = {
+  chat: "chat",
+};
+export const adminRoutes = {
+  dashboard: "dashboard",
 };

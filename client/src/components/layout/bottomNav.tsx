@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { LuCompass, LuMessageSquare, LuUser } from "react-icons/lu";
 
-export default function BottomNav({ activeTab = "chats", hidden = false }) {
+const BottomNav = ({ activeTab = "chats", hidden = false }) => {
   const router = useRouter();
   if (hidden) return null;
 
@@ -42,4 +42,6 @@ export default function BottomNav({ activeTab = "chats", hidden = false }) {
       })}
     </div>
   );
-}
+};
+
+export default BottomNav;

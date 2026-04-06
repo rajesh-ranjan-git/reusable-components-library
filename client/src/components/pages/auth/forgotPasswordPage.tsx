@@ -7,7 +7,7 @@ import { LuArrowLeft } from "react-icons/lu";
 import { TbLoader3 } from "react-icons/tb";
 import AuthLayout from "@/components/auth/authLayout";
 
-export default function ForgotPasswordPage() {
+const ForgotPasswordPage = () => {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -81,4 +81,6 @@ export default function ForgotPasswordPage() {
       )}
     </AuthLayout>
   );
-}
+};
+
+export default ForgotPasswordPage;

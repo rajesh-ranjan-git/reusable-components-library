@@ -74,7 +74,7 @@ def apply_timezone(formatter, tz="Asia/Kolkata"):
 
 CLEAN_FORMAT = (
     "%(levelname)s ⏰ [%(asctime)s] – %(message)s"
-    if os.getenv("PORT", "5000") == "5000"
+    if os.getenv("PORT", "1995") == "1995"
     else "%(levelname)s ⏰ [%(asctime)s] – %(message)s"
 )
 DATE_FORMAT = "%d/%m/%Y, %I:%M:%S %p"
@@ -94,7 +94,7 @@ if COLORLOG_AVAILABLE:
             ColoredFormatter,
             (
                 "%(log_color)s%(levelname)s%(reset)s ⏰ [%(asctime)s] – %(log_color)s%(message)s%(reset)s"
-                if os.getenv("PORT", "5000") == "5000"
+                if os.getenv("PORT", "1995") == "1995"
                 else "%(log_color)s%(levelname)s%(reset)s ⏰ [%(asctime)s] – %(log_color)s%(message)s%(reset)s"
             ),
             datefmt=DATE_FORMAT,

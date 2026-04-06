@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 import { LuCreditCard, LuLock, LuShieldCheck } from "react-icons/lu";
 import { TbLoader3 } from "react-icons/tb";
 
-export default function PaymentForm() {
+const PaymentForm = () => {
   const [cardNumber, setCardNumber] = useState("");
   const [expiry, setExpiry] = useState("");
   const [cvv, setCvv] = useState("");
@@ -164,4 +164,6 @@ export default function PaymentForm() {
       </div>
     </form>
   );
-}
+};
+
+export default PaymentForm;

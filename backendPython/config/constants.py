@@ -2,10 +2,10 @@ import os
 import re
 
 
-HOST_PORT = int(os.getenv("HOST_PORT", 5000))
-HOST_URL = os.getenv("HOST_URL", "http://localhost:5000")
-CLIENT_PORT = int(os.getenv("CLIENT_PORT", 5000))
-CLIENT_URL = os.getenv("CLIENT_URL", "http://localhost:3000")
+HOST_PORT = int(os.getenv("HOST_PORT", 1995))
+HOST_URL = os.getenv("HOST_URL", "http://localhost:1995")
+CLIENT_PORT = int(os.getenv("CLIENT_PORT", 1995))
+CLIENT_URL = os.getenv("CLIENT_URL", "http://localhost:1997")
 
 
 NAME_REGEX = re.compile(r"^[A-Za-z]+$")

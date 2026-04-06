@@ -2,13 +2,13 @@
 
 import { MouseEvent, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { LuBell, LuMenu, LuSearch, LuX } from "react-icons/lu";
+import { staticImages } from "@/config/common.config";
 import ThemeToggle from "@/components/theme/themeToggle";
 import AppSidebar from "@/components/layout/appSidebar";
 import HeaderNotificationMenu from "@/components/shared/headerNotificationMenu";
 import HeaderProfileMenu from "@/components/shared/headerProfileMenu";
-import Image from "next/image";
-import { staticImages } from "@/config/common.config";
 
 export default function Header() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);

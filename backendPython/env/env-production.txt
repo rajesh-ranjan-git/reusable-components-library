@@ -6,12 +6,12 @@ MODE_ENV=production
 NEXT_PUBLIC_MODE_ENV=production
 
 # Ports
-HOST_PORT=5000
-NEXT_PUBLIC_CLIENT_PORT=3000
+HOST_PORT=1995
+NEXT_PUBLIC_CLIENT_PORT=1997
 
 # URLs
-HOST_URL=http://localhost:5000
-NEXT_PUBLIC_CLIENT_URL=http://localhost:3000
+HOST_URL=http://localhost:1995
+NEXT_PUBLIC_CLIENT_URL=http://localhost:1997
 
 # Secret Keys
 SESSION_SECRET_KEY=session-secret0key

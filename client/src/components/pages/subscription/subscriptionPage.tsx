@@ -66,11 +66,7 @@ const pricingPlans: PricingPlan[] = [
   },
 ];
 
-export default function SubscriptionPage({
-  hideHeader,
-}: {
-  hideHeader: boolean;
-}) {
+const SubscriptionPage = ({ hideHeader }: { hideHeader: boolean }) => {
   const router = useRouter();
   const [isYearly, setIsYearly] = useState(false);
   const [isSubscriptionPage, setIsSubscriptionPage] = useState(false);
@@ -181,4 +177,6 @@ export default function SubscriptionPage({
       </main>
     </section>
   );
-}
+};
+
+export default SubscriptionPage;

@@ -15,7 +15,7 @@ type PlanDetails = {
   total: number;
 };
 
-export default function PaymentPage() {
+const PaymentPage = () => {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -60,12 +60,10 @@ export default function PaymentPage() {
         </div>
 
         <div className="flex md:flex-row flex-col items-start gap-8 lg:gap-12">
-          {/* Left Column: Order Summary */}
           <div className="md:top-28 z-20 md:sticky order-1 md:order-1 w-full md:w-5/12 lg:w-1/3">
             <OrderSummary planDetails={planDetails} isMobile={isMobile} />
           </div>
 
-          {/* Right Column: Payment Form */}
           <div className="order-2 md:order-2 w-full md:w-7/12 lg:w-2/3">
             <PaymentForm />
           </div>
@@ -73,4 +71,6 @@ export default function PaymentPage() {
       </main>
     </div>
   );
-}
+};
+
+export default PaymentPage;

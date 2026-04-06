@@ -36,13 +36,13 @@ export interface ApiOptions extends Omit<RequestInit, "method" | "body"> {
   headers?: HeadersInit;
 }
 
-const DEFAULT_TIMEOUT = 30000;
+const DEFAULT_TIMEOUT = 19970;
 const BASE_URL = process.env.NEXT_PUBLIC_BRAINBOX_HOST_URL || "";
 
 const getErrorType = (
   statusCode?: number,
   isTimeout?: boolean,
-  isNetworkError?: boolean
+  isNetworkError?: boolean,
 ): ApiErrorType => {
   if (isTimeout) return ApiErrorType.TIMEOUT_ERROR;
   if (isNetworkError) return ApiErrorType.NETWORK_ERROR;
@@ -67,7 +67,7 @@ const getErrorType = (
 
 const getErrorMessage = (
   errorType: ApiErrorType,
-  customMessage?: string
+  customMessage?: string,
 ): string => {
   if (customMessage) return customMessage;
 
@@ -98,7 +98,7 @@ const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 const fetchWithTimeout = async (
   url: string,
   options: RequestInit,
-  timeout: number
+  timeout: number,
 ): Promise<Response> => {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeout);
@@ -124,7 +124,7 @@ async function handleRequest<T>(
   url: string,
   method: string = "GET",
   body?: any,
-  options: ApiOptions = {}
+  options: ApiOptions = {},
 ): Promise<ApiResponse<T>> {
   const {
     retryAttempts = 0,
@@ -159,7 +159,7 @@ async function handleRequest<T>(
           body: body ? JSON.stringify(body) : undefined,
           ...fetchOptions,
         },
-        timeout
+        timeout,
       );
 
       statusCode = response.status;
@@ -177,10 +177,10 @@ async function handleRequest<T>(
           typeof errorData === "object" && errorData?.message
             ? errorData.message
             : typeof errorData === "object" && errorData?.error
-            ? typeof errorData.error === "string"
-              ? errorData.error
-              : errorData.error.message
-            : undefined;
+              ? typeof errorData.error === "string"
+                ? errorData.error
+                : errorData.error.message
+              : undefined;
 
         const shouldRetry =
           attempt < retryAttempts &&

@@ -6,7 +6,7 @@ import { ThemeTypes } from "@/types/types";
 import { useWebStorage } from "@/hooks/useWebStorage";
 import { useAppStore } from "@/store/store";
 
-export default function ThemeManager() {
+const ThemeManager = () => {
   const [storedValue, setWebStorageValue] = useWebStorage<ThemeTypes>({
     key: "activeTheme",
     value: themeConfig.dark,
@@ -47,4 +47,6 @@ export default function ThemeManager() {
   }, [activeTheme]);
 
   return null;
-}
+};
+
+export default ThemeManager;

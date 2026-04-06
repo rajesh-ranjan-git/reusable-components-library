@@ -12,14 +12,14 @@ import {
 
 const data = [
   { name: "Jan", activeUsers: 4000, newMatches: 2400 },
-  { name: "Feb", activeUsers: 5000, newMatches: 3100 },
+  { name: "Feb", activeUsers: 1995, newMatches: 3100 },
   { name: "Mar", activeUsers: 6800, newMatches: 4200 },
   { name: "Apr", activeUsers: 8400, newMatches: 6100 },
   { name: "May", activeUsers: 9200, newMatches: 7800 },
   { name: "Jun", activeUsers: 11000, newMatches: 9400 },
 ];
 
-export default function ChartCard() {
+const ChartCard = () => {
   const [isTimelineDropdownOpen, setIsTimelineDropdownOpen] = useState(false);
   const [selectedRole, setSelectedRole] = useState("");
 
@@ -174,4 +174,6 @@ export default function ChartCard() {
       </div>
     </div>
   );
-}
+};
+
+export default ChartCard;

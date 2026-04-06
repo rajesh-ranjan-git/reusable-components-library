@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
-import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import Link from "next/link";
+import Image from "next/image";
 import { FaHome } from "react-icons/fa";
 import { IoBarChart } from "react-icons/io5";
 import {
@@ -11,10 +12,9 @@ import {
   LuSettings,
   LuUsers,
 } from "react-icons/lu";
-import Image from "next/image";
 import { staticImages } from "@/config/common.config";
 
-export default function AdminSidebar({
+const AdminSidebar = ({
   isSidebarOpen,
   setIsSidebarOpen,
   collapsed,
@@ -24,7 +24,7 @@ export default function AdminSidebar({
   setIsSidebarOpen: Dispatch<SetStateAction<boolean>>;
   collapsed: boolean;
   setCollapsed: Dispatch<SetStateAction<boolean>>;
-}) {
+}) => {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -135,4 +135,6 @@ export default function AdminSidebar({
       </aside>
     </>
   );
-}
+};
+
+export default AdminSidebar;

@@ -1,4 +1,4 @@
-const CACHE_NAME = "v1-app-cache";
+const CACHE_NAME = "app-cache-v1";
 const STATIC_ASSETS = ["/", "/manifest.json", "/favicon.ico"];
 
 self.addEventListener("install", (event) => {

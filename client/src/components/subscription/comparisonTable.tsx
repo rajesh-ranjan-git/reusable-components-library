@@ -58,7 +58,7 @@ const comparisonData: ComparisonData = {
   ],
 };
 
-export default function ComparisonTable() {
+const ComparisonTable = () => {
   return (
     <div className="hidden md:block mx-auto mt-30 max-w-250 overflow-x-auto custom-scrollbar">
       <div className="mb-12 text-center">
@@ -128,4 +128,6 @@ export default function ComparisonTable() {
       </div>
     </div>
   );
-}
+};
+
+export default ComparisonTable;

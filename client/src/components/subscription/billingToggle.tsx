@@ -1,12 +1,12 @@
 import { Dispatch, SetStateAction } from "react";
 
-export default function BillingToggle({
+const BillingToggle = ({
   isYearly,
   setIsYearly,
 }: {
   isYearly: boolean;
   setIsYearly: Dispatch<SetStateAction<boolean>>;
-}) {
+}) => {
   return (
     <div className="flex justify-center items-center gap-4 mb-12">
       <span
@@ -36,4 +36,6 @@ export default function BillingToggle({
       </div>
     </div>
   );
-}
+};
+
+export default BillingToggle;

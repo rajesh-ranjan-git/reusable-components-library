@@ -2,7 +2,7 @@
 
 import { cookies } from "next/headers";
 
-export async function setCookies(cookiesData: string[]) {
+export const setCookies = async (cookiesData: string[]) => {
   const cookieStore = await cookies();
   const cookieList = Array.isArray(cookiesData) ? cookiesData : [cookiesData];
 
@@ -25,9 +25,9 @@ export async function setCookies(cookiesData: string[]) {
 
     cookieStore.set(name, value, options);
   });
-}
+};
 
-export async function getCookies(name?: string) {
+export const getCookies = async (name?: string) => {
   const cookieStore = await cookies();
 
   if (name) {
@@ -41,7 +41,7 @@ export async function getCookies(name?: string) {
   });
 
   return allCookies;
-}
+};
 
 export async function clearCookies(name?: string) {
   const cookieStore = await cookies();

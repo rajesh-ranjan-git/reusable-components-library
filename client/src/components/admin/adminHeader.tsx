@@ -1,19 +1,19 @@
 import { Dispatch, MouseEvent, SetStateAction, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { LuBell, LuMenu, LuSearch } from "react-icons/lu";
 import { staticImages } from "@/config/common.config";
 import ThemeToggle from "@/components/theme/themeToggle";
 import HeaderNotificationMenu from "@/components/shared/headerNotificationMenu";
 import HeaderProfileMenu from "@/components/shared/headerProfileMenu";
-import Link from "next/link";
 
-export default function AdminHeader({
+const AdminHeader = ({
   isSidebarOpen,
   setIsSidebarOpen,
 }: {
   isSidebarOpen: boolean;
   setIsSidebarOpen: Dispatch<SetStateAction<boolean>>;
-}) {
+}) => {
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isNotificationMenuOpen, setIsNotificationMenuOpen] = useState(false);
 
@@ -104,4 +104,6 @@ export default function AdminHeader({
       </div>
     </header>
   );
-}
+};
+
+export default AdminHeader;

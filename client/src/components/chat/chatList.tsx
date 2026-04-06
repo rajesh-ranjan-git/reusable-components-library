@@ -1,7 +1,6 @@
-import { staticImages } from "@/config/common.config";
 import Image from "next/image";
-import { Dispatch, SetStateAction } from "react";
 import { LuSearch } from "react-icons/lu";
+import { staticImages } from "@/config/common.config";
 
 type Chat = {
   id: number;
@@ -111,10 +110,7 @@ const mockChats: Chat[] = [
   },
 ];
 
-export default function ChatList({
-  selectedChatId,
-  onSelectChat,
-}: ChatListProps) {
+const ChatList = ({ selectedChatId, onSelectChat }: ChatListProps) => {
   return (
     <div className="flex flex-col bg-surface md:bg-transparent border-glass-border md:border-r w-full md:w-72 lg:w-80 h-full shrink-0">
       <div className="bg-glass-bg p-4 pb-2 border-glass-border border-b">
@@ -173,4 +169,6 @@ export default function ChatList({
       </div>
     </div>
   );
-}
+};
+
+export default ChatList;

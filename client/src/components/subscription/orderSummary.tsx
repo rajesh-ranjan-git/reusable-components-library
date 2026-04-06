@@ -10,13 +10,13 @@ type PlanDetails = {
   total: number;
 };
 
-export default function OrderSummary({
+const OrderSummary = ({
   planDetails,
   isMobile,
 }: {
   planDetails: PlanDetails;
   isMobile: boolean;
-}) {
+}) => {
   const [isExpanded, setIsExpanded] = useState(!isMobile);
 
   const { name, planType, price, tax, discount, total } = planDetails;
@@ -91,4 +91,6 @@ export default function OrderSummary({
       )}
     </div>
   );
-}
+};
+
+export default OrderSummary;

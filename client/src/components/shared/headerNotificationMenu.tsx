@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "motion/react";
 import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "motion/react";
 import { LuHeart, LuMessageSquare, LuUserPlus } from "react-icons/lu";
 
 type HeaderNotificationMenuProps = {
@@ -9,11 +9,11 @@ type HeaderNotificationMenuProps = {
   positionClass?: string;
 };
 
-export default function HeaderNotificationMenu({
+const HeaderNotificationMenu = ({
   isOpen,
   onClose,
   positionClass = "top-full right-0 mt-3",
-}: HeaderNotificationMenuProps) {
+}: HeaderNotificationMenuProps) => {
   const menuRef = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
 
@@ -131,4 +131,6 @@ export default function HeaderNotificationMenu({
       )}
     </AnimatePresence>
   );
-}
+};
+
+export default HeaderNotificationMenu;
