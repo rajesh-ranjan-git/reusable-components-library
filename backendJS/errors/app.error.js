@@ -6,7 +6,7 @@ class AppError extends Error {
     message = "Internal Server Error",
     code = "INTERNAL SERVER ERROR",
     statusCode = 500,
-    details = null,
+    details = {},
     metadata = { path: null, requestId: null, isOperational: true },
   } = {}) {
     super(message);

@@ -160,46 +160,49 @@ const logger = {
   },
 
   warn: (...args) => {
-    if (args[0].appError && args[0].metadata) {
+    const incomingError = args[0].appError;
+    const incomingErrorMetadata = args[0].metadata;
+
+    if (incomingError && incomingErrorMetadata) {
       const argsToPrint = [
-        args[0].appError.metadata.method || args[0].metadata.metadata.method
-          ? `[ ${args[0].appError.metadata.method || args[0].metadata.metadata.method} ]`
+        incomingError.metadata.method || incomingErrorMetadata.metadata.method
+          ? `[ ${incomingError.metadata.method || incomingErrorMetadata.metadata.method} ]`
           : null,
-        args[0].appError.statusCode || args[0].metadata.statusCode
-          ? `( ${args[0].appError.statusCode || args[0].metadata.statusCode} )`
+        incomingError.statusCode || incomingErrorMetadata.statusCode
+          ? `( ${incomingError.statusCode || incomingErrorMetadata.statusCode} )`
           : null,
-        args[0].appError.name ||
-        args[0].appError.status ||
-        args[0].metadata.status
-          ? `[ ${args[0].appError.name || args[0].appError.status || args[0].metadata.status} ]`
+        incomingError.name ||
+        incomingError.status ||
+        incomingErrorMetadata.status
+          ? `[ ${incomingError.name || incomingError.status || incomingErrorMetadata.status} ]`
           : null,
-        args[0].appError.code || args[0].metadata.appError.code
-          ? `[ ${args[0].appError.code || args[0].metadata.appError.code} ]`
+        incomingError.code || incomingErrorMetadata.appError.code
+          ? `[ ${incomingError.code || incomingErrorMetadata.appError.code} ]`
           : null,
-        args[0].appError.message ?? "An unknown warning has occurred!",
-        Object.keys(args[0].appError.details).length > 0 ||
-        Object.keys(args[0].metadata.details).length > 0
+        incomingError.message ?? "An unknown warning has occurred!",
+        Object.keys(incomingError?.details).length > 0 ||
+        Object.keys(incomingErrorMetadata?.details).length > 0
           ? `\nError Details: ${JSON.stringify(
-              Object.keys(args[0].appError.details).length > 0
-                ? args[0].appError.details
-                : args[0].metadata.details,
+              Object.keys(incomingError?.details).length > 0
+                ? incomingError?.details
+                : incomingErrorMetadata?.details,
               null,
               2,
             )}`
           : null,
-        Object.keys(args[0].appError.metadata).length > 0 ||
-        Object.keys(args[0].metadata.metadata).length > 0
+        Object.keys(incomingError.metadata).length > 0 ||
+        Object.keys(incomingErrorMetadata.metadata).length > 0
           ? `\nError Metadata: ${JSON.stringify(
               {
                 path:
-                  args[0].appError.metadata.path ||
-                  args[0].metadata.metadata.path,
+                  incomingError.metadata.path ||
+                  incomingErrorMetadata.metadata.path,
                 requestId:
-                  args[0].appError.metadata.requestId ||
-                  args[0].metadata.metadata.requestId,
+                  incomingError.metadata.requestId ||
+                  incomingErrorMetadata.metadata.requestId,
                 isOperational:
-                  args[0].appError.metadata.isOperational ||
-                  args[0].metadata.metadata.isOperational,
+                  incomingError.metadata.isOperational ||
+                  incomingErrorMetadata.metadata.isOperational,
               },
               null,
               2,
@@ -237,46 +240,49 @@ const logger = {
   },
 
   error: (...args) => {
-    if (args[0].appError && args[0].metadata) {
+    const incomingError = incomingError;
+    const incomingErrorMetadata = incomingErrorMetadata;
+
+    if (incomingError && incomingErrorMetadata) {
       const argsToPrint = [
-        args[0].appError.metadata.method || args[0].metadata.metadata.method
-          ? `[ ${args[0].appError.metadata.method || args[0].metadata.metadata.method} ]`
+        incomingError.metadata.method || incomingErrorMetadata.metadata.method
+          ? `[ ${incomingError.metadata.method || incomingErrorMetadata.metadata.method} ]`
           : null,
-        args[0].appError.statusCode || args[0].metadata.statusCode
-          ? `( ${args[0].appError.statusCode || args[0].metadata.statusCode} )`
+        incomingError.statusCode || incomingErrorMetadata.statusCode
+          ? `( ${incomingError.statusCode || incomingErrorMetadata.statusCode} )`
           : null,
-        args[0].appError.name ||
-        args[0].appError.status ||
-        args[0].metadata.status
-          ? `[ ${args[0].appError.name || args[0].appError.status || args[0].metadata.status} ]`
+        incomingError.name ||
+        incomingError.status ||
+        incomingErrorMetadata.status
+          ? `[ ${incomingError.name || incomingError.status || incomingErrorMetadata.status} ]`
           : null,
-        args[0].appError.code || args[0].metadata.appError.code
-          ? `[ ${args[0].appError.code || args[0].metadata.appError.code} ]`
+        incomingError.code || incomingErrorMetadata.appError.code
+          ? `[ ${incomingError.code || incomingErrorMetadata.appError.code} ]`
           : null,
-        args[0].appError.message ?? "An unknown warning has occurred!",
-        Object.keys(args[0].appError.details).length > 0 ||
-        Object.keys(args[0].metadata.details).length > 0
+        incomingError.message ?? "An unknown error has occurred!",
+        Object.keys(incomingError.details).length > 0 ||
+        Object.keys(incomingErrorMetadata.details).length > 0
           ? `\nError Details: ${JSON.stringify(
-              Object.keys(args[0].appError.details).length > 0
-                ? args[0].appError.details
-                : args[0].metadata.details,
+              Object.keys(incomingError.details).length > 0
+                ? incomingError.details
+                : incomingErrorMetadata.details,
               null,
               2,
             )}`
           : null,
-        Object.keys(args[0].appError.metadata).length > 0 ||
-        Object.keys(args[0].metadata.metadata).length > 0
+        Object.keys(incomingError.metadata).length > 0 ||
+        Object.keys(incomingErrorMetadata.metadata).length > 0
           ? `\nError Metadata: ${JSON.stringify(
               {
                 path:
-                  args[0].appError.metadata.path ||
-                  args[0].metadata.metadata.path,
+                  incomingError.metadata.path ||
+                  incomingErrorMetadata.metadata.path,
                 requestId:
-                  args[0].appError.metadata.requestId ||
-                  args[0].metadata.metadata.requestId,
+                  incomingError.metadata.requestId ||
+                  incomingErrorMetadata.metadata.requestId,
                 isOperational:
-                  args[0].appError.metadata.isOperational ||
-                  args[0].metadata.metadata.isOperational,
+                  incomingError.metadata.isOperational ||
+                  incomingErrorMetadata.metadata.isOperational,
               },
               null,
               2,

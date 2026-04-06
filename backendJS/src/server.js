@@ -11,6 +11,7 @@ import {
   CLIENT_URL,
   MODE,
 } from "../constants/common.constants.js";
+import { httpStatusConfig } from "../config/common.config.js";
 import connectDB from "../db/db.connect.js";
 import authRouter from "../router/auth/auth.router.js";
 import activityRouter from "../router/auth/activity.router.js";
@@ -58,9 +59,10 @@ app.use("/api/push-notifications", pushNotificationsRouter);
 
 app.use((req, res, next) => {
   next(
-    AppError.internal({
+    new AppError({
       message: `No defined route found at path: ${req.originalUrl}`,
       code: "ROUTE NOT FOUND",
+      statusCode: httpStatusConfig.methodNotAllowed.statusCode,
     }),
   );
 });
