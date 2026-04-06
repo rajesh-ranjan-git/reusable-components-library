@@ -11,7 +11,7 @@ import { validateRequest } from "../../validators/request.validator.js";
 
 const addressRouter = express.Router();
 
-addressRouter.get("/get-addresses", validateRequest, getAddresses);
+addressRouter.get("/get-addresses", validateRequest({}), getAddresses);
 addressRouter.get(
   "/get-address",
   validateRequest({ requireParams: true }),

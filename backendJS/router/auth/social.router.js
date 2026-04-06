@@ -9,7 +9,7 @@ import { validateRequest } from "../../validators/request.validator.js";
 
 const socialRouter = express.Router();
 
-socialRouter.get("/get-social-links", validateRequest, getSocialLinks);
+socialRouter.get("/get-social-links", validateRequest({}), getSocialLinks);
 socialRouter.get(
   "/get-social-links-by-user",
   validateRequest({ requireParams: true }),

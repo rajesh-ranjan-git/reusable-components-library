@@ -9,7 +9,7 @@ import { validateRequest } from "../../validators/request.validator.js";
 
 const profileRouter = express.Router();
 
-profileRouter.get("/get-my-profile", validateRequest, getMyProfile);
+profileRouter.get("/get-my-profile", validateRequest({}), getMyProfile);
 profileRouter.get(
   "/get-user-profile",
   validateRequest({ requireParams: true }),

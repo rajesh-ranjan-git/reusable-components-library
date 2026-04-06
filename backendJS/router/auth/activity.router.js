@@ -13,7 +13,15 @@ activityRouter.get(
   validateRequest({ requireQuery: true }),
   getMyActivity,
 );
-activityRouter.get("/get-activity-types", validateRequest, getActivityTypes);
-activityRouter.delete("/clear-my-activity", validateRequest, clearMyActivity);
+activityRouter.get(
+  "/get-activity-types",
+  validateRequest({}),
+  getActivityTypes,
+);
+activityRouter.delete(
+  "/clear-my-activity",
+  validateRequest({}),
+  clearMyActivity,
+);
 
 export default activityRouter;

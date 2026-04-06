@@ -7,7 +7,11 @@ import { validateRequest } from "../../validators/request.validator.js";
 
 const oauthRouter = express.Router();
 
-oauthRouter.get("/get-linked-provider", validateRequest, getLinkedProviders);
+oauthRouter.get(
+  "/get-linked-provider",
+  validateRequest({}),
+  getLinkedProviders,
+);
 oauthRouter.delete(
   "/unlink-provider",
   validateRequest({ requireParams: true }),

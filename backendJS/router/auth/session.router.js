@@ -9,7 +9,11 @@ import { validateRequest } from "../../validators/request.validator.js";
 
 const sessionRouter = express.Router();
 
-sessionRouter.get("/get-active-sessions", validateRequest, getActiveSessions);
+sessionRouter.get(
+  "/get-active-sessions",
+  validateRequest({}),
+  getActiveSessions,
+);
 sessionRouter.get(
   "/get-session-count",
   validateRequest({ requireBody: true }),
@@ -22,7 +26,7 @@ sessionRouter.delete(
 );
 sessionRouter.delete(
   "/revoke-other-sessions",
-  validateRequest,
+  validateRequest({}),
   revokeOtherSessions,
 );
 

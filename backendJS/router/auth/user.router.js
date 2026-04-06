@@ -9,13 +9,17 @@ import { validateRequest } from "../../validators/request.validator.js";
 
 const userRouter = express.Router();
 
-userRouter.get("/get-social-links", validateRequest, getAccountInfo);
-userRouter.get("/get-dashboard-summary", validateRequest, getDashboardSummary);
+userRouter.get("/get-social-links", validateRequest({}), getAccountInfo);
+userRouter.get(
+  "/get-dashboard-summary",
+  validateRequest({}),
+  getDashboardSummary,
+);
 userRouter.put(
   "/update-email",
   validateRequest({ requireBody: true }),
   updateEmail,
 );
-userRouter.delete("/delete-account", validateRequest, deleteAccount);
+userRouter.delete("/delete-account", validateRequest({}), deleteAccount);
 
 export default userRouter;
