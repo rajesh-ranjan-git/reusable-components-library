@@ -22,3 +22,17 @@ export const getDateToStore = (dateString) => {
 
   return `${dateStr.toISOString().split("T")[0]} ${dateStr.toLocaleTimeString()}`;
 };
+
+export const getRemainingTime = (dateString) => {
+  if (!dateString) return "NA";
+
+  const timeLeft = Math.ceil((dateString - Date.now()) / 60000);
+
+  const hoursLeft = Math.trunc(timeLeft / 60);
+
+  const minutesLeft = hoursLeft > 0 ? timeLeft - hoursLeft * 60 : timeLeft;
+
+  return hoursLeft > 0
+    ? `${hoursLeft} hrs ${minutesLeft} mins`
+    : `${minutesLeft} mins`;
+};

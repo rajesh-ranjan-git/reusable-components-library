@@ -6,6 +6,7 @@ import {
   validateLogin,
   validateResetPassword,
   validateUpdatePassword,
+  emailValidator,
 } from "../../validators/auth.validator.js";
 import { successResponseHandler } from "../../utils/response.utils.js";
 import { asyncHandler } from "../../utils/common.utils.js";
@@ -55,7 +56,7 @@ export const login = asyncHandler(async (req, res) => {
 });
 
 export const logout = asyncHandler(async (req, res) => {
-  const refreshToken = req.cookies?.refreshToken || req.body?.refreshToken;
+  const refreshToken = req.cookies?.refreshToken;
 
   if (refreshToken) {
     await authService.logout(req.data.userId, refreshToken, req.ip);
@@ -68,40 +69,12 @@ export const logout = asyncHandler(async (req, res) => {
   });
 });
 
-export const refreshTokens = asyncHandler(async (req, res) => {
-  const refreshToken = req.cookies?.refreshToken || req.data.body?.refreshToken;
-
-  if (!refreshToken) {
-    throw AppError.badRequest({
-      message: "Refresh token is required!",
-      code: "TOKEN VALIDATION FAILED",
-      details: { token: refreshToken },
-    });
-  }
-
-  const tokens = await authService.refreshTokens(refreshToken, req.ip);
-
-  res.cookie("refreshToken", tokens.refreshToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-    expires: tokens.refreshTokenExpiry,
-    path: "/api/auth",
-  });
-
-  successResponseHandler(req, res, {
-    data: {
-      accessToken: tokens.accessToken,
-      expiresIn: tokens.accessTokenExpiresIn,
-    },
-  });
-});
-
 export const verifyEmail = asyncHandler(async (req, res) => {
   const { token } = req.data.query;
+
   if (!token) {
     throw AppError.badRequest({
-      message: "Verification token is required.",
+      message: "Verification token is required!",
       code: "TOKEN VALIDATION FAILED",
       details: { token },
     });
@@ -113,21 +86,26 @@ export const verifyEmail = asyncHandler(async (req, res) => {
     status: "EMAIL VERIFICATION SUCCESS",
     message: result.message,
   });
-
-  successResponseHandler(res, result);
 });
 
 export const resendVerification = asyncHandler(async (req, res) => {
   const { email } = req.data.body;
-  if (!email) {
+
+  const {
+    isEmailValid,
+    message: emailErrorMessage,
+    validatedEmail,
+  } = emailValidator(email);
+
+  if (!isEmailValid) {
     throw AppError.badRequest({
-      message: "Email is required.",
+      message: emailErrorMessage,
       code: "EMAIL VALIDATION FAILED",
       details: { email },
     });
   }
 
-  const result = await authService.resendVerificationEmail(email);
+  const result = await authService.resendVerificationEmail(validatedEmail);
 
   successResponseHandler(req, res, {
     status: "EMAIL VERIFICATION SENT",
@@ -179,6 +157,37 @@ export const updatePassword = asyncHandler(async (req, res) => {
   successResponseHandler(req, res, {
     status: "UPDATE PASSWORD SUCCESS",
     message: result.message,
+  });
+});
+
+export const refreshTokens = asyncHandler(async (req, res) => {
+  const refreshToken = req.cookies?.refreshToken;
+
+  if (!refreshToken) {
+    throw AppError.badRequest({
+      message: "Refresh token is required!",
+      code: "TOKEN VALIDATION FAILED",
+      details: { token: refreshToken },
+    });
+  }
+
+  const tokens = await authService.refreshTokens(refreshToken, req.ip);
+
+  res.cookie("refreshToken", tokens.refreshToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    expires: tokens.refreshTokenExpiry,
+    path: "/api/auth",
+  });
+
+  successResponseHandler(req, res, {
+    status: "TOKENS REFRESH SUCCESS",
+    message: "Your tokens has been refreshed successfully!",
+    data: {
+      accessToken: tokens.accessToken,
+      expiresIn: tokens.accessTokenExpiresIn,
+    },
   });
 });
 

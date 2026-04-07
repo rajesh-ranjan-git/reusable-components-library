@@ -271,9 +271,23 @@ export const nameValidator = (name, type) => {
 };
 
 export const emailValidator = (email) => {
+  if (!email) {
+    return {
+      isEmailValid: false,
+      message: "Please provide your email!",
+    };
+  }
+
+  if (typeof email !== "string") {
+    return {
+      isEmailValid: false,
+      message: "Email must be a string!",
+    };
+  }
+
   const incomingEmail = email?.trim().toLowerCase();
 
-  if (!incomingEmail) {
+  if (!email) {
     return {
       isEmailValid: false,
       message: "Please provide your email!",

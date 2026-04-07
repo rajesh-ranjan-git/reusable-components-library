@@ -1,5 +1,9 @@
 import bcrypt from "bcryptjs";
-import { SALT_ROUNDS } from "../../constants/common.constants.js";
+import {
+  LOCK_TIME,
+  MAX_LOGIN_ATTEMPTS,
+  SALT_ROUNDS,
+} from "../../constants/common.constants.js";
 import { httpStatusConfig } from "../../config/common.config.js";
 import Account from "../../models/auth/account.model.js";
 import User from "../../models/auth/user.model.js";
@@ -11,6 +15,7 @@ import { tokenService } from "./token.service.js";
 import { sessionService } from "./session.service.js";
 import { emailService } from "./email.service.js";
 import AppError from "../../errors/app.error.js";
+import { getRemainingTime } from "../../utils/date.utils.js";
 
 class AuthService {
   async register(
@@ -91,9 +96,10 @@ class AuthService {
     }
 
     if (account.lockUntil && account.lockUntil > Date.now()) {
-      const minutesLeft = Math.ceil((account.lockUntil - Date.now()) / 60000);
+      const timeLeft = getRemainingTime(account.lockUntil);
+
       throw new AppError({
-        message: `Your account is locked, try again in ${minutesLeft} minutes!`,
+        message: `Your account is locked, try again in ${timeLeft}!`,
         code: "ACCOUNT LOCKED",
         statusCode: httpStatusConfig.locked.statusCode,
         details: { email },
@@ -108,10 +114,11 @@ class AuthService {
       });
     }
 
-    const isPasswordValid = bcrypt.compare(password, account.password);
+    const isPasswordValid = await bcrypt.compare(password, account.password);
 
     if (!isPasswordValid) {
       await this._handleFailedLogin(account);
+
       throw new AppError({
         message: "Your email or password is incorrect!",
         code: "INCORRECT CREDENTIALS",
@@ -187,6 +194,7 @@ class AuthService {
       email: email.toLowerCase(),
       provider: "local",
     });
+
     if (!account) {
       return {
         message: "If that email exists, a verification link has been sent.",
@@ -194,6 +202,7 @@ class AuthService {
     }
 
     const user = await User.findById(account.user);
+
     if (user.emailVerified) {
       throw AppError.forbidden({
         message: "Your email is already verified!",
@@ -210,6 +219,7 @@ class AuthService {
       user._id,
       "email_verification",
     );
+
     await emailService.sendVerificationEmail(email, token);
 
     return {
@@ -327,7 +337,7 @@ class AuthService {
     return { message: "Password updated successfully." };
   }
 
-  async refreshTokens(refreshToken, ipAddress) {
+  async refreshTokens(refreshToken) {
     const payload = tokenService.verifyRefreshToken(refreshToken);
     const session = await sessionService.getSessionByToken(refreshToken);
 
