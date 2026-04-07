@@ -1,42 +1,83 @@
-import User from "../models/user.model.js";
-import { tokenService } from "../services/token.service.js";
-import { AppError } from "../utils/AppError.js";
-import { asyncHandler } from "../utils/asyncHandler.js";
-
-// ─── Require Authentication ───────────────────────────────────────────────────
-// Attaches req.user and req.userId. Throws 401 if missing or invalid token.
+import Account from "../models/auth/account.model.js";
+import User from "../models/auth/user.model.js";
+import { tokenService } from "../services/auth/token.service.js";
+import AppError from "../errors/app.error.js";
+import { asyncHandler } from "../utils/common.utils.js";
 
 export const authenticate = asyncHandler(async (req, res, next) => {
   const token = tokenService.extractBearerToken(req.headers.authorization);
 
   if (!token) {
-    throw new AppError("Authentication required. Please provide a valid token.", 401);
+    throw AppError.unauthorized({
+      message: "Authentication required. Please provide a valid token.",
+      code: "TOKEN VALIDATION FAILED",
+      details: { token },
+    });
   }
 
   const payload = tokenService.verifyAccessToken(token);
 
-  const user = await User.findById(payload.userId).populate("role").lean();
+  const account = await Account.findOne({
+    user: payload.userId,
+    provider: "local",
+  });
+
+  if (!account) {
+    throw AppError.notFound({
+      message: "User account does not exist!",
+      code: "ACCOUNT NOT FOUND",
+      details: { user: payload.userId },
+    });
+  }
+
+  if (account.lockUntil && account.lockUntil > Date.now()) {
+    const timeLeft = getRemainingTime(account.lockUntil);
+
+    throw new AppError({
+      message: `Your account is locked, try again in ${timeLeft}!`,
+      code: "ACCOUNT LOCKED",
+      statusCode: httpStatusConfig.locked.statusCode,
+      details: { email },
+    });
+  }
+
+  const user = await User.findById(account.user);
 
   if (!user) {
-    throw new AppError("User not found.", 401);
+    throw AppError.notFound({
+      message: "User account does not exist!",
+      code: "ACCOUNT NOT FOUND",
+      details: { user: payload.userId },
+    });
   }
 
   if (user.status === "deleted") {
-    throw new AppError("This account has been deleted.", 401);
+    throw AppError.unauthorized({
+      message: "User account has been deleted!",
+      code: "ACCOUNT DELETED",
+      details: { user: payload.userId },
+    });
   }
 
   if (user.status === "suspended") {
-    throw new AppError("Your account has been suspended. Please contact support.", 403);
+    throw AppError.unauthorized({
+      message: "User account has been suspended!",
+      code: "ACCOUNT SUSPENDED",
+      details: { user: payload.userId },
+    });
   }
 
-  req.userId = user._id.toString();
-  req.user = user;
+  if (user.status !== "active") {
+    throw AppError.notFound({
+      message: "User account is not active!",
+      code: "ACCOUNT NOT ACTIVE",
+    });
+  }
+
+  req.data = { ...req.data, userId: user._id.toString(), user };
 
   next();
 });
-
-// ─── Optional Authentication ──────────────────────────────────────────────────
-// Attaches req.user if token is present and valid, otherwise continues silently.
 
 export const optionalAuthenticate = asyncHandler(async (req, res, next) => {
   const token = tokenService.extractBearerToken(req.headers.authorization);
@@ -45,30 +86,36 @@ export const optionalAuthenticate = asyncHandler(async (req, res, next) => {
 
   try {
     const payload = tokenService.verifyAccessToken(token);
-    const user = await User.findById(payload.userId).populate("role").lean();
+
+    const account = await Account.findOne({
+      user: payload.userId,
+      provider: "local",
+    });
+
+    const user = await User.findById(account.user);
+
     if (user && user.status === "active") {
-      req.userId = user._id.toString();
-      req.user = user;
+      req.data = { ...req.data, userId: user._id.toString(), user };
     }
-  } catch {
-    // Silently ignore invalid tokens for optional routes
-  }
+  } catch {}
 
   next();
 });
 
-// ─── Require Verified Email ───────────────────────────────────────────────────
-
 export const requireVerifiedEmail = asyncHandler(async (req, res, next) => {
-  if (!req.user) {
-    throw new AppError("Authentication required.", 401);
+  if (!req.data.user) {
+    throw AppError.unauthorized({
+      message: "Authentication is required for this request!",
+      details: { user: req.data.user },
+    });
   }
 
   if (!req.user.emailVerified) {
-    throw new AppError(
-      "Email verification required. Please verify your email address to proceed.",
-      403,
-    );
+    throw AppError.unauthorized({
+      message: "Email verification is required to process this request!",
+      code: "VERIFIED EMAIL REQUIRED",
+      details: { user: payload.userId },
+    });
   }
 
   next();

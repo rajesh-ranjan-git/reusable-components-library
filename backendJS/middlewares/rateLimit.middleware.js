@@ -1,5 +1,5 @@
 import rateLimit from "express-rate-limit";
-import { AppError } from "../utils/AppError.js";
+import { AppError } from "../errors/app.error.js";
 
 // ─── Response handler ─────────────────────────────────────────────────────────
 
@@ -43,7 +43,8 @@ export const loginLimiter = rateLimit({
   max: 5,
   keyGenerator: ipKey,
   handler: rateLimitHandler,
-  message: "Too many login attempts. Please wait 10 minutes before trying again.",
+  message:
+    "Too many login attempts. Please wait 10 minutes before trying again.",
   standardHeaders: true,
   legacyHeaders: false,
   skipSuccessfulRequests: true, // Only count failed attempts
@@ -95,7 +96,12 @@ export const mutationLimiter = rateLimit({
 /**
  * Create a custom rate limiter with configurable options.
  */
-export const createLimiter = ({ windowMs, max, message, skipSuccessful = false }) =>
+export const createLimiter = ({
+  windowMs,
+  max,
+  message,
+  skipSuccessful = false,
+}) =>
   rateLimit({
     windowMs,
     max,

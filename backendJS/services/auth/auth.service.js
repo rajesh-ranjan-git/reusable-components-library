@@ -89,7 +89,7 @@ class AuthService {
 
     if (!account) {
       throw AppError.notFound({
-        message: "This account does not exist!",
+        message: "User account does not exist!",
         code: "ACCOUNT NOT FOUND",
         details: { email },
       });
@@ -107,9 +107,34 @@ class AuthService {
     }
 
     const user = await User.findById(account.user);
-    if (!user || user.status !== "active") {
+
+    if (!user) {
       throw AppError.notFound({
-        message: "This account is either not active or does not exist!",
+        message: "User account does not exist!",
+        code: "ACCOUNT NOT FOUND",
+        details: { user: payload.userId },
+      });
+    }
+
+    if (user.status === "deleted") {
+      throw AppError.unauthorized({
+        message: "User account has been deleted!",
+        code: "ACCOUNT DELETED",
+        details: { user: payload.userId },
+      });
+    }
+
+    if (user.status === "suspended") {
+      throw AppError.unauthorized({
+        message: "User account has been suspended!",
+        code: "ACCOUNT SUSPENDED",
+        details: { user: payload.userId },
+      });
+    }
+
+    if (user.status !== "active") {
+      throw AppError.notFound({
+        message: "User account is not active!",
         code: "ACCOUNT NOT ACTIVE",
       });
     }
@@ -328,7 +353,7 @@ class AuthService {
     const account = await Account.findOne({ user: userId, provider: "local" });
     if (!account) {
       throw AppError.notFound({
-        message: "This account does not exist!",
+        message: "User account does not exist!",
         code: "ACCOUNT NOT FOUND",
         details: { user: userId },
       });
@@ -374,11 +399,34 @@ class AuthService {
     }
 
     const user = await User.findById(payload.userId);
-    if (!user || user.status !== "active") {
-      await sessionService.revokeSession(refreshToken);
 
+    if (!user) {
       throw AppError.notFound({
-        message: "This account is either not active or does not exist!",
+        message: "User account does not exist!",
+        code: "ACCOUNT NOT FOUND",
+        details: { user: payload.userId },
+      });
+    }
+
+    if (user.status === "deleted") {
+      throw AppError.unauthorized({
+        message: "User account has been deleted!",
+        code: "ACCOUNT DELETED",
+        details: { user: payload.userId },
+      });
+    }
+
+    if (user.status === "suspended") {
+      throw AppError.unauthorized({
+        message: "User account has been suspended!",
+        code: "ACCOUNT SUSPENDED",
+        details: { user: payload.userId },
+      });
+    }
+
+    if (user.status !== "active") {
+      throw AppError.notFound({
+        message: "User account is not active!",
         code: "ACCOUNT NOT ACTIVE",
       });
     }

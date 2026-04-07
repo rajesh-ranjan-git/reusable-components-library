@@ -1,5 +1,6 @@
 import { httpStatusConfig } from "../config/common.config.js";
 import { MODE } from "../constants/common.constants.js";
+import { sanitizeMongoData } from "../db/db.utils.js";
 import AppError from "../errors/app.error.js";
 import { getDateToStore } from "../utils/date.utils.js";
 
@@ -18,7 +19,7 @@ export const successResponseHandler = (
     status,
     statusCode,
     message,
-    data,
+    data: sanitizeMongoData(data),
     timestamp: getDateToStore(new Date()),
     metadata:
       MODE === "development"

@@ -1,6 +1,6 @@
-import Role from "../models/role.model.js";
-import { AppError } from "../utils/AppError.js";
-import { asyncHandler } from "../utils/asyncHandler.js";
+import Role from "../models/auth/role.model.js";
+import { AppError } from "../errors/app.error.js";
+import { asyncHandler } from "../utils/common.utils.js";
 
 // ─── Require Role ─────────────────────────────────────────────────────────────
 // Usage: requireRole("admin")  or  requireRole("admin", "moderator")
@@ -13,7 +13,10 @@ export const requireRole = (...allowedRoles) =>
     }
 
     if (!req.user.role) {
-      throw new AppError("Access denied. No role assigned to this account.", 403);
+      throw new AppError(
+        "Access denied. No role assigned to this account.",
+        403,
+      );
     }
 
     // role is populated by authenticate middleware
@@ -41,7 +44,10 @@ export const requirePermission = (...requiredPermissions) =>
     }
 
     if (!req.user.role) {
-      throw new AppError("Access denied. No role assigned to this account.", 403);
+      throw new AppError(
+        "Access denied. No role assigned to this account.",
+        403,
+      );
     }
 
     // Fetch fresh role with permissions if not already populated
@@ -107,7 +113,10 @@ export const requireSelfOrAdmin = (paramName = "id") =>
     const isSelf = req.userId === targetId;
 
     if (!isSelf && !isAdmin) {
-      throw new AppError("Access denied. You can only access your own resources.", 403);
+      throw new AppError(
+        "Access denied. You can only access your own resources.",
+        403,
+      );
     }
 
     next();

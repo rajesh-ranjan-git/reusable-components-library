@@ -201,7 +201,7 @@ export const refreshTokens = asyncHandler(async (req, res) => {
 export const getMe = asyncHandler(async (req, res) => {
   successResponseHandler(req, res, {
     status: "GET ME SUCCESS",
-    message: "Your details fetched successfully!",
+    message: "Account details fetched successfully!",
     data: { user: req.data.user },
   });
 });

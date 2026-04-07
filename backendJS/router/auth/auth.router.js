@@ -12,10 +12,11 @@ import {
   resendVerification,
 } from "../../controllers/auth/auth.controller.js";
 import { requestMiddleware } from "../../middlewares/request.middleware.js";
+import { authenticate } from "../../middlewares/auth.middleware.js";
 
 const authRouter = express.Router();
 
-authRouter.get("/get-me", requestMiddleware({}), getMe);
+authRouter.get("/get-me", requestMiddleware({}), authenticate, getMe);
 authRouter.post(
   "/register",
   requestMiddleware({ requireBody: true }),
