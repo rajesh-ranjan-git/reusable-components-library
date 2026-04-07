@@ -238,11 +238,14 @@ class AuthService {
         user: account.user,
         type: "password_reset",
       });
+
       const token = await this._createVerificationToken(
         account.user,
         "password_reset",
       );
+
       await emailService.sendPasswordResetEmail(email, token);
+
       await this._logActivity(
         account.user,
         "password_reset_requested",
@@ -278,6 +281,28 @@ class AuthService {
       });
     }
 
+    const account = await Account.findOne({
+      user: record.user,
+      provider: "local",
+    });
+
+    if (!account) {
+      throw new AppError({
+        message: "We were unable to reset your password!",
+        code: "PASSWORD RESET FAILED",
+        statusCode: httpStatusConfig.gone.statusCode,
+      });
+    }
+
+    const isSamePassword = await bcrypt.compare(newPassword, account.password);
+    if (isSamePassword) {
+      throw AppError.conflict({
+        message:
+          "You have already used this password before, please use a different password!",
+        code: "PASSWORD ALREADY USED",
+      });
+    }
+
     const hashedPassword = await bcrypt.hash(newPassword, SALT_ROUNDS);
 
     await Account.findOneAndUpdate(
@@ -295,7 +320,7 @@ class AuthService {
     await this._logActivity(record.user, "password_reset_completed", {});
 
     return {
-      message: "Password has been reset successfully. Please log in again.",
+      message: "Password has been reset successfully!",
     };
   }
 
@@ -305,11 +330,11 @@ class AuthService {
       throw AppError.notFound({
         message: "This account does not exist!",
         code: "ACCOUNT NOT FOUND",
-        details: { email },
+        details: { user: userId },
       });
     }
 
-    const isValid = bcrypt.compare(currentPassword, account.password);
+    const isValid = await bcrypt.compare(currentPassword, account.password);
     if (!isValid) {
       throw AppError.notAcceptable({
         message: "Your current password is incorrect!",
@@ -317,7 +342,7 @@ class AuthService {
       });
     }
 
-    const isSamePassword = bcrypt.compare(newPassword, account.password);
+    const isSamePassword = await bcrypt.compare(newPassword, account.password);
     if (isSamePassword) {
       throw AppError.conflict({
         message:

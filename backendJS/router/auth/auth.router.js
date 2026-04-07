@@ -11,38 +11,42 @@ import {
   resetPassword,
   resendVerification,
 } from "../../controllers/auth/auth.controller.js";
-import { validateRequest } from "../../validators/request.validator.js";
+import { requestMiddleware } from "../../middleware/request.middleware.js";
 
 const authRouter = express.Router();
 
-authRouter.get("/get-me", validateRequest({}), getMe);
-authRouter.post("/register", validateRequest({ requireBody: true }), register);
-authRouter.post("/login", validateRequest({ requireBody: true }), login);
-authRouter.post("/logout", validateRequest({}), logout);
-authRouter.post("/refresh-tokens", validateRequest({}), refreshTokens);
+authRouter.get("/get-me", requestMiddleware({}), getMe);
+authRouter.post(
+  "/register",
+  requestMiddleware({ requireBody: true }),
+  register,
+);
+authRouter.post("/login", requestMiddleware({ requireBody: true }), login);
+authRouter.post("/logout", requestMiddleware({}), logout);
+authRouter.post("/refresh-tokens", requestMiddleware({}), refreshTokens);
 authRouter.post(
   "/verify-email",
-  validateRequest({ requireQuery: true }),
+  requestMiddleware({ requireQuery: true }),
   verifyEmail,
 );
 authRouter.post(
   "/resend-verification",
-  validateRequest({ requireBody: true }),
+  requestMiddleware({ requireBody: true }),
   resendVerification,
 );
 authRouter.post(
   "/forgot-password",
-  validateRequest({ requireBody: true }),
+  requestMiddleware({ requireBody: true }),
   forgotPassword,
 );
 authRouter.post(
   "/reset-password",
-  validateRequest({ requireBody: true }),
+  requestMiddleware({ requireBody: true }),
   resetPassword,
 );
 authRouter.put(
   "/update-password",
-  validateRequest({ requireBody: true }),
+  requestMiddleware({ requireBody: true }),
   updatePassword,
 );
 

@@ -4,23 +4,23 @@ import {
   getActivityTypes,
   getMyActivity,
 } from "../../controllers/auth/activity.controller.js";
-import { validateRequest } from "../../validators/request.validator.js";
+import { requestMiddleware } from "../../middleware/request.middleware.js";
 
 const activityRouter = express.Router();
 
 activityRouter.get(
   "/get-my-activity",
-  validateRequest({ requireQuery: true }),
+  requestMiddleware({ requireQuery: true }),
   getMyActivity,
 );
 activityRouter.get(
   "/get-activity-types",
-  validateRequest({}),
+  requestMiddleware({}),
   getActivityTypes,
 );
 activityRouter.delete(
   "/clear-my-activity",
-  validateRequest({}),
+  requestMiddleware({}),
   clearMyActivity,
 );
 

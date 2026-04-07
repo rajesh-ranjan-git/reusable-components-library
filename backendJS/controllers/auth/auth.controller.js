@@ -115,15 +115,22 @@ export const resendVerification = asyncHandler(async (req, res) => {
 
 export const forgotPassword = asyncHandler(async (req, res) => {
   const { email } = req.data.body;
-  if (!email) {
+
+  const {
+    isEmailValid,
+    message: emailErrorMessage,
+    validatedEmail,
+  } = emailValidator(email);
+
+  if (!isEmailValid) {
     throw AppError.badRequest({
-      message: "Email is required.",
+      message: emailErrorMessage,
       code: "EMAIL VALIDATION FAILED",
       details: { email },
     });
   }
 
-  const result = await authService.forgotPassword(email, req.ip);
+  const result = await authService.forgotPassword(validatedEmail, req.ip);
 
   successResponseHandler(req, res, {
     status: "PASSWORD RESET LINK SENT",
@@ -132,9 +139,9 @@ export const forgotPassword = asyncHandler(async (req, res) => {
 });
 
 export const resetPassword = asyncHandler(async (req, res) => {
-  const value = validateResetPassword(req.data.body);
+  const { token, password } = validateResetPassword(req.data.body);
 
-  const result = await authService.resetPassword(value.token, value.password);
+  const result = await authService.resetPassword(token, password);
 
   successResponseHandler(req, res, {
     status: "PASSWORD RESET SUCCESS",

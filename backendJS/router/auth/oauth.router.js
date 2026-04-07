@@ -3,18 +3,18 @@ import {
   getLinkedProviders,
   unlinkProvider,
 } from "../../controllers/auth/oauth.controller.js";
-import { validateRequest } from "../../validators/request.validator.js";
+import { requestMiddleware } from "../../middleware/request.middleware.js";
 
 const oauthRouter = express.Router();
 
 oauthRouter.get(
   "/get-linked-provider",
-  validateRequest({}),
+  requestMiddleware({}),
   getLinkedProviders,
 );
 oauthRouter.delete(
   "/unlink-provider",
-  validateRequest({ requireParams: true }),
+  requestMiddleware({ requireParams: true }),
   unlinkProvider,
 );
 

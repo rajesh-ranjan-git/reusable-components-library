@@ -5,28 +5,28 @@ import {
   revokeOtherSessions,
   revokeSession,
 } from "../../controllers/auth/session.controller.js";
-import { validateRequest } from "../../validators/request.validator.js";
+import { requestMiddleware } from "../../middleware/request.middleware.js";
 
 const sessionRouter = express.Router();
 
 sessionRouter.get(
   "/get-active-sessions",
-  validateRequest({}),
+  requestMiddleware({}),
   getActiveSessions,
 );
 sessionRouter.get(
   "/get-session-count",
-  validateRequest({ requireBody: true }),
+  requestMiddleware({ requireBody: true }),
   getSessionCount,
 );
 sessionRouter.delete(
   "/revoke-session",
-  validateRequest({ requireParams: true }),
+  requestMiddleware({ requireParams: true }),
   revokeSession,
 );
 sessionRouter.delete(
   "/revoke-other-sessions",
-  validateRequest({}),
+  requestMiddleware({}),
   revokeOtherSessions,
 );
 

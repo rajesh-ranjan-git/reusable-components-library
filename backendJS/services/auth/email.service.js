@@ -8,7 +8,8 @@ import {
   SMTP_SECURE,
   SMTP_USER,
 } from "../../constants/common.constants.js";
-import { appConfig } from "../../config/common.config.js";
+import { appConfig, httpStatusConfig } from "../../config/common.config.js";
+import AppError from "../../errors/app.error.js";
 
 class EmailService {
   constructor() {
@@ -25,6 +26,12 @@ class EmailService {
 
   async send({ to, subject, html, text }) {
     try {
+      throw new AppError({
+        message: "Email Service is not activated right now!",
+        code: "EMAIL SERVICE ERROR",
+        statusCode: httpStatusConfig.continue.statusCode,
+      });
+
       const info = await this.transporter.sendMail({
         from: EMAIL_FROM_ADDRESS,
         to,
@@ -32,6 +39,7 @@ class EmailService {
         text,
         html,
       });
+
       return info;
     } catch (error) {
       logger.error("[EmailService] Failed to send email:", error);

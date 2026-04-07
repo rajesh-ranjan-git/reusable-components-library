@@ -5,21 +5,21 @@ import {
   deleteAccount,
   getDashboardSummary,
 } from "../../controllers/auth/user.controller.js";
-import { validateRequest } from "../../validators/request.validator.js";
+import { requestMiddleware } from "../../middleware/request.middleware.js";
 
 const userRouter = express.Router();
 
-userRouter.get("/get-social-links", validateRequest({}), getAccountInfo);
+userRouter.get("/get-social-links", requestMiddleware({}), getAccountInfo);
 userRouter.get(
   "/get-dashboard-summary",
-  validateRequest({}),
+  requestMiddleware({}),
   getDashboardSummary,
 );
 userRouter.put(
   "/update-email",
-  validateRequest({ requireBody: true }),
+  requestMiddleware({ requireBody: true }),
   updateEmail,
 );
-userRouter.delete("/delete-account", validateRequest({}), deleteAccount);
+userRouter.delete("/delete-account", requestMiddleware({}), deleteAccount);
 
 export default userRouter;

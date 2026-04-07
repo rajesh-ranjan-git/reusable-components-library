@@ -5,24 +5,24 @@ import {
   updateProfile,
   updateUsername,
 } from "../../controllers/auth/profile.controller.js";
-import { validateRequest } from "../../validators/request.validator.js";
+import { requestMiddleware } from "../../middleware/request.middleware.js";
 
 const profileRouter = express.Router();
 
-profileRouter.get("/get-my-profile", validateRequest({}), getMyProfile);
+profileRouter.get("/get-my-profile", requestMiddleware({}), getMyProfile);
 profileRouter.get(
   "/get-user-profile",
-  validateRequest({ requireParams: true }),
+  requestMiddleware({ requireParams: true }),
   getUserProfile,
 );
 profileRouter.patch(
   "/update-profile",
-  validateRequest({ requireBody: true }),
+  requestMiddleware({ requireBody: true }),
   updateProfile,
 );
 profileRouter.put(
   "/update-username",
-  validateRequest({ requireBody: true }),
+  requestMiddleware({ requireBody: true }),
   updateUsername,
 );
 

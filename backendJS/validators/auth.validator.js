@@ -129,7 +129,9 @@ export const validateLogin = (data) => {
 };
 
 export const validateUpdatePassword = (data) => {
-  if (!data.currentPassword || !data.newPassword) {
+  const { currentPassword, newPassword } = data;
+
+  if (!currentPassword || !newPassword) {
     throw AppError.badRequest({
       message: "Current password and new password are required.",
       code: "PASSWORD VALIDATION FAILED",
@@ -138,40 +140,50 @@ export const validateUpdatePassword = (data) => {
   }
 
   const {
-    isPasswordValid: isCurrentPasswordValid,
-    message: currentPasswordErrorMessage,
-    validatedPassword: validatedCurrentPassword,
-  } = passwordValidator(data.password, "current");
-
-  if (!isCurrentPasswordValid) {
-    throw AppError.unprocessable({
-      message: currentPasswordErrorMessage,
-      code: "PASSWORD VALIDATION FAILED",
-      details: { currentPassword: data.currentPassword },
-    });
-  }
-
-  const {
     isPasswordValid: isNewPasswordValid,
     message: newPasswordErrorMessage,
     validatedPassword: validatedNewPassword,
-  } = passwordValidator(data.password, "new");
+  } = passwordValidator(newPassword, "new");
 
   if (!isNewPasswordValid) {
     throw AppError.unprocessable({
       message: newPasswordErrorMessage,
       code: "PASSWORD VALIDATION FAILED",
-      details: { newPassword: data.newPassword },
+      details: { newPassword },
     });
   }
 
   return {
-    currentPassword: validatedCurrentPassword,
+    currentPassword,
     newPassword: validatedNewPassword,
   };
 };
 
-export const validateResetPassword = (data) => {};
+export const validateResetPassword = (data) => {
+  if (!data.token) {
+    throw AppError.unprocessable({
+      message: "Password reset token is required!",
+      code: "TOKEN VALIDATION FAILED",
+      details: { token: data.token },
+    });
+  }
+
+  const {
+    isPasswordValid,
+    message: passwordErrorMessage,
+    validatedPassword,
+  } = passwordValidator(data.password);
+
+  if (!isPasswordValid) {
+    throw AppError.unprocessable({
+      message: passwordErrorMessage,
+      code: "PASSWORD VALIDATION FAILED",
+      details: { password: data.password },
+    });
+  }
+
+  return { token: data.token, password: validatedPassword };
+};
 
 export const userNameValidator = (userName) => {
   if (!userName) {
@@ -308,6 +320,23 @@ export const emailValidator = (email) => {
 };
 
 export const passwordValidator = (password, type = "") => {
+  if (!password) {
+    return {
+      isPasswordValid: false,
+      message:
+        type === ""
+          ? "Please provide your password!"
+          : `Please provide your ${type} password!`,
+    };
+  }
+
+  if (typeof password !== "string") {
+    return {
+      isEmailValid: false,
+      message: "Password must be a string!",
+    };
+  }
+
   const incomingPassword = password?.trim();
 
   if (!incomingPassword) {
@@ -319,8 +348,6 @@ export const passwordValidator = (password, type = "") => {
           : `Please provide your ${type} password!`,
     };
   }
-
-  if (type === "current") return;
 
   if (incomingPassword.length < propertyConstraints.minPasswordLength) {
     return {
