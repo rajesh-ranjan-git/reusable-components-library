@@ -8,11 +8,16 @@ import {
   USERNAME_REGEX,
 } from "../constants/common.constants.js";
 import {
+  maritalStatusProperties,
   propertyConstraints,
-  userProperties,
 } from "../config/common.config.js";
 import AppError from "../errors/app.error.js";
 import { toTitleCase } from "../utils/common.utils.js";
+import {
+  listPropertiesValidator,
+  numberPropertiesValidator,
+  stringPropertiesValidator,
+} from "./common.validator.js";
 
 export const validateRegister = (data) => {
   const {
@@ -61,7 +66,7 @@ export const validateRegister = (data) => {
     isNameValid: isFirstNameValid,
     message: firstNameErrorMessage,
     validatedName: validatedFirstName,
-  } = nameValidator(data.firstName, userProperties.firstName);
+  } = nameValidator(data.firstName, "firstName");
 
   if (!isFirstNameValid) {
     throw AppError.unprocessable({
@@ -75,7 +80,7 @@ export const validateRegister = (data) => {
     isNameValid: isLastNameValid,
     message: lastNameErrorMessage,
     validatedName: validatedLastName,
-  } = nameValidator(data.lastName, userProperties.lastName);
+  } = nameValidator(data.lastName, "lastName");
 
   if (!isLastNameValid) {
     throw AppError.unprocessable({
@@ -185,6 +190,178 @@ export const validateResetPassword = (data) => {
   return { token: data.token, password: validatedPassword };
 };
 
+export const validateUpdateProfile = (data) => {
+  if (Object.keys(data).length === 0) {
+    throw AppError.badRequest({
+      message: "No valid fields provided to update!",
+      code: "PROFILE UPDATE FAILED",
+    });
+  }
+
+  const {
+    firstName,
+    lastName,
+    nickName,
+    bio,
+    maritalStatus,
+    jobProfile,
+    company,
+    experience,
+    skills,
+    interests,
+  } = data;
+
+  const validatedProperties = {};
+  const errors = {};
+
+  const {
+    isNameValid: isFirstNameValid,
+    message: firstNameErrorMessage,
+    validatedName: validatedFirstName,
+  } = nameValidator(firstName, "firstName");
+
+  if (isFirstNameValid && validatedFirstName) {
+    validatedProperties["firstName"] = validatedFirstName;
+  } else if (firstNameErrorMessage) {
+    errors["firstName"] =
+      firstNameErrorMessage ?? "Unable to update first name!";
+  }
+
+  const {
+    isNameValid: isLastNameValid,
+    message: lastNameErrorMessage,
+    validatedName: validatedLastName,
+  } = nameValidator(lastName, "lastName");
+
+  if (isLastNameValid && validatedLastName) {
+    validatedProperties["lastName"] = validatedLastName;
+  } else if (lastNameErrorMessage) {
+    errors["lastName"] = lastNameErrorMessage ?? "Unable to update last name!";
+  }
+
+  const {
+    isNameValid: isNickNameValid,
+    message: nicknameErrorMessage,
+    validatedName: validatedNickName,
+  } = nameValidator(nickName, "nickName");
+
+  if (isNickNameValid && validatedNickName) {
+    validatedProperties["nickName"] = validatedNickName;
+  } else if (nicknameErrorMessage) {
+    errors["nickName"] = nicknameErrorMessage ?? "Unable to update nick name!";
+  }
+
+  const {
+    isPropertyValid: isBioValid,
+    message: bioErrorMessage,
+    validatedProperty: validatedBio,
+  } = stringPropertiesValidator(
+    "bio",
+    bio,
+    propertyConstraints.minStringLength,
+    propertyConstraints.maxStringLength,
+  );
+
+  if (isBioValid && validatedBio) {
+    validatedProperties["bio"] = validatedBio;
+  } else if (bioErrorMessage) {
+    errors["bio"] = bioErrorMessage ?? "Unable to update bio!";
+  }
+
+  if (maritalStatus) {
+    Object.values(maritalStatusProperties).forEach((status) => {
+      if (
+        typeof maritalStatus === "string" &&
+        status === maritalStatus.trim().toLowerCase()
+      ) {
+        validatedProperties["maritalStatus"] = maritalStatus
+          .trim()
+          .toLowerCase();
+      }
+    });
+  }
+
+  const {
+    isPropertyValid: isJobProfileValid,
+    message: jobProfileErrorMessage,
+    validatedProperty: validatedJobProfile,
+  } = stringPropertiesValidator(
+    "jobProfile",
+    jobProfile,
+    propertyConstraints.minStringLength,
+    propertyConstraints.maxStringLength,
+  );
+
+  if (isJobProfileValid && validatedJobProfile) {
+    validatedProperties["jobProfile"] = validatedJobProfile;
+  } else if (jobProfileErrorMessage) {
+    errors["jobProfile"] =
+      jobProfileErrorMessage ?? "Unable to update job profile!";
+  }
+
+  const {
+    isPropertyValid: isCompanyValid,
+    message: companyErrorMessage,
+    validatedProperty: validatedCompany,
+  } = stringPropertiesValidator(
+    "company",
+    company,
+    propertyConstraints.minStringLength,
+    propertyConstraints.maxStringLength,
+  );
+
+  if (isCompanyValid && validatedCompany) {
+    validatedProperties["company"] = validatedCompany;
+  } else if (companyErrorMessage) {
+    errors["company"] = companyErrorMessage ?? "Unable to update company!";
+  }
+
+  const {
+    isPropertyValid: isExperienceValid,
+    message: experienceErrorMessage,
+    validatedProperty: validatedExperience,
+  } = numberPropertiesValidator(
+    "experience",
+    experience,
+    propertyConstraints.minExperience,
+    propertyConstraints.maxExperience,
+  );
+
+  if (isExperienceValid && validatedExperience) {
+    validatedProperties["experience"] = validatedExperience;
+  } else if (experienceErrorMessage) {
+    errors["experience"] =
+      experienceErrorMessage ?? "Unable to update experience!";
+  }
+
+  const {
+    isPropertyValid: isSkillsValid,
+    message: skillsErrorMessage,
+    validatedProperty: validatedSkills,
+  } = listPropertiesValidator("skills", skills);
+
+  if (isSkillsValid && validatedSkills) {
+    validatedProperties["skills"] = validatedSkills;
+  } else if (skillsErrorMessage) {
+    errors["skills"] = skillsErrorMessage ?? "Unable to update skills!";
+  }
+
+  const {
+    isPropertyValid: isInterestsValid,
+    message: interestsErrorMessage,
+    validatedProperty: validatedInterests,
+  } = listPropertiesValidator("interests", interests);
+
+  if (isInterestsValid && validatedInterests) {
+    validatedProperties["interests"] = validatedInterests;
+  } else if (interestsErrorMessage) {
+    errors["interests"] =
+      interestsErrorMessage ?? "Unable to update interests!";
+  }
+
+  return { validatedProperties, errors };
+};
+
 export const userNameValidator = (userName) => {
   if (!userName) {
     return {
@@ -205,14 +382,14 @@ export const userNameValidator = (userName) => {
   if (incomingUserName.length < propertyConstraints.minUserNameLength) {
     return {
       isUserNameValid: false,
-      message: "Username must be at least 1 character long!",
+      message: `Username must be at least ${propertyConstraints.minUserNameLength} character long!`,
     };
   }
 
   if (incomingUserName.length > propertyConstraints.maxUserNameLength) {
     return {
       isUserNameValid: false,
-      message: "User name must not be longer than 100 characters!",
+      message: `User name must not be longer than ${propertyConstraints.maxUserNameLength} characters!`,
     };
   }
 
@@ -238,17 +415,29 @@ export const nameValidator = (name, type) => {
     };
   }
 
+  if (typeof name !== "string") {
+    return {
+      isNameValid: false,
+      message:
+        type === "firstName"
+          ? `First name must be a string!`
+          : type === "lastName"
+            ? `Last name must be a string!`
+            : `Nick name must be a string!`,
+    };
+  }
+
   const trimmedName = name?.trim().toLowerCase();
 
   if (trimmedName.length < propertyConstraints.minNameLength) {
     return {
       isNameValid: false,
       message:
-        type === userProperties.firstName
-          ? "First name must be at least 1 character long!"
-          : type === userProperties.lastName
-            ? "Last name must be at least 1 character long!"
-            : "nick name must be at least 1 character long!",
+        type === "firstName"
+          ? `First name must be at least ${propertyConstraints.minNameLength} character long!`
+          : type === "lastName"
+            ? `Last name must be at least ${propertyConstraints.minNameLength} character long!`
+            : `Nick name must be at least ${propertyConstraints.minNameLength} character long!`,
     };
   }
 
@@ -256,11 +445,11 @@ export const nameValidator = (name, type) => {
     return {
       isNameValid: false,
       message:
-        type === userProperties.firstName
-          ? "First name must not be longer than 100 characters!"
-          : type === userProperties.lastName
-            ? "Last name must not be longer than 100 characters!"
-            : "Nick name must not be longer than 100 characters!",
+        type === "firstName"
+          ? `First name must not be longer than ${propertyConstraints.maxNameLength} characters!`
+          : type === "lastName"
+            ? `Last name must not be longer than ${propertyConstraints.maxNameLength} characters!`
+            : `Nick name must not be longer than ${propertyConstraints.maxNameLength} characters!`,
     };
   }
 
@@ -268,9 +457,9 @@ export const nameValidator = (name, type) => {
     return {
       isNameValid: false,
       message:
-        type === userProperties.firstName
+        type === "firstName"
           ? "First name must only contain alphabets (a-z or A-Z)!"
-          : type === userProperties.lastName
+          : type === "lastName"
             ? "Last name must only contain alphabets (a-z or A-Z)!"
             : "Nick name must only contain alphabets (a-z or A-Z)!",
     };

@@ -1,8 +1,13 @@
 import Profile from "../../models/auth/profile.model.js";
 import AppError from "../../errors/app.error.js";
-import { userNameValidator } from "../../validators/auth.validator.js";
+import {
+  userNameValidator,
+  validateUpdateProfile,
+} from "../../validators/auth.validator.js";
 import { successResponseHandler } from "../../utils/response.utils.js";
 import { asyncHandler } from "../../utils/common.utils.js";
+import logger from "../../lib/logger/logger.js";
+import { httpStatusConfig } from "../../config/common.config.js";
 
 export const getMyProfile = asyncHandler(async (req, res) => {
   const profile = await Profile.findOne({ user: req.data.userId }).lean();
@@ -21,8 +26,9 @@ export const getMyProfile = asyncHandler(async (req, res) => {
 });
 
 export const getUserProfile = asyncHandler(async (req, res) => {
-  const { userName } = req.params;
-  const profile = await Profile.findOne({ userName: userName.toLowerCase() })
+  const { username } = req.data.params;
+
+  const profile = await Profile.findOne({ userName: username.toLowerCase() })
     .populate("user", "status emailVerified lastSeen")
     .lean();
 
@@ -44,11 +50,12 @@ export const updateProfile = asyncHandler(async (req, res) => {
   const allowedFields = [
     "firstName",
     "lastName",
+    "nickName",
     "bio",
-    "avatarUrl",
-    "coverPhotoUrl",
-    "company",
+    "maritalStatus",
     "jobProfile",
+    "company",
+    "experience",
     "skills",
     "interests",
   ];
@@ -60,30 +67,30 @@ export const updateProfile = asyncHandler(async (req, res) => {
     }
   }
 
-  if (Object.keys(updates).length === 0) {
-    throw AppError.badRequest({
-      message: "No valid fields provided to update!",
+  const { validatedProperties, errors } = validateUpdateProfile(updates);
+
+  if (errors && Object.values(errors).length > 0) {
+    throw new AppError({
+      message: "Invalid profile details found while update!",
       code: "PROFILE UPDATE FAILED",
+      statusCode: httpStatusConfig.notAcceptable.statusCode,
+      details: { validProperties: validatedProperties, errors },
     });
   }
 
-  if (updates.skills && !Array.isArray(updates.skills)) {
-    throw AppError.unprocessable({
-      message: "Skills must be a list!",
+  if (!Object.values(validatedProperties).length) {
+    throw new AppError({
+      message: "No valid properties to update!",
       code: "PROFILE UPDATE FAILED",
-    });
-  }
-  if (updates.interests && !Array.isArray(updates.interests)) {
-    throw AppError.unprocessable({
-      message: "Interests must be a list!",
-      code: "PROFILE UPDATE FAILED",
+      statusCode: httpStatusConfig.notAcceptable.statusCode,
+      details: { validProperties: validatedProperties, errors },
     });
   }
 
   const profile = await Profile.findOneAndUpdate(
     { user: req.data.userId },
-    { $set: updates },
-    { new: true, runValidators: true },
+    { $set: validatedProperties },
+    { returnDocument: "after", runValidators: true },
   );
 
   if (!profile) {
@@ -101,19 +108,19 @@ export const updateProfile = asyncHandler(async (req, res) => {
 });
 
 export const updateUsername = asyncHandler(async (req, res) => {
-  const { userName } = req.data.body;
+  const { username } = req.data.body;
 
   const {
     isUserNameValid,
     message: userNameErrorMessage,
     validatedUserName,
-  } = userNameValidator(userName);
+  } = userNameValidator(username);
 
   if (!isUserNameValid) {
     throw AppError.unprocessable({
       message: userNameErrorMessage,
       code: "USERNAME VALIDATION FAILED",
-      details: { userName: data.userName },
+      details: { userName: username },
     });
   }
 
@@ -122,7 +129,15 @@ export const updateUsername = asyncHandler(async (req, res) => {
     throw AppError.conflict({
       message: "This username is not available, please use a different one!",
       code: "USERNAME UPDATE FAILED",
-      details: { userName: data.userName },
+      details: { userName: validatedUserName },
+    });
+  }
+
+  if (existing && existing.user.toString() === req.data.userId) {
+    throw AppError.conflict({
+      message: "This username is already updated on your account!",
+      code: "USERNAME UPDATE FAILED",
+      details: { email: validatedUserName },
     });
   }
 
@@ -142,6 +157,6 @@ export const updateUsername = asyncHandler(async (req, res) => {
   successResponseHandler(req, res, {
     status: "UPDATE USERNAME SUCCESS",
     message: "Username updated successfully!",
-    data: { userName },
+    data: { userName: validatedUserName },
   });
 });

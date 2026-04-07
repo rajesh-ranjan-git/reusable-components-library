@@ -330,34 +330,6 @@ export const jwtKnownErrorsConfig = {
   notBeforeError: "NotBeforeError",
 };
 
-export const userProperties = {
-  id: "_id",
-  email: "email",
-  userName: "userName",
-  password: "password",
-  previousPassword: "previousPassword",
-  passwordLastUpdated: "passwordLastUpdated",
-  firstName: "firstName",
-  lastName: "lastName",
-  nickName: "nickName",
-  age: "age",
-  phone: "phone",
-  gender: "gender",
-  avatarUrl: "avatarUrl",
-  coverPhotoUrl: "coverPhotoUrl",
-  bio: "bio",
-  maritalStatus: "maritalStatus",
-  jobProfile: "jobProfile",
-  experience: "experience",
-  socialMedia: "socialMedia",
-  company: "company",
-  skills: "skills",
-  interests: "interests",
-  address: "address",
-  createdAt: "createdAt",
-  updatedAt: "updatedAt",
-};
-
 export const genderProperties = {
   male: "male",
   female: "female",
@@ -368,6 +340,7 @@ export const maritalStatusProperties = {
   married: "married",
   single: "single",
   separated: "separated",
+  divorced: "divorced",
   complicated: "complicated",
 };
 
@@ -419,14 +392,12 @@ export const addressProperties = {
 };
 
 export const propertyConstraints = {
-  minUserNameLength: 1,
+  minUserNameLength: 6,
   maxUserNameLength: 100,
-  minNameLength: 1,
+  minNameLength: 2,
   maxNameLength: 100,
   minPasswordLength: 6,
   maxPasswordLength: 100,
-  minAge: 18,
-  maxAge: 100,
   minExperience: 0,
   maxExperience: 70,
   minStringLength: 2,

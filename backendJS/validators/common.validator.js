@@ -1,146 +1,145 @@
-import { sanitizeList } from "../utils/common.utils.js";
-
-export const regexPropertiesValidator = (property, regex) => {
-  if (!property || property === null || property === "") {
-    return {
-      isPropertyValid: true,
-      validatedProperty: null,
-    };
-  }
-
-  if (typeof property !== "string") {
-    return {
-      isPropertyValid: false,
-      message: `${property} must be a string URL!`,
-    };
-  }
-
-  const incomingProperty = property.trim();
-
-  if (!regex.test(incomingProperty)) {
-    return {
-      isPropertyValid: false,
-      message: `Invalid ${incomingProperty} URL!`,
-    };
-  }
-
-  return {
-    isPropertyValid: true,
-    validatedProperty: incomingProperty,
-  };
-};
-
-export const numberRegexPropertiesValidator = (property, regex, error) => {
-  if (!property) {
-    return {
-      isPropertyValid: true,
-      validatedProperty: null,
-    };
-  }
-
-  property = typeof property === "string" ? property?.trim() : property;
-
-  if (!regex.test(property) || isNaN(Number(property))) {
-    return {
-      isPropertyValid: false,
-      message: error,
-    };
-  }
-
-  return {
-    isPropertyValid: true,
-    validatedProperty: property,
-  };
-};
-
-export const numberPropertiesValidator = (
-  property,
+export const numberPropertiesValidator = ({
+  propertyName,
+  propertyValue,
   minValue,
   maxValue,
-  errors,
-) => {
-  if (!property && property !== 0 && property !== "0") {
+}) => {
+  if (!propertyValue && propertyValue !== 0 && propertyValue !== "0") {
     return {
       isPropertyValid: true,
       validatedProperty: null,
     };
   }
 
-  property =
-    typeof property === "string" ? property?.trim().toLowerCase() : property;
+  propertyName = toTitleCase(propertyName);
+
+  propertyValue =
+    typeof propertyValue === "string"
+      ? propertyValue?.trim().toLowerCase()
+      : propertyValue;
 
   const isPropertyValid =
-    (typeof property === "number" || typeof property === "string") &&
-    !isNaN(property);
+    (typeof propertyValue === "number" || typeof propertyValue === "string") &&
+    !isNaN(propertyValue);
 
   if (!isPropertyValid) {
     return {
       isPropertyValid: false,
-      message: errors.INVALID_ERROR,
+      message: `${propertyName} is invalid!`,
     };
   }
 
-  if (!Number.isInteger(Number(property))) {
+  if (Number(propertyValue) < minValue) {
     return {
       isPropertyValid: false,
-      message: errors.DECIMAL_ERROR,
+      message: `${propertyName} must be more than ${minValue}!`,
     };
   }
 
-  if (Number(property) < minValue) {
+  if (Number(propertyValue) > maxValue) {
     return {
       isPropertyValid: false,
-      message: errors.MIN_LENGTH_ERROR,
-    };
-  }
-
-  if (Number(property) > maxValue) {
-    return {
-      isPropertyValid: false,
-      message: errors.MAX_LENGTH_ERROR,
+      message: `${propertyName} must be less than ${maxValue}!`,
     };
   }
 
   return {
     isPropertyValid: true,
-    validatedProperty: Number(property),
+    validatedProperty: Number(propertyValue),
   };
 };
 
-export const stringPropertiesValidator = (
-  property,
-  minLength,
-  maxLength,
-  errors,
+export const numberRegexPropertiesValidator = (
+  propertyName,
+  propertyValue,
+  regex,
 ) => {
-  if (!property) {
+  if (!propertyValue) {
     return {
       isPropertyValid: true,
       validatedProperty: null,
     };
   }
 
-  const trimmedProperty =
-    typeof property === "string" ? property?.trim().toLowerCase() : property;
+  propertyValue =
+    typeof propertyValue === "string" ? propertyValue.trim() : propertyValue;
 
-  if (typeof property !== "string") {
+  if (!regex.test(propertyValue) || isNaN(Number(propertyValue))) {
     return {
       isPropertyValid: false,
-      message: errors.INVALID_ERROR,
+      message: `${propertyName} is invalid!`,
     };
   }
+
+  return {
+    isPropertyValid: true,
+    validatedProperty: propertyValue,
+  };
+};
+
+export const regexPropertiesValidator = (
+  propertyName,
+  propertyValue,
+  regex,
+) => {
+  if (!propertyValue) {
+    return {
+      isPropertyValid: true,
+      validatedProperty: null,
+    };
+  }
+
+  propertyValue =
+    typeof propertyValue === "string"
+      ? propertyValue.trim().toLowerCase
+      : propertyValue;
+
+  if (!regex.test(propertyValue)) {
+    return {
+      isPropertyValid: false,
+      message: `${propertyName} is invalid!`,
+    };
+  }
+
+  return {
+    isPropertyValid: true,
+    validatedProperty: propertyValue,
+  };
+};
+
+export const stringPropertiesValidator = (
+  propertyName,
+  propertyValue,
+  minLength,
+  maxLength,
+) => {
+  if (!propertyValue) {
+    return {
+      isPropertyValid: true,
+      validatedProperty: null,
+    };
+  }
+
+  if (typeof propertyValue !== "string") {
+    return {
+      isPropertyValid: false,
+      message: `${propertyName} is invalid!`,
+    };
+  }
+
+  const trimmedProperty = propertyValue?.trim().toLowerCase();
 
   if (trimmedProperty.length < minLength) {
     return {
       isPropertyValid: false,
-      message: errors.MIN_LENGTH_ERROR,
+      message: `${propertyName} must be at least ${minLength} characters long!`,
     };
   }
 
   if (trimmedProperty.length > maxLength) {
     return {
       isPropertyValid: false,
-      message: errors.MAX_LENGTH_ERROR,
+      message: `${propertyName} must not less than ${maxLength} characters long!`,
     };
   }
 
@@ -150,28 +149,33 @@ export const stringPropertiesValidator = (
   };
 };
 
-export const listPropertiesValidator = (property, error) => {
-  if (!property) {
+export const listPropertiesValidator = (propertyName, propertyValue) => {
+  if (!propertyValue) {
     return {
       isPropertyValid: true,
       validatedProperty: null,
     };
   }
 
-  if (typeof property !== "string" && !Array.isArray(property)) {
+  if (typeof propertyValue !== "string" && !Array.isArray(propertyValue)) {
     return {
       isPropertyValid: false,
-      message: error,
+      message: `${propertyName} is must be a list of strings!`,
     };
+  }
+
+  if (typeof propertyValue !== "string") {
+    propertyValue = [propertyValue.trim().toLowerCase()];
+  }
+
+  if (Array.isArray(propertyValue)) {
+    propertyValue = propertyValue
+      .filter((value) => stringPropertiesValidator(value).isPropertyValid)
+      .map((value) => value.trim().toLowerCase());
   }
 
   return {
     isPropertyValid: true,
-    validatedProperty:
-      Array.isArray(property) && sanitizeList(property).length > 0
-        ? property.map((s) => s.trim().toLowerCase())
-        : typeof property === "string"
-          ? [property?.trim().toLowerCase()]
-          : [],
+    validatedProperty: propertyValue,
   };
 };

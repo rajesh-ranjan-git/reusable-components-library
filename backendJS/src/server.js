@@ -39,13 +39,13 @@ app.use(
 app.use(cookieParser());
 
 app.use("/api/v1/auth", authRouter);
-app.use("/api/v1/activity", activityRouter);
-app.use("/api/v1/address", addressRouter);
 app.use("/api/v1/oauth", oauthRouter);
-app.use("/api/v1/profile", profileRouter);
-app.use("/api/v1/session", sessionRouter);
-app.use("/api/v1/social", socialRouter);
 app.use("/api/v1/user", userRouter);
+app.use("/api/v1/profile", profileRouter);
+app.use("/api/v1/social", socialRouter);
+app.use("/api/v1/address", addressRouter);
+app.use("/api/v1/session", sessionRouter);
+app.use("/api/v1/activity", activityRouter);
 
 app.use("/api/push-notifications", pushNotificationsRouter);
 

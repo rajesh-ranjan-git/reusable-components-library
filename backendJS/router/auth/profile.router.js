@@ -6,23 +6,27 @@ import {
   updateUsername,
 } from "../../controllers/auth/profile.controller.js";
 import { requestMiddleware } from "../../middlewares/request.middleware.js";
+import { authenticate } from "../../middlewares/auth.middleware.js";
 
 const profileRouter = express.Router();
 
-profileRouter.get("/get-my-profile", requestMiddleware({}), getMyProfile);
+profileRouter.get("/user", requestMiddleware({}), authenticate, getMyProfile);
 profileRouter.get(
-  "/get-user-profile",
+  "/user/:username",
   requestMiddleware({ requireParams: true }),
+  authenticate,
   getUserProfile,
 );
 profileRouter.patch(
-  "/update-profile",
+  "/user",
   requestMiddleware({ requireBody: true }),
+  authenticate,
   updateProfile,
 );
 profileRouter.put(
-  "/update-username",
+  "/user/username",
   requestMiddleware({ requireBody: true }),
+  authenticate,
   updateUsername,
 );
 
