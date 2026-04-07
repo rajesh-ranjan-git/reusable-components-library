@@ -8,6 +8,7 @@ import {
   SMTP_SECURE,
   SMTP_USER,
 } from "../../constants/common.constants.js";
+import { appConfig } from "../../config/common.config.js";
 
 class EmailService {
   constructor() {
@@ -42,12 +43,12 @@ class EmailService {
 
     await this.send({
       to,
-      subject: `Verify your email – ${APP_NAME}`,
+      subject: `Verify your email – ${appConfig.name}`,
       text: `Please verify your email by visiting: ${verificationUrl}\n\nThis link expires in 24 hours.`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h2>Verify Your Email</h2>
-          <p>Thanks for signing up for <strong>${APP_NAME}</strong>. Click the button below to verify your email address.</p>
+          <p>Thanks for signing up for <strong>${appConfig.name}</strong>. Click the button below to verify your email address.</p>
           <a href="${verificationUrl}"
              style="display:inline-block;padding:12px 24px;background:#4F46E5;color:#fff;text-decoration:none;border-radius:6px;margin:16px 0;">
             Verify Email
@@ -65,12 +66,12 @@ class EmailService {
 
     await this.send({
       to,
-      subject: `Reset your password – ${APP_NAME}`,
+      subject: `Reset your password – ${appConfig.name}`,
       text: `Reset your password by visiting: ${resetUrl}\n\nThis link expires in 1 hour. If you didn't request this, please ignore this email.`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h2>Reset Your Password</h2>
-          <p>We received a request to reset the password for your <strong>${APP_NAME}</strong> account.</p>
+          <p>We received a request to reset the password for your <strong>${appConfig.name}</strong> account.</p>
           <a href="${resetUrl}"
              style="display:inline-block;padding:12px 24px;background:#DC2626;color:#fff;text-decoration:none;border-radius:6px;margin:16px 0;">
             Reset Password
@@ -86,11 +87,11 @@ class EmailService {
   async sendWelcomeEmail(to, firstName) {
     await this.send({
       to,
-      subject: `Welcome to ${APP_NAME}! 🎉`,
-      text: `Hi ${firstName || "there"},\n\nWelcome to ${APP_NAME}! We're excited to have you on board.`,
+      subject: `Welcome to ${appConfig.name}! 🎉`,
+      text: `Hi ${firstName || "there"},\n\nWelcome to ${appConfig.name}! We're excited to have you on board.`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2>Welcome to ${APP_NAME}! 🎉</h2>
+          <h2>Welcome to ${appConfig.name}! 🎉</h2>
           <p>Hi <strong>${firstName || "there"}</strong>,</p>
           <p>We're thrilled to have you on board. Your account is all set up and ready to go.</p>
           <a href="${CLIENT_URL}/dashboard"
@@ -106,12 +107,12 @@ class EmailService {
   async sendAccountLockedEmail(to) {
     await this.send({
       to,
-      subject: `Your account has been temporarily locked – ${APP_NAME}`,
+      subject: `Your account has been temporarily locked – ${appConfig.name}`,
       text: `Your account has been temporarily locked due to multiple failed login attempts. It will be automatically unlocked after 2 hours.`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h2>Account Temporarily Locked</h2>
-          <p>Your <strong>${APP_NAME}</strong> account has been temporarily locked due to multiple failed login attempts.</p>
+          <p>Your <strong>${appConfig.name}</strong> account has been temporarily locked due to multiple failed login attempts.</p>
           <p>Your account will be automatically unlocked after <strong>2 hours</strong>.</p>
           <p>If this wasn't you, please reset your password immediately.</p>
           <a href="${CLIENT_URL}/auth/forgot-password"

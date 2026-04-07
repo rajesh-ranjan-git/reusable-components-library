@@ -117,9 +117,8 @@ export const validateLogin = (data) => {
 
   if (!isPasswordValid) {
     throw AppError.unprocessable({
-      message: passwordErrorMessage,
-      code: "PASSWORD VALIDATION FAILED",
-      details: { password: data.password },
+      message: "Your email or password is incorrect!",
+      code: "INVALID CREDENTIALS",
     });
   }
 
@@ -172,31 +171,24 @@ export const validateUpdatePassword = (data) => {
   };
 };
 
-export const validateResetPassword = (data) =>
-  Joi.object({
-    token: Joi.string().hex().length(64).required().messages({
-      "any.required": "Reset token is required.",
-      "string.length": "Invalid reset token format.",
-    }),
-    password: passwordRules.required(),
-    confirmPassword: Joi.string()
-      .valid(Joi.ref("password"))
-      .required()
-      .messages({
-        "any.only": "Passwords do not match.",
-        "any.required": "Please confirm your password.",
-      }),
-  }).validate(data, { abortEarly: true });
+export const validateResetPassword = (data) => {};
 
 export const userNameValidator = (userName) => {
-  const incomingUserName = userName?.trim().toLowerCase();
-
-  if (!incomingUserName) {
+  if (!userName) {
     return {
       isUserNameValid: false,
       message: "Please provide your username!",
     };
   }
+
+  if (typeof userName !== "string") {
+    return {
+      isUserNameValid: false,
+      message: "Username must be a string!",
+    };
+  }
+
+  const incomingUserName = userName?.trim().toLowerCase();
 
   if (incomingUserName.length < propertyConstraints.minUserNameLength) {
     return {
@@ -316,16 +308,23 @@ export const passwordValidator = (password, type = "") => {
 
   if (type === "current") return;
 
-  if (
-    incomingPassword.length < propertyConstraints.minPasswordLength ||
-    incomingPassword.length > propertyConstraints.maxPasswordLength
-  ) {
+  if (incomingPassword.length < propertyConstraints.minPasswordLength) {
     return {
       isPasswordValid: false,
       message:
         type === ""
-          ? `Password must be ${minPasswordLength}-${maxPasswordLength} characters long!`
-          : `${toTitleCase(type)} password must be ${minPasswordLength}-${maxPasswordLength} characters long!`,
+          ? `Password must be at least ${propertyConstraints.minPasswordLength} characters long!`
+          : `${toTitleCase(type)} must be at least ${propertyConstraints.minPasswordLength} characters long!`,
+    };
+  }
+
+  if (incomingPassword.length > propertyConstraints.maxPasswordLength) {
+    return {
+      isPasswordValid: false,
+      message:
+        type === ""
+          ? `Password must not be more than ${propertyConstraints.maxPasswordLength} characters long!`
+          : `${toTitleCase(type)} password must not be more than ${propertyConstraints.maxPasswordLength} characters long!`,
     };
   }
 
@@ -341,7 +340,6 @@ export const passwordValidator = (password, type = "") => {
         type === ""
           ? "Password must contain at least one uppercase letter, one lowercase letter, one number and one special character (!,@,#,$,%,&,_)!"
           : `${toTitleCase(type)}  password must contain at least one uppercase letter, one lowercase letter, one number and one special character (!,@,#,$,%,&,_)!`,
-      errors: errors,
     };
   }
 

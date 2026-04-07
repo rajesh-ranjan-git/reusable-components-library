@@ -219,10 +219,10 @@ const logger = {
 
       runSinks(
         "warn",
-        [args[0].appError.message ?? "An unknown warning has occurred!"],
+        [incomingError.message ?? "An unknown warning has occurred!"],
         {
-          ...args[0].metadata,
-          ...args[0].metadata.metadata,
+          ...incomingErrorMetadata,
+          ...incomingErrorMetadata.metadata,
         },
       );
 
@@ -240,8 +240,8 @@ const logger = {
   },
 
   error: (...args) => {
-    const incomingError = incomingError;
-    const incomingErrorMetadata = incomingErrorMetadata;
+    const incomingError = args[0].appError;
+    const incomingErrorMetadata = args[0].metadata;
 
     if (incomingError && incomingErrorMetadata) {
       const argsToPrint = [
@@ -299,11 +299,11 @@ const logger = {
 
       runSinks(
         "error",
-        [args[0].appError.message ?? "An unknown error has occurred!"],
+        [incomingError.message ?? "An unknown error has occurred!"],
         {
-          ...args[0].metadata,
-          ...args[0].metadata.metadata,
-          stack: args[0].appError.stack,
+          ...incomingErrorMetadata,
+          ...incomingErrorMetadata.metadata,
+          stack: incomingError.stack,
         },
       );
 

@@ -360,7 +360,7 @@ class AuthService {
   }
 
   async _createVerificationToken(userId, type) {
-    const token = crypto.randomBytes(32).toString("hex");
+    const token = crypto.randomUUID();
     const expiresAt = new Date(
       Date.now() +
         (type === "password_reset" ? 1 * 60 * 60 * 1000 : 24 * 60 * 60 * 1000),

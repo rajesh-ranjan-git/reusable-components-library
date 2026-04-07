@@ -4,8 +4,10 @@ import {
   ACCESS_TOKEN_SECRET,
   JWT_AUDIENCE,
   JWT_ISSUER,
+  MODE,
   REFRESH_TOKEN_EXPIRY,
   REFRESH_TOKEN_SECRET,
+  SMTP_PASS,
 } from "../../constants/common.constants.js";
 import { jwtKnownErrorsConfig } from "../../config/common.config.js";
 import AppError from "../../errors/app.error.js";
@@ -22,7 +24,6 @@ class TokenService {
     if (!ACCESS_TOKEN_SECRET) {
       logger.error(
         "[Token Service Failed] Access Token Secret key is not set, please set it in .env file!",
-        err,
       );
 
       throw AppError.serviceUnavailable({
