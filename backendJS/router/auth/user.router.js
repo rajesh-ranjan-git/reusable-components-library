@@ -9,7 +9,7 @@ import { requestMiddleware } from "../../middlewares/request.middleware.js";
 
 const userRouter = express.Router();
 
-userRouter.get("/get-social-links", requestMiddleware({}), getAccountInfo);
+userRouter.get("/get-account-info", requestMiddleware({}), getAccountInfo);
 userRouter.get(
   "/get-dashboard-summary",
   requestMiddleware({}),

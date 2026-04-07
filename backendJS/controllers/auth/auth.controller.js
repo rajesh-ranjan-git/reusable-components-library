@@ -70,7 +70,7 @@ export const logout = asyncHandler(async (req, res) => {
 });
 
 export const verifyEmail = asyncHandler(async (req, res) => {
-  const { token } = req.data.query;
+  const { token } = req.data.body;
 
   if (!token) {
     throw AppError.badRequest({
@@ -200,8 +200,8 @@ export const refreshTokens = asyncHandler(async (req, res) => {
 
 export const getMe = asyncHandler(async (req, res) => {
   successResponseHandler(req, res, {
-    status: "GET ME SUCCESS",
-    message: "Account details fetched successfully!",
+    status: "FETCH USER SUCCESS",
+    message: "User details fetched successfully!",
     data: { user: req.data.user },
   });
 });

@@ -16,7 +16,7 @@ import { authenticate } from "../../middlewares/auth.middleware.js";
 
 const authRouter = express.Router();
 
-authRouter.get("/get-me", requestMiddleware({}), authenticate, getMe);
+authRouter.get("/me", requestMiddleware({}), authenticate, getMe);
 authRouter.post(
   "/register",
   requestMiddleware({ requireBody: true }),
@@ -24,29 +24,29 @@ authRouter.post(
 );
 authRouter.post("/login", requestMiddleware({ requireBody: true }), login);
 authRouter.post("/logout", requestMiddleware({}), logout);
-authRouter.post("/refresh-tokens", requestMiddleware({}), refreshTokens);
+authRouter.post("/refresh", requestMiddleware({}), refreshTokens);
 authRouter.post(
-  "/verify-email",
-  requestMiddleware({ requireQuery: true }),
+  "/email/verify",
+  requestMiddleware({ requireBody: true }),
   verifyEmail,
 );
 authRouter.post(
-  "/resend-verification",
+  "/email/verification/resend",
   requestMiddleware({ requireBody: true }),
   resendVerification,
 );
 authRouter.post(
-  "/forgot-password",
+  "/password/forgot",
   requestMiddleware({ requireBody: true }),
   forgotPassword,
 );
 authRouter.post(
-  "/reset-password",
+  "/password/reset",
   requestMiddleware({ requireBody: true }),
   resetPassword,
 );
 authRouter.put(
-  "/update-password",
+  "/password",
   requestMiddleware({ requireBody: true }),
   updatePassword,
 );
