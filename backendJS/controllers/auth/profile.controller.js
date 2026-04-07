@@ -6,7 +6,10 @@ import {
 } from "../../validators/auth.validator.js";
 import { successResponseHandler } from "../../utils/response.utils.js";
 import { asyncHandler } from "../../utils/common.utils.js";
-import { httpStatusConfig } from "../../config/common.config.js";
+import {
+  genderProperties,
+  httpStatusConfig,
+} from "../../config/common.config.js";
 
 export const getMyProfile = asyncHandler(async (req, res) => {
   const profile = await Profile.findOne({ user: req.data.userId }).lean();
@@ -143,7 +146,7 @@ export const updateUsername = asyncHandler(async (req, res) => {
   const profile = await Profile.findOneAndUpdate(
     { user: req.data.userId },
     { $set: { userName: validatedUserName } },
-    { new: true },
+    { returnDocument: "after", runValidators: true },
   );
 
   if (!profile) {
@@ -157,5 +160,58 @@ export const updateUsername = asyncHandler(async (req, res) => {
     status: "UPDATE USERNAME SUCCESS",
     message: "Username updated successfully!",
     data: { userName: validatedUserName },
+  });
+});
+
+export const updateGender = asyncHandler(async (req, res) => {
+  const profile = await Profile.findOne({ user: req.data.userId });
+
+  if (profile.gender)
+    throw AppError.forbidden({
+      message: "Gender can only be updated once!",
+      code: "PROFILE UPDATE FAILED",
+    });
+
+  const { gender } = req.data.body;
+
+  if (!gender) {
+    throw AppError.unprocessable({
+      message: "Please provide gender to update!",
+      code: "GENDER VALIDATION FAILED",
+      details: { gender },
+    });
+  }
+
+  if (
+    typeof gender !== "string" ||
+    Object.values(genderProperties).filter(
+      (g) => g === gender.trim().toLowerCase(),
+    ).length === 0
+  ) {
+    throw AppError.unprocessable({
+      message: "Gender must be either 'male', 'female' or 'other'!",
+      code: "GENDER VALIDATION FAILED",
+      details: { gender },
+    });
+  }
+
+  const updatedProfile = await Profile.findOneAndUpdate(
+    { user: req.data.userId },
+    { $set: { gender: gender.trim().toLowerCase() } },
+    { returnDocument: "after", runValidators: true },
+  );
+
+  if (!updatedProfile) {
+    throw AppError.notFound({
+      message: "Profile details not found!",
+      code: "PROFILE NOT FOUND",
+    });
+  }
+
+  successResponseHandler(req, res, {
+    status: "UPDATE PROFILE SUCCESS",
+    statusCode: httpStatusConfig.created.statusCode,
+    message: "Gender updated successfully!",
+    data: { gender: gender.trim().toLowerCase() },
   });
 });

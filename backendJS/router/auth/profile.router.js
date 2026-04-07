@@ -4,6 +4,7 @@ import {
   getUserProfile,
   updateProfile,
   updateUsername,
+  updateGender,
 } from "../../controllers/auth/profile.controller.js";
 import { requestMiddleware } from "../../middlewares/request.middleware.js";
 import { authenticate } from "../../middlewares/auth.middleware.js";
@@ -28,6 +29,12 @@ profileRouter.put(
   requestMiddleware({ requireBody: true }),
   authenticate,
   updateUsername,
+);
+profileRouter.post(
+  "/user/gender",
+  requestMiddleware({ requireBody: true }),
+  authenticate,
+  updateGender,
 );
 
 export default profileRouter;
