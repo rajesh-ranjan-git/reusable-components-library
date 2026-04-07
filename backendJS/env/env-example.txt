@@ -15,7 +15,7 @@ CLIENT_URL=http://localhost:1997
 # Secret Keys
 SESSION_SECRET_KEY=session-secret-key
 JWT_SECRET_KEY=jwt-secret-key
-JWT_ISSUER-backend
+JWT_ISSUER=backend
 JWT_AUDIENCE=client
 ACCESS_TOKEN_SECRET=access-token-secret
 REFRESH_TOKEN_SECRET=refresh-token-secret

@@ -4,10 +4,8 @@ import {
   ACCESS_TOKEN_SECRET,
   JWT_AUDIENCE,
   JWT_ISSUER,
-  MODE,
   REFRESH_TOKEN_EXPIRY,
   REFRESH_TOKEN_SECRET,
-  SMTP_PASS,
 } from "../../constants/common.constants.js";
 import { jwtKnownErrorsConfig } from "../../config/common.config.js";
 import AppError from "../../errors/app.error.js";
