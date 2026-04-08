@@ -7,7 +7,7 @@ import ActivityLog from "../../models/auth/activityLog.model.js";
 import Session from "../../models/auth/session.model.js";
 import { sessionService } from "../../services/auth/session.service.js";
 import { successResponseHandler } from "../../utils/response.utils.js";
-import { asyncHandler } from "../../lib/utils/utils.js";
+import { asyncHandler } from "../../utils/common.utils.js";
 import AppError from "../../errors/app.error.js";
 import {
   DEFAULT_PAGE_SIZE,
