@@ -45,7 +45,7 @@ app.use("/api/v1/user", profileRouter);
 app.use("/api/v1/user", socialRouter);
 app.use("/api/v1/user", addressRouter);
 app.use("/api/v1/session", sessionRouter);
-app.use("/api/v1/activity", activityRouter);
+app.use("/api/v1/user", activityRouter);
 
 app.use("/api/push-notifications", pushNotificationsRouter);
 

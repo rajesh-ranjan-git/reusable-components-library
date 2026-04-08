@@ -5,22 +5,26 @@ import {
   getMyActivity,
 } from "../../controllers/auth/activity.controller.js";
 import { requestMiddleware } from "../../middlewares/request.middleware.js";
+import { authenticate } from "../../middlewares/auth.middleware.js";
 
 const activityRouter = express.Router();
 
 activityRouter.get(
-  "/get-my-activity",
-  requestMiddleware({ requireQuery: true }),
+  "/activity",
+  requestMiddleware({}),
+  authenticate,
   getMyActivity,
 );
 activityRouter.get(
-  "/get-activity-types",
+  "/activity/types",
   requestMiddleware({}),
+  authenticate,
   getActivityTypes,
 );
 activityRouter.delete(
-  "/clear-my-activity",
+  "/activity/clear",
   requestMiddleware({}),
+  authenticate,
   clearMyActivity,
 );
 

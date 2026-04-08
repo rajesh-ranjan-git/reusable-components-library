@@ -65,7 +65,7 @@ export const getActivityTypes = asyncHandler(async (req, res) => {
 });
 
 export const clearMyActivity = asyncHandler(async (req, res) => {
-  const result = await ActivityLog.deleteMany({ user: req.userId });
+  const result = await ActivityLog.deleteMany({ user: req.data.userId });
 
   successResponseHandler(req, res, {
     status: "ACTIVITY CLEAR SUCCESS",
