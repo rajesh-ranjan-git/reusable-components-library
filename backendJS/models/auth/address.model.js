@@ -10,7 +10,8 @@ const addressSchema = new mongoose.Schema(
 
     type: {
       type: String,
-      enum: ["home", "office"],
+      enum: ["home", "office", "other"],
+      set: (val) => (typeof val === "string" ? val.trim().toLowerCase() : val),
     },
 
     street: String,

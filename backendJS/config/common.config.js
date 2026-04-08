@@ -330,6 +330,13 @@ export const jwtKnownErrorsConfig = {
   notBeforeError: "NotBeforeError",
 };
 
+export const userStatusProperties = {
+  active: "active",
+  suspended: "suspended",
+  deleted: "deleted",
+  locked: "locked",
+};
+
 export const genderProperties = {
   male: "male",
   female: "female",
@@ -389,6 +396,12 @@ export const addressProperties = {
   countryCode: "countryCode",
   country: "country",
   pinCode: "pinCode",
+};
+
+export const addressTypeProperties = {
+  home: "home",
+  office: "office",
+  other: "other",
 };
 
 export const propertyConstraints = {

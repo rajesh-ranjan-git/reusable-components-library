@@ -5,7 +5,10 @@ import { successResponseHandler } from "../../utils/response.utils.js";
 import { asyncHandler } from "../../utils/common.utils.js";
 import AppError from "../../errors/app.error.js";
 import { httpStatusConfig } from "../../config/common.config.js";
-import { validateAddress } from "../../validators/address.validator.js";
+import {
+  validateCreateAddress,
+  validateUpdateAddress,
+} from "../../validators/address.validator.js";
 
 export const getAddresses = asyncHandler(async (req, res) => {
   const addresses = await Address.find({ user: req.data.userId })
@@ -20,15 +23,17 @@ export const getAddresses = asyncHandler(async (req, res) => {
 });
 
 export const getAddress = asyncHandler(async (req, res) => {
-  const validatedAddressId = isValidObjectId(req.data.params.addressId);
+  const isAddressIdValid = isValidObjectId(req.data.params.addressId);
 
-  if (!validatedAddressId) {
+  if (!isAddressIdValid) {
     throw AppError.unprocessable({
       message: "Please provide a valid address ID!",
       code: "ADDRESS ID VALIDATION FAILED",
       details: { addressId: req.data.params.addressId },
     });
   }
+
+  const validatedAddressId = req.data.params.addressId;
 
   const address = await Address.findOne({
     _id: validatedAddressId,
@@ -51,8 +56,6 @@ export const getAddress = asyncHandler(async (req, res) => {
 });
 
 export const createAddress = asyncHandler(async (req, res) => {
-  const { isDefault } = req.data.body;
-
   const count = await Address.countDocuments({ user: req.data.userId });
   if (count >= MAX_ADDRESSES) {
     throw new AppError({
@@ -63,7 +66,9 @@ export const createAddress = asyncHandler(async (req, res) => {
     });
   }
 
-  const { validatedAddressProperties, errors } = validateAddress(req.data.body);
+  const { validatedAddressProperties, errors } = validateCreateAddress(
+    req.data.body,
+  );
 
   if (errors && Object.values(errors).length) {
     throw AppError.unprocessable({
@@ -73,14 +78,14 @@ export const createAddress = asyncHandler(async (req, res) => {
     });
   }
 
-  if (isDefault && typeof isDefault === "boolean") {
+  if (validatedAddressProperties.isDefault) {
     await Address.updateMany(
       { user: req.data.userId },
       { $set: { isDefault: false } },
     );
   }
 
-  const shouldBeDefault = isDefault || count === 0;
+  const shouldBeDefault = validatedAddressProperties.isDefault || count === 0;
 
   const address = await Address.create({
     user: req.data.userId,
@@ -102,17 +107,17 @@ export const createAddress = asyncHandler(async (req, res) => {
 });
 
 export const updateAddress = asyncHandler(async (req, res) => {
-  const { isDefault } = req.data.body;
+  const isAddressIdValid = isValidObjectId(req.data.params.addressId);
 
-  const validatedAddressId = isValidObjectId(req.data.params.addressId);
-
-  if (!validatedAddressId) {
+  if (!isAddressIdValid) {
     throw AppError.unprocessable({
       message: "Please provide a valid address ID!",
       code: "ADDRESS ID VALIDATION FAILED",
       details: { addressId: req.data.params.addressId },
     });
   }
+
+  const validatedAddressId = req.data.params.addressId;
 
   const address = await Address.findOne({
     _id: validatedAddressId,
@@ -127,20 +132,35 @@ export const updateAddress = asyncHandler(async (req, res) => {
     });
   }
 
-  if (isDefault && typeof isDefault === "boolean") {
-    await Address.updateMany(
-      { user: req.data.userId, _id: { $ne: address._id } },
-      { $set: { isDefault: false } },
-    );
-  }
-
-  const { validatedAddressProperties, errors } = validateAddress(req.data.body);
+  const { validatedAddressProperties, errors } = validateUpdateAddress(
+    req.data.body,
+  );
 
   if (errors && Object.values(errors).length) {
     throw AppError.unprocessable({
       message: "Failed to update address!",
       code: "ADDRESS UPDATE FAILED",
       details: { errors },
+    });
+  }
+
+  if (validatedAddressProperties.isDefault) {
+    await Address.updateMany(
+      { user: req.data.userId },
+      { $set: { isDefault: false } },
+    );
+  }
+
+  const addressPropertiesToUpdate = Object.fromEntries(
+    Object.entries(validatedAddressProperties).filter(
+      ([key, value]) => value !== address[key],
+    ),
+  );
+
+  if (!Object.values(addressPropertiesToUpdate).length) {
+    throw AppError.unprocessable({
+      message: "No new address properties to update!",
+      code: "ADDRESS UPDATE FAILED",
     });
   }
 
@@ -154,7 +174,7 @@ export const updateAddress = asyncHandler(async (req, res) => {
         state: validatedAddressProperties.state,
         country: validatedAddressProperties.country,
         pinCode: validatedAddressProperties.pinCode,
-        isDefault,
+        isDefault: validatedAddressProperties.isDefault,
       },
     },
     { returnDocument: "after", runValidators: true },
@@ -168,7 +188,17 @@ export const updateAddress = asyncHandler(async (req, res) => {
 });
 
 export const deleteAddress = asyncHandler(async (req, res) => {
-  const validatedAddressId = isValidObjectId(req.data.params.addressId);
+  const isAddressIdValid = isValidObjectId(req.data.params.addressId);
+
+  if (!isAddressIdValid) {
+    throw AppError.unprocessable({
+      message: "Please provide a valid address ID!",
+      code: "ADDRESS ID VALIDATION FAILED",
+      details: { addressId: req.data.params.addressId },
+    });
+  }
+
+  const validatedAddressId = req.data.params.addressId;
 
   if (!validatedAddressId) {
     throw AppError.unprocessable({
@@ -200,21 +230,22 @@ export const deleteAddress = asyncHandler(async (req, res) => {
 
   successResponseHandler(req, res, {
     status: "ADDRESS DELETE SUCCESS",
-    statusCode: httpStatusConfig.noContent.statusCode,
     message: "Address deleted successfully!",
   });
 });
 
 export const setDefaultAddress = asyncHandler(async (req, res) => {
-  const validatedAddressId = isValidObjectId(req.data.params.addressId);
+  const isAddressIdValid = isValidObjectId(req.data.params.addressId);
 
-  if (!validatedAddressId) {
+  if (!isAddressIdValid) {
     throw AppError.unprocessable({
       message: "Please provide a valid address ID!",
       code: "ADDRESS ID VALIDATION FAILED",
       details: { addressId: req.data.params.addressId },
     });
   }
+
+  const validatedAddressId = req.data.params.addressId;
 
   const address = await Address.findOne({
     _id: validatedAddressId,
@@ -237,7 +268,6 @@ export const setDefaultAddress = asyncHandler(async (req, res) => {
 
   successResponseHandler(req, res, {
     status: "UPDATE ADDRESS SUCCESS",
-    statusCode: httpStatusConfig.noContent.statusCode,
     message: "Default address updated successfully!",
   });
 });

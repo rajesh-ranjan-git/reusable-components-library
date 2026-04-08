@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema(
       enum: ["active", "suspended", "deleted"],
       default: "active",
       index: true,
+      set: (val) => (typeof val === "string" ? val.trim().toLowerCase() : val),
     },
 
     emailVerified: {
