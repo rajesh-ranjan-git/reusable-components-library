@@ -5,6 +5,7 @@ import {
   getUserPermissions,
 } from "../services/auth/rbac.service.js";
 import AppError from "../errors/app.error.js";
+import { asyncHandler } from "../utils/common.utils.js";
 
 const getTargetId = async (data, ownership) => {
   if (!ownership) return null;

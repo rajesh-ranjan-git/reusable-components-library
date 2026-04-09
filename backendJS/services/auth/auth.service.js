@@ -7,8 +7,8 @@ import {
 import { httpStatusConfig } from "../../config/http.config.js";
 import Account from "../../models/auth/account.model.js";
 import User from "../../models/auth/user.model.js";
-import { Role } from "../../models/role.model.js";
-import { UserRole } from "../../models/userRole.model.js";
+import Role from "../../models/auth/role.model.js";
+import UserRole from "../../models/auth/userRole.model.js";
 import Profile from "../../models/auth/profile.model.js";
 import SocialLink from "../../models/auth/socialLink.model.js";
 import VerificationToken from "../../models/auth/verificationToken.model.js";
