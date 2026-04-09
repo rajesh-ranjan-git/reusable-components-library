@@ -4,7 +4,7 @@ import {
   MAX_LOGIN_ATTEMPTS,
   SALT_ROUNDS,
 } from "../../constants/common.constants.js";
-import { httpStatusConfig } from "../../config/common.config.js";
+import { httpStatusConfig } from "../../config/http.config.js";
 import Account from "../../models/auth/account.model.js";
 import User from "../../models/auth/user.model.js";
 import Profile from "../../models/auth/profile.model.js";

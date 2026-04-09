@@ -1,4 +1,4 @@
-import { httpStatusConfig } from "../../config/common.config.js";
+import { httpStatusConfig } from "../../config/http.config.js";
 import User from "../../models/auth/user.model.js";
 import Account from "../../models/auth/account.model.js";
 import Profile from "../../models/auth/profile.model.js";

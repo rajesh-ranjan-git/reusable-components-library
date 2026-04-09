@@ -8,7 +8,7 @@ import {
   BACKEND_URL,
   CLIENT_URL,
 } from "../constants/env.constants.js";
-import { httpStatusConfig } from "../config/common.config.js";
+import { httpStatusConfig } from "../config/http.config.js";
 import connectDB from "../db/db.connect.js";
 import authRouter from "../router/auth/auth.router.js";
 import activityRouter from "../router/auth/activity.router.js";

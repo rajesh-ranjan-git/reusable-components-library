@@ -1,4 +1,4 @@
-import { httpStatusConfig } from "../config/common.config.js";
+import { httpStatusConfig } from "../config/http.config.js";
 import AppError from "../errors/app.error.js";
 import {
   validateBody,

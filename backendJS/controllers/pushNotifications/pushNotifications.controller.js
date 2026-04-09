@@ -3,7 +3,7 @@ import {
   VAPID_PRIVATE_KEY,
   VAPID_PUBLIC_KEY,
 } from "../../constants/env.constants.js";
-import { httpStatusConfig } from "../../config/common.config.js";
+import { httpStatusConfig } from "../../config/http.config.js";
 import { successResponseHandler } from "../../utils/response.utils.js";
 import PushNotificationSubscription from "../../models/pushNotificationSubscription/pushNotificationSubscription.model.js";
 

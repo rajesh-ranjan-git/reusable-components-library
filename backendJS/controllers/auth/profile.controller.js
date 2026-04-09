@@ -6,10 +6,8 @@ import {
 } from "../../validators/auth.validator.js";
 import { successResponseHandler } from "../../utils/response.utils.js";
 import { asyncHandler } from "../../utils/common.utils.js";
-import {
-  genderProperties,
-  httpStatusConfig,
-} from "../../config/common.config.js";
+import { httpStatusConfig } from "../../config/http.config.js";
+import { genderProperties } from "../../config/common.config.js";
 
 export const getMyProfile = asyncHandler(async (req, res) => {
   const profile = await Profile.findOne({ user: req.data.userId }).lean();

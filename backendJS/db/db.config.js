@@ -3,7 +3,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import AppError from "../errors/app.error.js";
 import { MODE } from "../constants/env.constants.js";
-import { httpStatusConfig } from "../config/common.config.js";
+import { httpStatusConfig } from "../config/http.config.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

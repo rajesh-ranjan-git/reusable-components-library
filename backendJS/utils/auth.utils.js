@@ -1,8 +1,8 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { SALT_ROUNDS } from "../constants/common.constants.js";
+import { httpStatusConfig } from "../config/http.config.js";
 import {
-  httpStatusConfig,
   jwtKnownErrorsConfig,
   timelineConfig,
 } from "../config/common.config.js";

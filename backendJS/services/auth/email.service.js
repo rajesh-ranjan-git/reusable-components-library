@@ -8,7 +8,8 @@ import {
   SMTP_SECURE,
   SMTP_USER,
 } from "../../constants/env.constants.js";
-import { appConfig, httpStatusConfig } from "../../config/common.config.js";
+import { appConfig } from "../../config/common.config.js";
+import { httpStatusConfig } from "../../config/http.config.js";
 import AppError from "../../errors/app.error.js";
 
 class EmailService {

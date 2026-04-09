@@ -1,7 +1,7 @@
 import { Server } from "socket.io";
 import User from "../models/auth/user.model.js";
 import { BACKEND_URL, CLIENT_URL } from "../constants/env.constants.js";
-import { httpStatusConfig } from "../config/common.config.js";
+import { httpStatusConfig } from "../config/http.config.js";
 import AppError from "../errors/app.error.js";
 import { generateRoomId } from "./socket.utils.js";
 import { verifyJwtToken } from "../utils/auth.utils.js";

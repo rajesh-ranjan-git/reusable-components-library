@@ -2,11 +2,11 @@ import figlet from "figlet";
 import gradient from "gradient-string";
 import boxen from "boxen";
 import { BACKEND_PORT, MODE } from "../../constants/env.constants.js";
+import { appConfig } from "../../config/common.config.js";
 import {
-  appConfig,
   bannerFontsConfig,
   bannerThemesConfig,
-} from "../../config/common.config.js";
+} from "../../config/banner.config.js";
 import { getDateToShow } from "../../utils/date.utils.js";
 import { getRandomItem, toTitleCase } from "../../utils/common.utils.js";
 

@@ -1,4 +1,4 @@
-import { httpStatusConfig } from "../config/common.config.js";
+import { httpStatusConfig } from "../config/http.config.js";
 
 export async function generateRoomId(users) {
   if (!users || users.length === 0) {

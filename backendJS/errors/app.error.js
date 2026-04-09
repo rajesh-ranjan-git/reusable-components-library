@@ -1,5 +1,5 @@
 import { getDateToStore } from "../utils/date.utils.js";
-import { httpStatusConfig } from "../config/common.config.js";
+import { httpStatusConfig } from "../config/http.config.js";
 
 class AppError extends Error {
   constructor({

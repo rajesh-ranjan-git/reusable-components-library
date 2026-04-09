@@ -4,7 +4,7 @@ import { MAX_ADDRESSES } from "../../constants/common.constants.js";
 import { successResponseHandler } from "../../utils/response.utils.js";
 import { asyncHandler } from "../../utils/common.utils.js";
 import AppError from "../../errors/app.error.js";
-import { httpStatusConfig } from "../../config/common.config.js";
+import { httpStatusConfig } from "../../config/http.config.js";
 import {
   validateCreateAddress,
   validateUpdateAddress,
