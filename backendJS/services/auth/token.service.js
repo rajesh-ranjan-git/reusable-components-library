@@ -137,8 +137,8 @@ class TokenService {
     }
   }
 
-  generateAuthTokens(userId) {
-    const accessToken = this.generateAccessToken(userId);
+  generateAuthTokens(userId, roles, permissions) {
+    const accessToken = this.generateAccessToken(userId, roles, permissions);
     const refreshToken = this.generateRefreshToken(userId);
     const refreshTokenExpiry = new Date(
       Date.now() + parseDurationMs(REFRESH_TOKEN_EXPIRY),

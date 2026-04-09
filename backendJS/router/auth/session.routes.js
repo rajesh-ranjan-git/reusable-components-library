@@ -7,6 +7,8 @@ import {
 } from "../../controllers/auth/session.controller.js";
 import { requestMiddleware } from "../../middlewares/request.middleware.js";
 import { authenticate } from "../../middlewares/authenticate.middleware.js";
+import { authorize } from "../../middlewares/authorize.middleware.js";
+import { PERMISSIONS } from "../../constants/permission.constants.js";
 
 const sessionRouter = express.Router();
 
@@ -14,24 +16,28 @@ sessionRouter.get(
   "/session",
   requestMiddleware({}),
   authenticate,
+  authorize({ permissions: [PERMISSIONS.SESSION_READ_OWN] }),
   getActiveSessions,
 );
 sessionRouter.get(
   "/session/count",
   requestMiddleware({}),
   authenticate,
+  authorize({ permissions: [PERMISSIONS.SESSION_READ_OWN] }),
   getSessionCount,
 );
 sessionRouter.delete(
   "/session/revoke/other",
   requestMiddleware({}),
   authenticate,
+  authorize({ permissions: [PERMISSIONS.SESSION_REVOKE_OWN] }),
   revokeOtherSessions,
 );
 sessionRouter.delete(
   "/session/revoke/:sessionId",
   requestMiddleware({ requireParams: true }),
   authenticate,
+  authorize({ permissions: [PERMISSIONS.SESSION_REVOKE_OWN] }),
   revokeSession,
 );
 

@@ -1,4 +1,5 @@
 import express from "express";
+import { PERMISSIONS } from "../../constants/permission.constants.js";
 import {
   register,
   login,
@@ -13,10 +14,17 @@ import {
 } from "../../controllers/auth/auth.controller.js";
 import { requestMiddleware } from "../../middlewares/request.middleware.js";
 import { authenticate } from "../../middlewares/authenticate.middleware.js";
+import { authorize } from "../../middlewares/authorize.middleware.js";
 
 const authRouter = express.Router();
 
-authRouter.get("/me", requestMiddleware({}), authenticate, getMe);
+authRouter.get(
+  "/me",
+  requestMiddleware({}),
+  authenticate,
+  authorize({ permissions: [PERMISSIONS.USER_READ_OWN] }),
+  getMe,
+);
 authRouter.post(
   "/register",
   requestMiddleware({ requireBody: true }),
@@ -48,6 +56,8 @@ authRouter.post(
 authRouter.put(
   "/password",
   requestMiddleware({ requireBody: true }),
+  authenticate,
+  authorize({ permissions: [PERMISSIONS.USER_UPDATE_OWN] }),
   updatePassword,
 );
 

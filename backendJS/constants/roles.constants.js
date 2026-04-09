@@ -1,8 +1,17 @@
 export const ROLES = {
-  SUPER_ADMIN: "SUPER_ADMIN", // full system control
-  ADMIN: "ADMIN", // system admin
-  MODERATOR: "MODERATOR", // content/user moderation
-  SUPPORT: "SUPPORT", // helpdesk / support team
-  USER: "USER", // normal user
-  GUEST: "GUEST", // limited access
+  SUPER_ADMIN: "SUPER_ADMIN",
+  ADMIN: "ADMIN",
+  MODERATOR: "MODERATOR",
+  SUPPORT: "SUPPORT",
+  USER: "USER",
+  GUEST: "GUEST",
+};
+
+export const ROLE_HIERARCHY = {
+  SUPER_ADMIN: 100,
+  ADMIN: 80,
+  MODERATOR: 60,
+  SUPPORT: 40,
+  USER: 20,
+  GUEST: 10,
 };

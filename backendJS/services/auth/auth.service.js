@@ -7,6 +7,8 @@ import {
 import { httpStatusConfig } from "../../config/http.config.js";
 import Account from "../../models/auth/account.model.js";
 import User from "../../models/auth/user.model.js";
+import { Role } from "../../models/role.model.js";
+import { UserRole } from "../../models/userRole.model.js";
 import Profile from "../../models/auth/profile.model.js";
 import SocialLink from "../../models/auth/socialLink.model.js";
 import VerificationToken from "../../models/auth/verificationToken.model.js";
@@ -16,6 +18,7 @@ import { sessionService } from "./session.service.js";
 import { emailService } from "./email.service.js";
 import AppError from "../../errors/app.error.js";
 import { getRemainingTime } from "../../utils/date.utils.js";
+import { getUserPermissions, getUserRoles } from "./rbac.service.js";
 
 class AuthService {
   async register(
@@ -55,6 +58,13 @@ class AuthService {
       provider: "local",
       email: email.toLowerCase(),
       password: hashedPassword,
+    });
+
+    const role = await Role.findOne({ name: "USER" });
+
+    await UserRole.create({
+      user: user._id,
+      role: role._id,
     });
 
     await Profile.create({
@@ -157,7 +167,15 @@ class AuthService {
 
     await User.findByIdAndUpdate(user._id, { lastSeen: new Date() });
 
-    const tokens = tokenService.generateAuthTokens(user._id);
+    const roles = await getUserRoles(user._id);
+    const permissionsSet = await getUserPermissions(user._id);
+    const permissions = [...permissionsSet];
+
+    const tokens = tokenService.generateAuthTokens(
+      user._id,
+      roles,
+      permissions,
+    );
     await sessionService.createSession({
       userId: user._id,
       refreshToken: tokens.refreshToken,
@@ -431,7 +449,16 @@ class AuthService {
       });
     }
 
-    const tokens = tokenService.generateAuthTokens(payload.userId);
+    const roles = await getUserRoles(payload.userId);
+    const permissionsSet = await getUserPermissions(payload.userId);
+    const permissions = [...permissionsSet];
+
+    const tokens = tokenService.generateAuthTokens(
+      payload.userId,
+      roles,
+      permissions,
+    );
+
     await sessionService.rotateSession(
       session._id,
       tokens.refreshToken,

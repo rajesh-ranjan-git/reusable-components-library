@@ -199,9 +199,11 @@ export const refreshTokens = asyncHandler(async (req, res) => {
 });
 
 export const getMe = asyncHandler(async (req, res) => {
+  const { roles, permissions, ...safeUser } = user;
+
   successResponseHandler(req, res, {
     status: "FETCH USER SUCCESS",
     message: "User details fetched successfully!",
-    data: { user: req.data.user },
+    data: { user: safeUser },
   });
 });

@@ -21,6 +21,13 @@ const permissionSchema = new mongoose.Schema(
       index: true,
     },
 
+    scope: {
+      type: String,
+      enum: ["own", "any"],
+      default: "any",
+      index: true,
+    },
+
     description: {
       type: String,
       default: "",
@@ -45,6 +52,17 @@ const permissionSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-permissionSchema.index({ resource: 1, action: 1 }, { unique: true });
+permissionSchema.index({ resource: 1, action: 1, scope: 1 }, { unique: true });
+
+permissionSchema.pre("validate", function (next) {
+  if (this.key) {
+    const [resource, action, scope] = this.key.split(":");
+
+    this.resource = resource;
+    this.action = action;
+    this.scope = scope || "any";
+  }
+  next();
+});
 
 export default mongoose.model("Permission", permissionSchema);

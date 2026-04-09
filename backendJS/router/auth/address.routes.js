@@ -9,6 +9,8 @@ import {
 } from "../../controllers/auth/address.controller.js";
 import { requestMiddleware } from "../../middlewares/request.middleware.js";
 import { authenticate } from "../../middlewares/authenticate.middleware.js";
+import { authorize } from "../../middlewares/authorize.middleware.js";
+import { PERMISSIONS } from "../../constants/permission.constants.js";
 
 const addressRouter = express.Router();
 
@@ -16,36 +18,42 @@ addressRouter.get(
   "/address",
   requestMiddleware({}),
   authenticate,
+  authorize({ permissions: [PERMISSIONS.ADDRESS_READ_OWN] }),
   getAddresses,
 );
 addressRouter.get(
   "/address/:addressId",
   requestMiddleware({ requireParams: true }),
   authenticate,
+  authorize({ permissions: [PERMISSIONS.ADDRESS_READ_OWN] }),
   getAddress,
 );
 addressRouter.post(
   "/address/create",
   requestMiddleware({ requireBody: true }),
   authenticate,
+  authorize({ permissions: [PERMISSIONS.ADDRESS_CREATE_OWN] }),
   createAddress,
 );
 addressRouter.patch(
   "/address/:addressId",
   requestMiddleware({ requireBody: true, requireParams: true }),
   authenticate,
+  authorize({ permissions: [PERMISSIONS.ADDRESS_UPDATE_OWN] }),
   updateAddress,
 );
 addressRouter.delete(
   "/address/:addressId",
   requestMiddleware({ requireParams: true }),
   authenticate,
+  authorize({ permissions: [PERMISSIONS.ADDRESS_DELETE_OWN] }),
   deleteAddress,
 );
 addressRouter.post(
   "/address/default/:addressId",
   requestMiddleware({ requireParams: true }),
   authenticate,
+  authorize({ permissions: [PERMISSIONS.ADDRESS_UPDATE_OWN] }),
   setDefaultAddress,
 );
 

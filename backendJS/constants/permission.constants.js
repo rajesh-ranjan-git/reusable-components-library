@@ -1,52 +1,60 @@
 export const PERMISSIONS = {
-  // ================= USER =================
-  USER_CREATE: "user:create",
-  USER_READ: "user:read",
-  USER_UPDATE: "user:update",
-  USER_DELETE: "user:delete",
-  USER_LIST: "user:list",
-  USER_SUSPEND: "user:suspend",
+  USER_CREATE: "user:create:any",
+  USER_READ_OWN: "user:read:own",
+  USER_READ_ANY: "user:read:any",
+  USER_UPDATE_OWN: "user:update:own",
+  USER_UPDATE_ANY: "user:update:any",
+  USER_DELETE_OWN: "user:delete:own",
+  USER_DELETE_ANY: "user:delete:any",
+  USER_LIST: "user:list:any",
+  USER_SUSPEND: "user:suspend:any",
 
-  // ================= PROFILE =================
-  PROFILE_READ: "profile:read",
-  PROFILE_UPDATE: "profile:update",
+  PROFILE_READ_OWN: "profile:read:own",
+  PROFILE_READ_ANY: "profile:read:any",
+  PROFILE_UPDATE_OWN: "profile:update:own",
+  PROFILE_UPDATE_ANY: "profile:update:any",
 
-  // ================= ADDRESS =================
-  ADDRESS_CREATE: "address:create",
-  ADDRESS_READ: "address:read",
-  ADDRESS_UPDATE: "address:update",
-  ADDRESS_DELETE: "address:delete",
+  ADDRESS_CREATE_OWN: "address:create:own",
+  ADDRESS_CREATE_ANY: "address:create:any",
+  ADDRESS_READ_OWN: "address:read:own",
+  ADDRESS_READ_ANY: "address:read:any",
+  ADDRESS_UPDATE_OWN: "address:update:own",
+  ADDRESS_UPDATE_ANY: "address:update:any",
+  ADDRESS_DELETE_OWN: "address:delete:own",
+  ADDRESS_DELETE_ANY: "address:delete:any",
 
-  // ================= SESSION =================
-  SESSION_READ: "session:read",
-  SESSION_DELETE: "session:delete",
-  SESSION_REVOKE: "session:revoke",
+  SESSION_READ_OWN: "session:read:own",
+  SESSION_READ_ANY: "session:read:any",
+  SESSION_DELETE_OWN: "session:delete:own",
+  SESSION_DELETE_ANY: "session:delete:any",
+  SESSION_REVOKE_OWN: "session:revoke:own",
+  SESSION_REVOKE_ANY: "session:revoke:any",
 
-  // ================= AUTH =================
+  ACTIVITY_READ_OWN: "activity:read:own",
+  ACTIVITY_READ_ANY: "activity:read:any",
+  ACTIVITY_RESET_OWN: "activity:reset:own",
+  ACTIVITY_RESET_ANY: "activity:reset:any",
+
   AUTH_LOGIN: "auth:login",
-  AUTH_LOGOUT: "auth:logout",
+  AUTH_LOGOUT_OWN: "auth:logout:own",
+  AUTH_LOGOUT_ANY: "auth:logout:any",
   AUTH_REFRESH: "auth:refresh",
 
-  // ================= ROLE =================
-  ROLE_CREATE: "role:create",
-  ROLE_READ: "role:read",
-  ROLE_UPDATE: "role:update",
-  ROLE_DELETE: "role:delete",
-  ROLE_ASSIGN: "role:assign",
+  ROLE_CREATE: "role:create:any",
+  ROLE_READ: "role:read:any",
+  ROLE_UPDATE: "role:update:any",
+  ROLE_DELETE: "role:delete:any",
+  ROLE_ASSIGN: "role:assign:any",
 
-  // ================= PERMISSION =================
-  PERMISSION_CREATE: "permission:create",
-  PERMISSION_READ: "permission:read",
-  PERMISSION_UPDATE: "permission:update",
-  PERMISSION_DELETE: "permission:delete",
+  PERMISSION_CREATE: "permission:create:any",
+  PERMISSION_READ: "permission:read:any",
+  PERMISSION_UPDATE: "permission:update:any",
+  PERMISSION_DELETE: "permission:delete:any",
 
-  // ================= ADMIN =================
   ADMIN_ACCESS: "admin:access",
   ADMIN_AUDIT_LOG_READ: "admin:audit:read",
 
-  // ================= SYSTEM =================
-  SYSTEM_CONFIG_UPDATE: "system:update",
+  SYSTEM_CONFIG_UPDATE: "system:update:any",
 
-  // ================= WILDCARD =================
-  ALL: "*:*",
+  ALL: "*:*:*",
 };

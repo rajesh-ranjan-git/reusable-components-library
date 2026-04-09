@@ -3,10 +3,6 @@ import User from "../models/auth/user.model.js";
 import { tokenService } from "../services/auth/token.service.js";
 import AppError from "../errors/app.error.js";
 import { asyncHandler } from "../utils/common.utils.js";
-import {
-  getUserPermissions,
-  getUserRoles,
-} from "../services/auth/rbac.service.js";
 
 export const authenticate = asyncHandler(async (req, res, next) => {
   const token = tokenService.extractBearerToken(req.headers.authorization);
@@ -78,16 +74,13 @@ export const authenticate = asyncHandler(async (req, res, next) => {
     });
   }
 
-  const roles = getUserRoles(user._id);
-  const permissions = getUserPermissions(user._id);
-
   req.data = {
     ...req.data,
     userId: user._id.toString(),
     user: {
       ...user,
-      roles,
-      permissions,
+      roles: payload.roles,
+      permissions: payload.permissions,
     },
   };
 

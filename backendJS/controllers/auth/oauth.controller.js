@@ -105,7 +105,12 @@ export const oauthCallback = (provider) =>
       });
     }
 
-    const tokens = tokenService.generateAuthTokens(userId);
+    const roles = await getUserRoles(userId);
+    const permissionsSet = await getUserPermissions(userId);
+    const permissions = [...permissionsSet];
+
+    const tokens = tokenService.generateAuthTokens(userId, roles, permissions);
+
     await sessionService.createSession({
       userId,
       refreshToken: tokens.refreshToken,

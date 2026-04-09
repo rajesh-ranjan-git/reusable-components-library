@@ -1,4 +1,8 @@
+import { ROLE_PERMISSIONS_MAP } from "../../config/permission.config.js";
+import { PERMISSIONS } from "../../constants/permission.constants.js";
+import { ROLE_HIERARCHY } from "../../constants/roles.constants.js";
 import UserRole from "../../models/auth/userRole.model.js";
+import { extractPermissions } from "../../utils/permission.utils.js";
 
 export const getUserRoles = async (userId) => {
   const roles = await UserRole.find({ user: userId }).populate({
@@ -9,18 +13,42 @@ export const getUserRoles = async (userId) => {
 };
 
 export const getUserPermissions = async (userId) => {
-  const roles = await UserRole.find({ user: userId }).populate({
+  const userRoles = await UserRole.find({
+    user: userId,
+    status: "ACTIVE",
+    $or: [{ expiresAt: null }, { expiresAt: { $gt: new Date() } }],
+  }).populate({
     path: "role",
-    populate: { path: "permissions" },
+    populate: [
+      { path: "permissions" },
+      { path: "inherits", populate: { path: "permissions" } },
+    ],
   });
 
+  return Array.from(extractPermissions(userRoles));
+};
+
+export const getPermissionsByRoles = (roles = []) => {
   const permissions = new Set();
 
-  roles.forEach((r) => {
-    r.role.permissions.forEach((p) => {
-      permissions.add(p.name);
-    });
+  roles.forEach((role) => {
+    const rolePermissions = ROLE_PERMISSIONS_MAP[role] || [];
+
+    rolePermissions.forEach((permission) => permissions.add(permission));
   });
 
-  return permissions;
+  return Array.from(permissions);
+};
+
+export const hasPermission = ({ userPermissions, requiredPermission }) => {
+  if (userPermissions.includes(PERMISSIONS.ALL)) return true;
+
+  return userPermissions.includes(requiredPermission);
+};
+
+export const getHighestRoleLevel = (roles = []) => {
+  return roles.reduce((max, role) => {
+    const level = ROLE_HIERARCHY[role] || 0;
+    return Math.max(max, level);
+  }, 0);
 };
