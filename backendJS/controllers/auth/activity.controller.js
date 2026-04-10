@@ -38,8 +38,15 @@ export const getMyActivity = asyncHandler(async (req, res) => {
     ActivityLog.countDocuments(filter),
   ]);
 
+  if (!logs || !total) {
+    throw AppError.internal({
+      message: "Failed to fetch activities!",
+      code: "ACTIVITY FETCH FAILED",
+    });
+  }
+
   successResponseHandler(req, res, {
-    status: "FETCH ACTIVITY SUCCESS",
+    status: "ACTIVITY FETCH SUCCESS",
     message: "Activity details fetched successfully!",
     data: {
       logs,
@@ -57,8 +64,15 @@ export const getMyActivity = asyncHandler(async (req, res) => {
 export const getActivityTypes = asyncHandler(async (req, res) => {
   const types = await ActivityLog.distinct("action", { user: req.data.userId });
 
+  if (!types) {
+    throw AppError.internal({
+      message: "Failed to fetch activity types!",
+      code: "ACTIVITY FETCH FAILED",
+    });
+  }
+
   successResponseHandler(req, res, {
-    status: "FETCH ACTIVITY SUCCESS",
+    status: "ACTIVITY FETCH SUCCESS",
     message: "Activity type fetched successfully!",
     data: { types },
   });
@@ -66,6 +80,13 @@ export const getActivityTypes = asyncHandler(async (req, res) => {
 
 export const clearMyActivity = asyncHandler(async (req, res) => {
   const result = await ActivityLog.deleteMany({ user: req.data.userId });
+
+  if (!result) {
+    throw AppError.internal({
+      message: "Failed to clear activities!",
+      code: "ACTIVITY CLEAR FAILED",
+    });
+  }
 
   successResponseHandler(req, res, {
     status: "ACTIVITY CLEAR SUCCESS",
