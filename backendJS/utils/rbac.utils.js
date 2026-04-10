@@ -2,6 +2,7 @@ import { ROLE_PERMISSIONS_MAP } from "../config/permission.config.js";
 import { PERMISSIONS } from "../constants/permission.constants.js";
 import { ROLE_HIERARCHY } from "../constants/roles.constants.js";
 import { sanitizeMongoData } from "../db/db.utils.js";
+import AppError from "../errors/app.error.js";
 
 export const extractPermissions = (roles) => {
   const permissions = new Set();
@@ -105,7 +106,7 @@ export const resolveOwnership = async (req, ownership) => {
       if (!resource) {
         throw AppError.notFound({
           message: `No ${model.modelName.toLowerCase()} found with the provided ${resourceId ? `${model.modelName.toLowerCase()} ID` : fieldKey}!`,
-          code: `${model.toUpperCase()} NOT FOUND`,
+          code: `${model.modelName.toUpperCase()} NOT FOUND`,
           details: { resource },
         });
       }
