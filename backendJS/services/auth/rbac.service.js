@@ -22,5 +22,5 @@ export const getUserPermissions = async (userId) => {
     ],
   });
 
-  return Array.from(extractPermissions(userRoles));
+  return extractPermissions(userRoles);
 };

@@ -6,6 +6,7 @@ import Role from "../models/auth/role.model.js";
 import Log from "../models/log/log.model.js";
 import { PERMISSIONS } from "../constants/permission.constants.js";
 import { ROLE_PERMISSIONS_MAP } from "../config/permission.config.js";
+import { ROLE_HIERARCHY } from "../constants/roles.constants.js";
 
 const seedRBAC = async () => {
   try {
@@ -47,11 +48,14 @@ const seedRBAC = async () => {
           .filter(Boolean);
       }
 
+      const priority = ROLE_HIERARCHY[roleName];
+
       await Role.findOneAndUpdate(
         { name: roleName },
         {
           name: roleName,
           permissions,
+          priority,
         },
         {
           upsert: true,

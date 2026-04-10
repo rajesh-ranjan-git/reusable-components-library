@@ -22,9 +22,9 @@ export const authorize = ({
     const user = req.data.user;
     const userId = req.data.userId;
 
-    let userPermissions = user.permissions || [];
+    let userPermissions = req.data.permissions || [];
 
-    if (!userPermissions) {
+    if (!userPermissions?.length) {
       userPermissions = await getUserPermissions(userId);
     } else {
       userPermissions = new Set(userPermissions);
@@ -35,8 +35,8 @@ export const authorize = ({
     }
 
     if (permissions.length) {
-      const hasAllPermissions = permissions.every((p) =>
-        hasPermission(userPermissions, p),
+      const hasAllPermissions = permissions.every((p, i) =>
+        hasPermission([...userPermissions], p),
       );
 
       if (!hasAllPermissions) {

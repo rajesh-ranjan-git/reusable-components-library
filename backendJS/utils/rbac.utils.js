@@ -2,7 +2,6 @@ import { ROLE_PERMISSIONS_MAP } from "../config/permission.config.js";
 import { PERMISSIONS } from "../constants/permission.constants.js";
 import { ROLE_HIERARCHY } from "../constants/roles.constants.js";
 import { sanitizeMongoData } from "../db/db.utils.js";
-import { toTitleCase } from "./common.utils.js";
 
 export const extractPermissions = (roles) => {
   const permissions = new Set();
@@ -37,7 +36,7 @@ export const getPermissionsByRoles = (roles = []) => {
   return Array.from(permissions);
 };
 
-export const hasPermission = ({ userPermissions, requiredPermission }) => {
+export const hasPermission = (userPermissions, requiredPermission) => {
   if (!userPermissions || !requiredPermission) return false;
 
   if (userPermissions.includes(PERMISSIONS.ALL)) return true;
