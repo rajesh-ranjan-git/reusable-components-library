@@ -29,7 +29,7 @@ class EmailService {
     try {
       throw new AppError({
         message: "Email Service is not activated right now!",
-        code: "EMAIL SERVICE ERROR",
+        code: "EMAIL SERVICE FAILED",
         statusCode: httpStatusConfig.continue.statusCode,
       });
 

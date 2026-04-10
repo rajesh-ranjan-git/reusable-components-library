@@ -91,7 +91,7 @@ export const listUsers = asyncHandler(async (req, res) => {
   }));
 
   successResponseHandler(req, res, {
-    status: "FETCH USERS LIST SUCCESS",
+    status: "USERS LIST FETCH SUCCESS",
     message: "Users list fetched successfully!",
     data: {
       users: enriched,
@@ -124,7 +124,7 @@ export const getUser = asyncHandler(async (req, res) => {
   }
 
   successResponseHandler(req, res, {
-    status: "FETCH USER DETAILS SUCCESS",
+    status: "USER DETAILS FETCH SUCCESS",
     message: "User details fetched successfully!",
     data: {
       user,
@@ -150,7 +150,7 @@ export const updateUserStatus = asyncHandler(async (req, res) => {
   if (userId === req.data.userId) {
     throw AppError.badRequest({
       message: "Admins cannot change their own status!",
-      code: "UPDATE USER STATUS FAILED",
+      code: "USER STATUS UPDATE FAILED",
       details: { status },
     });
   }
@@ -180,7 +180,7 @@ export const updateUserStatus = asyncHandler(async (req, res) => {
   }).catch(() => {});
 
   successResponseHandler(req, res, {
-    status: "UPDATE USER STATUS SUCCESS",
+    status: "USER STATUS UPDATE SUCCESS",
     message: `User status updated to '${status}' successfully!`,
     data: { user },
   });
@@ -211,7 +211,7 @@ export const hardDeleteUser = asyncHandler(async (req, res) => {
   if (userId === req.data.userId) {
     throw AppError.badRequest({
       message: "Admins cannot delete their own account this way!",
-      code: "DELETE ACCOUNT FAILED",
+      code: "ACCOUNT DELETE FAILED",
       details: { userId },
     });
   }
@@ -234,7 +234,7 @@ export const hardDeleteUser = asyncHandler(async (req, res) => {
   ]);
 
   successResponseHandler(req, res, {
-    status: "DELETE USER SUCCESS",
+    status: "USER DELETE SUCCESS",
     message: "User and all associated data permanently deleted!",
   });
 });
@@ -243,7 +243,7 @@ export const listRoles = asyncHandler(async (req, res) => {
   const roles = await Role.find().lean();
 
   successResponseHandler(req, res, {
-    status: "FETCH ROLES SUCCESS",
+    status: "ROLES FETCH SUCCESS",
     message: "Roles list fetched successfully!",
     data: { roles },
   });
@@ -255,7 +255,7 @@ export const createRole = asyncHandler(async (req, res) => {
   if (!name) {
     throw AppError.badRequest({
       message: "Role name is required to create role!",
-      code: "CREATE ROLE FAILED",
+      code: "ROLE CREATE FAILED",
     });
   }
 
@@ -273,7 +273,7 @@ export const createRole = asyncHandler(async (req, res) => {
   });
 
   successResponseHandler(req, res, {
-    status: "CREATE ROLE SUCCESS",
+    status: "ROLE CREATE SUCCESS",
     statusCode: httpStatusConfig.created.statusCode,
     message: "New role created successfully!",
     data: { role },
@@ -287,7 +287,7 @@ export const assignRole = asyncHandler(async (req, res) => {
   if (!roleId) {
     throw AppError.unprocessable({
       message: "roleId is required to assign roles!",
-      code: "ASSIGN ROLE FAILED",
+      code: "ROLE ASSIGN FAILED",
       details: { roleId },
     });
   }
@@ -323,7 +323,7 @@ export const assignRole = asyncHandler(async (req, res) => {
   }).catch(() => {});
 
   successResponseHandler(req, res, {
-    status: "ASSIGN USER ROLE SUCCESS",
+    status: "USER ROLE ASSIGN SUCCESS",
     message: `Role '${role.name}' assigned to user successfully!`,
   });
 });
@@ -347,7 +347,7 @@ export const updateRole = asyncHandler(async (req, res) => {
   await role.save();
 
   successResponseHandler(req, res, {
-    status: "UPDATE ROLE SUCCESS",
+    status: "ROLE UPDATE SUCCESS",
     message: "Role updated successfully!",
     data: { role },
   });
@@ -360,7 +360,7 @@ export const deleteRole = asyncHandler(async (req, res) => {
   if (usersWithRole > 0) {
     throw AppError.badRequest({
       message: `Cannot delete role. ${usersWithRole} user(s) are assigned to it.`,
-      code: "DELETE ROLE FAILED",
+      code: "ROLE DELETE FAILED",
     });
   }
 
@@ -374,7 +374,7 @@ export const deleteRole = asyncHandler(async (req, res) => {
   }
 
   successResponseHandler(req, res, {
-    status: "DELETE ROLE SUCCESS",
+    status: "ROLE DELETE SUCCESS",
     message: "Role deleted successfully!",
   });
 });
@@ -414,7 +414,7 @@ export const getActivityLogs = asyncHandler(async (req, res) => {
   ]);
 
   successResponseHandler(req, res, {
-    status: "FETCH ACTIVITY LOGS SUCCESS",
+    status: "ACTIVITY LOGS FETCH SUCCESS",
     message: "Activity logs fetched successfully!",
     data: {
       logs,
@@ -446,7 +446,7 @@ export const getStats = asyncHandler(async (req, res) => {
   ]);
 
   successResponseHandler(req, res, {
-    status: "FETCH STATS SUCCESS",
+    status: "STATS FETCH SUCCESS",
     message: "Stats fetched successfully!",
     data: {
       users: {

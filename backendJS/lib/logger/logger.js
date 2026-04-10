@@ -58,7 +58,7 @@ let _dbAdapter = null;
 
 export const setDbAdapter = (fn) => {
   if (typeof fn !== "function")
-    throw new TypeError("DB adapter must be a function");
+    throw new TypeError("DB adapter must be a function!");
   _dbAdapter = fn;
 };
 

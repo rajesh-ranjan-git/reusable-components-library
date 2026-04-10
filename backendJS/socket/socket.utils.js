@@ -1,11 +1,8 @@
-import { httpStatusConfig } from "../config/http.config.js";
-
 export async function generateRoomId(users) {
   if (!users || users.length === 0) {
-    throw new AppError({
+    throw AppError.internal({
       message: "Users are required to generate room id!",
       code: "SOCKET ERROR",
-      statusCode: httpStatusConfig.internalServerError.statusCode,
       details: { users },
     });
   }

@@ -31,10 +31,9 @@ export const initializeSocket = (server) => {
       socket.data.user = payload;
       next();
     } catch {
-      throw new AppError({
+      throw AppError.unauthorized({
         message: "The provided token is invalid!",
         code: "INVALID TOKEN",
-        statusCode: httpStatusConfig.unauthorized.statusCode,
         details: { token },
       });
     }

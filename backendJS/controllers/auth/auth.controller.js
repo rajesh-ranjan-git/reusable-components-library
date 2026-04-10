@@ -16,6 +16,13 @@ export const register = asyncHandler(async (req, res) => {
 
   const result = await authService.register(value, req.ip);
 
+  if (!result) {
+    throw AppError.internal({
+      message: "Failed to register new user!",
+      code: "REGISTRATION FAILED",
+    });
+  }
+
   successResponseHandler(req, res, {
     status: "REGISTRATION SUCCESS",
     statusCode: httpStatusConfig.created.statusCode,
@@ -31,6 +38,13 @@ export const login = asyncHandler(async (req, res) => {
     ipAddress: req.ip,
     device: req.headers["user-agent"],
   });
+
+  if (!user || !tokens) {
+    throw AppError.internal({
+      message: "Failed to login!",
+      code: "LOGIN FAILED",
+    });
+  }
 
   res.cookie("refreshToken", tokens.refreshToken, {
     httpOnly: true,
@@ -82,6 +96,13 @@ export const verifyEmail = asyncHandler(async (req, res) => {
 
   const result = await authService.verifyEmail(token);
 
+  if (!result) {
+    throw AppError.internal({
+      message: "Failed to verify email!",
+      code: "EMAIL VERIFICATION FAILED",
+    });
+  }
+
   successResponseHandler(req, res, {
     status: "EMAIL VERIFICATION SUCCESS",
     message: result.message,
@@ -106,6 +127,13 @@ export const resendVerification = asyncHandler(async (req, res) => {
   }
 
   const result = await authService.resendVerificationEmail(validatedEmail);
+
+  if (!result) {
+    throw AppError.internal({
+      message: "Failed to resend verification email!",
+      code: "EMAIL VERIFICATION FAILED",
+    });
+  }
 
   successResponseHandler(req, res, {
     status: "EMAIL VERIFICATION SENT",
@@ -132,6 +160,13 @@ export const forgotPassword = asyncHandler(async (req, res) => {
 
   const result = await authService.forgotPassword(validatedEmail, req.ip);
 
+  if (!result) {
+    throw AppError.internal({
+      message: "Failed to send password reset link!",
+      code: "PASSWORD RESET LINK FAILED",
+    });
+  }
+
   successResponseHandler(req, res, {
     status: "PASSWORD RESET LINK SENT",
     message: result.message,
@@ -142,6 +177,13 @@ export const resetPassword = asyncHandler(async (req, res) => {
   const { token, password } = validateResetPassword(req.data.body);
 
   const result = await authService.resetPassword(token, password);
+
+  if (!result) {
+    throw AppError.internal({
+      message: "Failed to reset password!",
+      code: "PASSWORD RESET FAILED",
+    });
+  }
 
   successResponseHandler(req, res, {
     status: "PASSWORD RESET SUCCESS",
@@ -161,8 +203,15 @@ export const updatePassword = asyncHandler(async (req, res) => {
     req.ip,
   );
 
+  if (!result) {
+    throw AppError.internal({
+      message: "Failed to update password!",
+      code: "PASSWORD UPDATE FAILED",
+    });
+  }
+
   successResponseHandler(req, res, {
-    status: "UPDATE PASSWORD SUCCESS",
+    status: "PASSWORD UPDATE SUCCESS",
     message: result.message,
   });
 });
@@ -179,6 +228,13 @@ export const refreshTokens = asyncHandler(async (req, res) => {
   }
 
   const tokens = await authService.refreshTokens(refreshToken, req.ip);
+
+  if (!tokens) {
+    throw AppError.internal({
+      message: "Failed to refresh token!",
+      code: "TOKENS REFRESH FAILED",
+    });
+  }
 
   res.cookie("refreshToken", tokens.refreshToken, {
     httpOnly: true,
@@ -199,11 +255,9 @@ export const refreshTokens = asyncHandler(async (req, res) => {
 });
 
 export const getMe = asyncHandler(async (req, res) => {
-  const { roles, permissions, ...safeUser } = user;
-
   successResponseHandler(req, res, {
     status: "FETCH USER SUCCESS",
     message: "User details fetched successfully!",
-    data: { user: safeUser },
+    data: { user: req.data.user },
   });
 });

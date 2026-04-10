@@ -18,7 +18,7 @@ export const getAccountInfo = asyncHandler(async (req, res) => {
   ]);
 
   successResponseHandler(req, res, {
-    status: "FETCH ACCOUNT SUCCESS",
+    status: "ACCOUNT FETCH SUCCESS",
     message: "Account details fetched successfully!",
     data: { user: req.data.user, account, profile },
   });
@@ -94,7 +94,7 @@ export const deleteAccount = asyncHandler(async (req, res) => {
   }).catch(() => {});
 
   successResponseHandler(req, res, {
-    status: "DELETE ACCOUNT SUCCESS",
+    status: "ACCOUNT DELETE SUCCESS",
     message: "Account deleted successfully!",
   });
 });
@@ -112,7 +112,7 @@ export const getDashboardSummary = asyncHandler(async (req, res) => {
     ]);
 
   successResponseHandler(req, res, {
-    status: "FETCH DASHBOARD SUMMARY SUCCESS",
+    status: "DASHBOARD SUMMARY FETCH SUCCESS",
     message: "Dashboard summary fetched successfully!",
     data: {
       user: req.data.user,

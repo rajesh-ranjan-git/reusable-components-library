@@ -7,6 +7,13 @@ import AppError from "../../errors/app.error.js";
 export const getActiveSessions = asyncHandler(async (req, res) => {
   const sessions = await sessionService.getUserSessions(req.data.userId);
 
+  if (!sessions) {
+    throw AppError.internal({
+      message: "Failed to get user sessions!",
+      code: "SESSION FETCH FAILED",
+    });
+  }
+
   const currentRefreshToken =
     req.cookies?.refreshToken || req.data.body?.refreshToken;
 
@@ -22,7 +29,7 @@ export const getActiveSessions = asyncHandler(async (req, res) => {
   }));
 
   successResponseHandler(req, res, {
-    status: "FETCH SESSION SUCCESS",
+    status: "SESSION FETCH SUCCESS",
     message: "Sessions fetched successfully!",
     data: { sessions: mapped, count: mapped.length },
   });
@@ -44,7 +51,7 @@ export const revokeSession = asyncHandler(async (req, res) => {
   await sessionService.revokeSessionById(sessionId, req.data.userId);
 
   successResponseHandler(req, res, {
-    status: "REVOKE SESSION SUCCESS",
+    status: "SESSION REVOKE SUCCESS",
     message: "Sessions revoked successfully!",
   });
 });
@@ -65,8 +72,15 @@ export const revokeOtherSessions = asyncHandler(async (req, res) => {
     currentRefreshToken,
   );
 
+  if (!result) {
+    throw AppError.internal({
+      message: "Failed to revoke user sessions!",
+      code: "SESSIONS REVOKE FAILED",
+    });
+  }
+
   successResponseHandler(req, res, {
-    status: "REVOKE OTHER SESSIONS SUCCESS",
+    status: "SESSIONS REVOKE SUCCESS",
     message: "Except current session, all other sessions revoked successfully!",
     data: { revoked: result.deletedCount },
   });
@@ -75,8 +89,15 @@ export const revokeOtherSessions = asyncHandler(async (req, res) => {
 export const getSessionCount = asyncHandler(async (req, res) => {
   const count = await sessionService.countActiveSessions(req.data.userId);
 
+  if (!count) {
+    throw AppError.internal({
+      message: "Failed to get user sessions count!",
+      code: "SESSION FETCH FAILED",
+    });
+  }
+
   successResponseHandler(req, res, {
-    status: "FETCH SESSION SUCCESS",
+    status: "SESSION FETCH SUCCESS",
     message: "Sessions fetched successfully!",
     data: { activeSessions: count },
   });

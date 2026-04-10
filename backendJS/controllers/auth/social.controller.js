@@ -14,7 +14,7 @@ export const getSocialLinks = asyncHandler(async (req, res) => {
   }
 
   successResponseHandler(req, res, {
-    status: "FETCH SOCIAL LINKS SUCCESS",
+    status: "SOCIAL LINKS FETCH SUCCESS",
     message: "Social links fetched successfully!",
     data: { socialLinks: links },
   });
@@ -43,7 +43,7 @@ export const getSocialLinksByUser = asyncHandler(async (req, res) => {
   }
 
   successResponseHandler(req, res, {
-    status: "FETCH SOCIAL LINKS SUCCESS",
+    status: "SOCIAL LINKS FETCH SUCCESS",
     message: "Social links fetched successfully!",
     data: { socialLinks: links },
   });
@@ -72,7 +72,7 @@ export const updateSocialLinks = asyncHandler(async (req, res) => {
   if (errors.length > 0) {
     throw AppError.unprocessable({
       message: "Failed to update social links!",
-      code: "UPDATE SOCIAL LINKS FAILED",
+      code: "SOCIAL LINKS UPDATE FAILED",
       details: { errors },
     });
   }
@@ -80,7 +80,7 @@ export const updateSocialLinks = asyncHandler(async (req, res) => {
   if (Object.keys(updates).length === 0) {
     throw AppError.unprocessable({
       message: "No valid social links provided to update!",
-      code: "UPDATE SOCIAL LINKS FAILED",
+      code: "SOCIAL LINKS UPDATE FAILED",
     });
   }
 
@@ -90,8 +90,15 @@ export const updateSocialLinks = asyncHandler(async (req, res) => {
     { returnDocument: "after", upsert: true, runValidators: true },
   );
 
+  if (!socialLinks) {
+    throw AppError.internal({
+      message: "Failed to update social links!",
+      code: "SOCIAL LINKS UPDATE FAILED",
+    });
+  }
+
   successResponseHandler(req, res, {
-    status: "UPDATE SOCIAL LINKS SUCCESS",
+    status: "SOCIAL LINKS UPDATE SUCCESS",
     message: "Social links updated successfully!",
     data: { socialLinks },
   });
@@ -105,7 +112,7 @@ export const deleteSocialLink = asyncHandler(async (req, res) => {
   if (!allowedPlatforms.includes(platform)) {
     throw AppError.badRequest({
       message: `Invalid platform. Must be one of: ${toTitleCase(allowedPlatforms.join(", "))}!`,
-      code: "DELETE SOCIAL LINKS FAILED",
+      code: "SOCIAL LINK DELETE FAILED",
     });
   }
 
@@ -114,7 +121,7 @@ export const deleteSocialLink = asyncHandler(async (req, res) => {
   if (!socialLinks[platform]) {
     throw AppError.badRequest({
       message: `${toTitleCase(platform)} link not available to delete!`,
-      code: "DELETE SOCIAL LINKS FAILED",
+      code: "SOCIAL LINK DELETE FAILED",
     });
   }
 
@@ -124,15 +131,15 @@ export const deleteSocialLink = asyncHandler(async (req, res) => {
     { returnDocument: "after", runValidators: true },
   );
 
-  if (!updatedSocialLinks) {
-    throw AppError.notFound({
-      message: "Social links record not found!",
-      code: "SOCIAL LINKS NOT FOUND",
+  if (!socialLinks) {
+    throw AppError.internal({
+      message: "Failed to delete social links!",
+      code: "SOCIAL LINK DELETE FAILED",
     });
   }
 
   successResponseHandler(req, res, {
-    status: "DELETE SOCIAL LINK SUCCESS",
+    status: "SOCIAL LINK DELETE SUCCESS",
     message: `${toTitleCase(platform)} link removed successfully!`,
     data: { socialLinks: updatedSocialLinks },
   });

@@ -54,32 +54,28 @@ export const verifyJwtToken = (token) => {
     return decodedToken.id;
   } catch (error) {
     if (error.name === jwtKnownErrorsConfig.tokenExpiredError) {
-      throw new AppError({
+      throw AppError.unauthorized({
         message: "The provided token is expired!",
         code: "TOKEN EXPIRED",
-        statusCode: httpStatusConfig.unauthorized.statusCode,
         details: { token },
       });
     } else if (error.name === jwtKnownErrorsConfig.jwtError) {
-      throw new AppError({
+      throw AppError.unauthorized({
         message: "The provided token is invalid!",
         code: "INVALID TOKEN",
-        statusCode: httpStatusConfig.unauthorized.statusCode,
         details: { token },
       });
     } else if (error.name === jwtKnownErrorsConfig.notBeforeError) {
-      throw new AppError({
+      throw AppError.internal({
         message:
           "We were unable to process token as we got 'Not before token' error!",
         code: "NOT BEFORE ERROR",
-        statusCode: httpStatusConfig.internalServerError.statusCode,
         details: { token },
       });
     } else {
-      throw new AppError({
+      throw AppError.internal({
         message: "We were unable to verify the token!",
         code: "TOKEN VERIFICATION FAILED",
-        statusCode: httpStatusConfig.internalServerError.statusCode,
         details: { token },
       });
     }
@@ -93,10 +89,9 @@ export const comparePassword = async (incomingPassword, existingPassword) => {
   );
 
   if (isPasswordCorrect === undefined || isPasswordCorrect === null) {
-    throw new AppError({
+    throw AppError.internal({
       message: "We were unable to verify the credentials!",
       code: "CREDENTIALS VERIFICATION FAILED",
-      statusCode: httpStatusConfig.internalServerError.statusCode,
       details: { password: incomingPassword },
     });
   }

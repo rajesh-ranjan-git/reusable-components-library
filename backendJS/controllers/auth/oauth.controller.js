@@ -148,7 +148,7 @@ export const getLinkedProviders = asyncHandler(async (req, res) => {
     .lean();
 
   successResponseHandler(req, res, {
-    status: "FETCH PROVIDER SUCCESS",
+    status: "PROVIDER FETCH SUCCESS",
     message: "Providers fetched successfully!",
     data: { providers },
   });
@@ -161,7 +161,7 @@ export const unlinkProvider = asyncHandler(async (req, res) => {
   if (!validProviders.includes(provider)) {
     throw AppError.badRequest({
       message: `Invalid provider ${provider}!`,
-      code: "UNLINK PROVIDER FAILED",
+      code: "PROVIDER UNLINK FAILED",
       details: { provider },
     });
   }
@@ -178,7 +178,7 @@ export const unlinkProvider = asyncHandler(async (req, res) => {
     throw AppError.forbidden({
       message:
         "Cannot unlink the only authentication method. Please add a password first.",
-      code: "UNLINK PROVIDER FAILED",
+      code: "PROVIDER UNLINK FAILED",
     });
   }
 
@@ -189,12 +189,12 @@ export const unlinkProvider = asyncHandler(async (req, res) => {
   if (!result) {
     throw AppError.notFound({
       message: `Provider '${provider}' is not linked to this account!`,
-      code: "UNLINK PROVIDER FAILED",
+      code: "PROVIDER UNLINK FAILED",
     });
   }
 
   successResponseHandler(req, res, {
-    status: "UNLINK PROVIDER SUCCESS",
+    status: "PROVIDER UNLINK SUCCESS",
     message: `${provider} unlinked successfully!`,
   });
 });

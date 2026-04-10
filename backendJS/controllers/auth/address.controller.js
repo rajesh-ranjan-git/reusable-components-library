@@ -30,7 +30,7 @@ export const getAddresses = asyncHandler(async (req, res) => {
 
 export const getAddress = asyncHandler(async (req, res) => {
   successResponseHandler(req, res, {
-    status: "FETCH ADDRESS SUCCESS",
+    status: "ADDRESS FETCH SUCCESS",
     message: "Address fetched successfully!",
     data: { address: req.data.address },
   });

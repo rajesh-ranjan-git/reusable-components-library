@@ -11,6 +11,7 @@ import { genderProperties } from "../../config/common.config.js";
 
 export const getMyProfile = asyncHandler(async (req, res) => {
   const profile = await Profile.findOne({ user: req.data.userId }).lean();
+
   if (!profile) {
     throw AppError.notFound({
       message: "Profile details not found!",
@@ -19,7 +20,7 @@ export const getMyProfile = asyncHandler(async (req, res) => {
   }
 
   successResponseHandler(req, res, {
-    status: "FETCH PROFILE SUCCESS",
+    status: "PROFILE FETCH SUCCESS",
     message: "Profile fetched successfully!",
     data: { profile },
   });
@@ -54,7 +55,7 @@ export const getUserProfile = asyncHandler(async (req, res) => {
   }
 
   successResponseHandler(req, res, {
-    status: "FETCH PROFILE SUCCESS",
+    status: "PROFILE FETCH SUCCESS",
     message: "Profile fetched successfully!",
     data: { profile },
   });
@@ -115,7 +116,7 @@ export const updateProfile = asyncHandler(async (req, res) => {
   }
 
   successResponseHandler(req, res, {
-    status: "UPDATE PROFILE SUCCESS",
+    status: "PROFILE UPDATE SUCCESS",
     message: "Profile updated successfully!",
     data: { profile },
   });
@@ -169,7 +170,7 @@ export const updateUsername = asyncHandler(async (req, res) => {
   }
 
   successResponseHandler(req, res, {
-    status: "UPDATE USERNAME SUCCESS",
+    status: "USERNAME UPDATE SUCCESS",
     message: "Username updated successfully!",
     data: { userName: validatedUserName },
   });
@@ -221,7 +222,7 @@ export const updateGender = asyncHandler(async (req, res) => {
   }
 
   successResponseHandler(req, res, {
-    status: "UPDATE PROFILE SUCCESS",
+    status: "PROFILE UPDATE SUCCESS",
     statusCode: httpStatusConfig.created.statusCode,
     message: "Gender updated successfully!",
     data: { gender: gender.trim().toLowerCase() },
