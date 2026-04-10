@@ -9,6 +9,7 @@ import { requestMiddleware } from "../../middlewares/request.middleware.js";
 import { authenticate } from "../../middlewares/authenticate.middleware.js";
 import { authorize } from "../../middlewares/authorize.middleware.js";
 import { PERMISSIONS } from "../../constants/permission.constants.js";
+import Social from "../../models/auth/socialLink.model.js";
 
 const socialRouter = express.Router();
 
@@ -25,6 +26,14 @@ socialRouter.get(
   authenticate,
   authorize({
     permissions: [PERMISSIONS.PROFILE_READ_ANY],
+    ownership: {
+      type: "resource",
+      source: "params",
+      fieldKey: "userId",
+      model: Social,
+      ownerIdField: "user",
+    },
+    enforceOwnership: true,
   }),
   getSocialLinksByUser,
 );
