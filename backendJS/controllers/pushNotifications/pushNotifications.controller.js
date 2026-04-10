@@ -20,7 +20,7 @@ export const subscribe = async (req, res, next) => {
     await PushNotificationSubscription.findOneAndUpdate(
       { endpoint: subscription.endpoint },
       subscription,
-      { upsert: true, returnDocument: "after" },
+      { upsert: true, returnDocument: "after", runValidators: true },
     );
 
     successResponseHandler(req, res, {

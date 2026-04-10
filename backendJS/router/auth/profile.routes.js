@@ -25,7 +25,17 @@ profileRouter.get(
   "/profile/:username",
   requestMiddleware({ requireParams: true }),
   authenticate,
-  authorize({ permissions: [PERMISSIONS.PROFILE_READ_ANY] }),
+  authorize({
+    permissions: [PERMISSIONS.PROFILE_READ_ANY],
+    ownership: {
+      type: "resource",
+      source: "params",
+      fieldKey: "userId",
+      model: Profile,
+      ownerIdField: "user",
+    },
+    enforceHierarchy: true,
+  }),
   getUserProfile,
 );
 profileRouter.patch(

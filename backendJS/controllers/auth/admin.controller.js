@@ -73,11 +73,25 @@ export const listUsers = asyncHandler(async (req, res) => {
     User.countDocuments(filter),
   ]);
 
+  if (!users || !total) {
+    throw AppError.internal({
+      message: "Failed to fetch users list!",
+      code: "USERS FETCH FAILED",
+    });
+  }
+
   const userAccounts = await Account.find({
     user: { $in: users.map((u) => u._id) },
   })
     .select("user email provider")
     .lean();
+
+  if (!userAccounts) {
+    throw AppError.internal({
+      message: "Failed to fetch accounts!",
+      code: "ACCOUNTS FETCH FAILED",
+    });
+  }
 
   const accountMap = userAccounts.reduce((acc, a) => {
     if (!acc[a.user.toString()]) acc[a.user.toString()] = [];
@@ -115,7 +129,7 @@ export const getUser = asyncHandler(async (req, res) => {
     Session.find({ user: userId, expiresAt: { $gt: new Date() } }).lean(),
   ]);
 
-  if (!user) {
+  if (!user || !profile || !accounts || !sessions) {
     throw AppError.notFound({
       message: "No user found with provided userId!",
       code: "USER NOT FOUND",
@@ -161,7 +175,9 @@ export const updateUserStatus = asyncHandler(async (req, res) => {
 
   const user = await User.findByIdAndUpdate(userId, updates, {
     returnDocument: "after",
+    runValidators: true,
   });
+
   if (!user) {
     throw AppError.notFound({
       message: "No user found with provided userId!",
@@ -193,6 +209,13 @@ export const forceLogoutUser = asyncHandler(async (req, res) => {
 
   const result = await sessionService.revokeAllUserSessions(userId);
 
+  if (!result) {
+    throw AppError.internal({
+      message: "Failed to revoke user sessions!",
+      code: "SESSIONS REVOKE FAILED",
+    });
+  }
+
   await ActivityLog.create({
     user: req.data.userId,
     action: "admin_force_logout",
@@ -219,6 +242,7 @@ export const hardDeleteUser = asyncHandler(async (req, res) => {
   }
 
   const user = await User.findById(userId);
+
   if (!user) {
     throw AppError.notFound({
       message: "No user found with provided userId!",
@@ -244,6 +268,13 @@ export const hardDeleteUser = asyncHandler(async (req, res) => {
 export const listRoles = asyncHandler(async (req, res) => {
   const roles = await Role.find().lean();
 
+  if (!roles) {
+    throw AppError.internal({
+      message: "Failed to fetch roles!",
+      code: "ROLES FETCH FAILED",
+    });
+  }
+
   successResponseHandler(req, res, {
     status: "ROLES FETCH SUCCESS",
     message: "Roles list fetched successfully!",
@@ -254,9 +285,9 @@ export const listRoles = asyncHandler(async (req, res) => {
 export const createRole = asyncHandler(async (req, res) => {
   const { name, permissions } = req.body;
 
-  if (!name) {
+  if (!name || !permissions) {
     throw AppError.badRequest({
-      message: "Role name is required to create role!",
+      message: "Role name and permissions both are required to create role!",
       code: "ROLE CREATE FAILED",
     });
   }
@@ -273,6 +304,13 @@ export const createRole = asyncHandler(async (req, res) => {
     name: name.toLowerCase(),
     permissions: permissions || [],
   });
+
+  if (!role) {
+    throw AppError.internal({
+      message: "Failed to create role!",
+      code: "ROLE CREATE FAILED",
+    });
+  }
 
   successResponseHandler(req, res, {
     status: "ROLE CREATE SUCCESS",
@@ -335,6 +373,7 @@ export const updateRole = asyncHandler(async (req, res) => {
   const { name, permissions } = req.body;
 
   const role = await Role.findById(roleId);
+
   if (!role) {
     throw AppError.notFound({
       message: "No role found with provided roleId!",
@@ -346,12 +385,22 @@ export const updateRole = asyncHandler(async (req, res) => {
   if (name) role.name = name.toLowerCase();
   if (permissions) role.permissions = permissions;
 
-  await role.save();
+  const updatedRole = Role.findByIdAndUpdate(roleId, {
+    returnDocument: "after",
+    runValidators: true,
+  });
+
+  if (!updatedRole) {
+    throw AppError.internal({
+      message: "Failed to update role!",
+      code: "ROLE UPDATE FAILED",
+    });
+  }
 
   successResponseHandler(req, res, {
     status: "ROLE UPDATE SUCCESS",
     message: "Role updated successfully!",
-    data: { role },
+    data: { role: updatedRole },
   });
 });
 
@@ -359,6 +408,7 @@ export const deleteRole = asyncHandler(async (req, res) => {
   const { roleId } = req.data.params;
 
   const usersWithRole = await User.countDocuments({ role: roleId });
+
   if (usersWithRole > 0) {
     throw AppError.badRequest({
       message: `Cannot delete role. ${usersWithRole} user(s) are assigned to it.`,
@@ -367,6 +417,7 @@ export const deleteRole = asyncHandler(async (req, res) => {
   }
 
   const role = await Role.findByIdAndDelete(roleId);
+
   if (!role) {
     throw AppError.notFound({
       message: "No role found with provided roleId!",
@@ -382,10 +433,10 @@ export const deleteRole = asyncHandler(async (req, res) => {
 });
 
 export const getActivityLogs = asyncHandler(async (req, res) => {
+  const { userId } = req.data.params;
   const {
     page = 1,
     limit = DEFAULT_PAGE_SIZE,
-    userId,
     action,
     from,
     to,
@@ -415,8 +466,15 @@ export const getActivityLogs = asyncHandler(async (req, res) => {
     ActivityLog.countDocuments(filter),
   ]);
 
+  if (!logs || !total) {
+    throw AppError.internal({
+      message: "Failed to fetch activity logs!",
+      code: "ACTIVITY FETCH FAILED",
+    });
+  }
+
   successResponseHandler(req, res, {
-    status: "ACTIVITY LOGS FETCH SUCCESS",
+    status: "ACTIVITY FETCH SUCCESS",
     message: "Activity logs fetched successfully!",
     data: {
       logs,
