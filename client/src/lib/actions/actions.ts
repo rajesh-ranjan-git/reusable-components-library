@@ -1,13 +1,10 @@
 import { api, ApiErrorResponse, ApiResponse } from "@/lib/api/apiHandler";
+import { apiUrls } from "@/lib/api/apiUtils";
 
-export const testAction = async (): Promise<ApiResponse> => {
+export const fetchMe = async (): Promise<ApiResponse> => {
   try {
-    const result = await api.get("/");
-
-    return result;
+    return await api.get(apiUrls.auth.me);
   } catch (error) {
-    logger.error("Error from testAction:", error);
-
     return error as ApiErrorResponse;
   }
 };

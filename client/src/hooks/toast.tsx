@@ -74,32 +74,32 @@ const ToastContext = createContext<ToastContextType | undefined>(undefined);
 
 const variantConfig = {
   success: {
-    bg: "bg-success-bg border-success-border backdrop-blur-2xl",
-    text: "text-success-text-primary",
+    cn: "alert-success",
+    text: "text-status-success-text",
     icon: FiCheckCircle,
-    iconColor: "text-success-text-primary",
-    progress: "bg-success-text-primary",
+    iconColor: "text-status-success-text",
+    progress: "bg-status-success-text",
   },
   error: {
-    bg: "bg-error-bg border-error-border backdrop-blur-2xl",
-    text: "text-error-text-primary",
+    cn: "alert-error",
+    text: "text-status-error-text",
     icon: FiAlertCircle,
-    iconColor: "text-error-text-primary",
-    progress: "bg-error-text-primary",
+    iconColor: "text-status-error-text",
+    progress: "bg-status-error-text",
   },
   warning: {
-    bg: "bg-warning border-warning-border backdrop-blur-2xl",
-    text: "text-warning-text-primary",
+    cn: "alert-warning",
+    text: "text-status-warning-text",
     icon: TbAlertTriangle,
-    iconColor: "text-warning-text-primary",
-    progress: "bg-warning-text-primary",
+    iconColor: "text-status-warning-text",
+    progress: "bg-status-warning-text",
   },
   info: {
-    bg: "bg-info border-info-border backdrop-blur-2xl",
-    text: "text-info-text-primary",
+    cn: "alert-info",
+    text: "text-status-info-text",
     icon: FaInfoCircle,
-    iconColor: "text-info-text-primary",
-    progress: "bg-info-text-primary",
+    iconColor: "text-status-info-text",
+    progress: "bg-status-info-text",
   },
 };
 
@@ -195,7 +195,7 @@ const ToastItem: React.FC<{
         damping: 40,
         mass: 1,
       }}
-      className={`relative w-80 ${config.bg} m-2 border rounded-lg shadow-lg overflow-hidden`}
+      className={`${config.cn} alert relative overflow-hidden backdrop-blur-sm min-w-80 max-w-96`}
       style={{
         marginBottom: index > 0 ? "8px" : "0",
       }}
@@ -211,14 +211,14 @@ const ToastItem: React.FC<{
         </div>
       )}
 
-      <div className="flex items-start gap-3 p-4">
-        <Icon className={`${config.iconColor} shrink-0 mt-0.5`} size={20} />
+      <div className="flex items-start gap-2">
+        <Icon className={`${config.iconColor} alert-icon`} size={20} />
 
-        <div className="flex-1 min-w-0">
-          <h3 className={`font-bold ${config.text} text-md mb-1`}>
+        <div>
+          <p className="font-arima text-lg tracking-wider alert-title">
             {toast.title}
-          </h3>
-          <p className={`${config.text} text-sm font-semibold opacity-90`}>
+          </p>
+          <p className={`${config.text} opacity-90 m-0 text-sm`}>
             {toast.message}
           </p>
         </div>
@@ -228,7 +228,7 @@ const ToastItem: React.FC<{
             setShouldExit(true);
             setTimeout(() => onRemove(toast.id), 300);
           }}
-          className={`${config.text} opacity-70 border border-border hover:opacity-100 transition-opacity shrink-0 cursor-pointer rounded-md`}
+          className={`${config.text} border border-status-error-border hover:border-status-error-text opacity-50 hover:opacity-100 p-0 m-0 transition-opacity absolute top-1 right-1 rounded-full shadow-glass-bg hover:shadow-glass-bg-strong`}
         >
           <IoClose size={18} />
         </button>
@@ -255,7 +255,7 @@ const ToastContainer: React.FC<{
 }> = ({ toasts, position, onRemove }) => {
   return (
     <div
-      className={`fixed ${positionStyles[position]} z-(--z-dropdown) flex flex-col`}
+      className={`fixed ${positionStyles[position]} z-(--z-toast) flex flex-col`}
     >
       {toasts.map((toast, index) => (
         <ToastItem
