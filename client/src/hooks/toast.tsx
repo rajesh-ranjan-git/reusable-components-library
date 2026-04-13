@@ -149,6 +149,7 @@ const ToastItem: React.FC<{
   index: number;
   position: ToastPosition;
 }> = ({ toast, onRemove, index, position }) => {
+  logger.info("toast.toastProgressPosition:", toast.toastProgressPosition);
   const [shouldExit, setShouldExit] = useState(false);
   const [progress, setProgress] = useState(100);
   const config = variantConfig[toast.variant];
@@ -195,7 +196,7 @@ const ToastItem: React.FC<{
         damping: 40,
         mass: 1,
       }}
-      className={`${config.cn} alert relative overflow-hidden backdrop-blur-sm min-w-80 max-w-96`}
+      className={`${config.cn} relative backdrop-blur-sm min-w-80 max-w-96 overflow-hidden alert p-0`}
       style={{
         marginBottom: index > 0 ? "8px" : "0",
       }}
@@ -211,7 +212,7 @@ const ToastItem: React.FC<{
         </div>
       )}
 
-      <div className="flex items-start gap-2">
+      <div className="flex items-start gap-2 px-4 py-4">
         <Icon className={`${config.iconColor} alert-icon`} size={20} />
 
         <div>
@@ -228,14 +229,14 @@ const ToastItem: React.FC<{
             setShouldExit(true);
             setTimeout(() => onRemove(toast.id), 300);
           }}
-          className={`${config.text} border border-status-error-border hover:border-status-error-text opacity-50 hover:opacity-100 p-0 m-0 transition-opacity absolute top-1 right-1 rounded-full shadow-glass-bg hover:shadow-glass-bg-strong`}
+          className={`${config.text} top-1 right-1 absolute opacity-50 hover:opacity-100 shadow-glass-bg hover:shadow-glass-bg-strong m-0 p-0 border border-status-error-border hover:border-status-error-text rounded-full transition-opacity`}
         >
           <IoClose size={18} />
         </button>
       </div>
 
       {toast.toastProgressPosition === "bottom" && (
-        <div className="h-1">
+        <div className="bottom-0 absolute rounded-full w-full h-1">
           <motion.div
             className={`h-full ${config.progress}`}
             initial={{ width: "100%" }}

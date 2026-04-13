@@ -19,6 +19,12 @@ const AuthWrapper = ({ children }: ReactNodeProps) => {
         message: response.message ?? "",
         variant: "success",
       });
+    } else {
+      showToast({
+        title: toTitleCase(response.code),
+        message: response.message ?? "",
+        variant: "error",
+      });
     }
   };
 
