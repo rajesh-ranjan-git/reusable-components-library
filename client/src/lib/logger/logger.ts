@@ -1,4 +1,4 @@
-import { ansiConfig } from "@/config/common.config";
+import { ansiConfig } from "@/config/banner.config";
 import { getDateToShow } from "@/utils/date.utils";
 
 const isServer = typeof window === "undefined";

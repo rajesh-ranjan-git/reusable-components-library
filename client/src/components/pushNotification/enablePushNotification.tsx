@@ -1,6 +1,6 @@
 "use client";
 
-import { subscribeToPush } from "@/utils/pushNotifications.utils";
+import { subscribeToPush } from "@/utils/push.notifications.utils";
 
 const EnablePushNotification = () => {
   const enable = async () => {

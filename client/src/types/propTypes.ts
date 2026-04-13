@@ -1,5 +1,11 @@
-import { ReactNode, RefObject } from "react";
-import { StorageTypes, ContextMenuTypes, SheetTypes } from "@/types/types";
+import { Dispatch, ReactNode, RefObject, SetStateAction } from "react";
+import { HeaderTypes, StorageTypes } from "@/types/types";
+
+export interface HeaderProps {
+  type: HeaderTypes;
+  isSidebarOpen: boolean;
+  setIsSidebarOpen?: Dispatch<SetStateAction<boolean>>;
+}
 
 export interface FormErrorMessageProps {
   errors: string[] | null;
@@ -10,14 +16,6 @@ export interface UseOutsideClickProps {
   ref: RefObject<HTMLElement | null> | RefObject<HTMLElement | null>[];
   when: boolean;
   callback: () => void;
-}
-
-export interface UseContextMenuProps {
-  type: ContextMenuTypes;
-}
-
-export interface UseSheetProps {
-  type: SheetTypes;
 }
 
 export interface UseWebStorageProps<T> {

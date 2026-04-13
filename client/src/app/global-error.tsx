@@ -4,14 +4,8 @@ import "@/app/globals.css";
 import "@/lib/logger/logger";
 import Image from "next/image";
 import { MdError } from "react-icons/md";
-import {
-  alkatra,
-  arima,
-  inter,
-  poppins,
-  staticImages,
-  tourney,
-} from "@/config/common.config";
+import { alkatra, arima, inter, poppins, tourney } from "@/config/font.config";
+import { staticImages } from "@/config/common.config";
 import { ToastProvider } from "@/hooks/toast";
 import ThemeManager from "@/components/theme/themeManager";
 import Orb from "@/components/background/orb";

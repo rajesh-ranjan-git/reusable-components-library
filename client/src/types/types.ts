@@ -1,16 +1,6 @@
 import { storageConfig, themeConfig } from "@/config/common.config";
 
-export type SheetTypes = "requests" | "connections" | null;
-
-export type ContextMenuTypes =
-  | "addButtonContext"
-  | "updateCoverPhotoContext"
-  | "updateProfilePhotoContext"
-  | "updateProfileDetailsContext"
-  | "updateSpecificProfileDetailsContext"
-  | "updatePasswordContext"
-  | "deleteAccountContext"
-  | null;
+export type HeaderTypes = "default" | "landing" | "admin";
 
 export type StaticImageType = Record<
   string,

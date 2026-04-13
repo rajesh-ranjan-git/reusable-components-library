@@ -1,6 +1,6 @@
 "use client";
 
-import { Dispatch, MouseEvent, SetStateAction, useState } from "react";
+import { MouseEvent, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { LuBell, LuMenu, LuSearch, LuX } from "react-icons/lu";
@@ -9,16 +9,9 @@ import ThemeToggle from "@/components/theme/themeToggle";
 import AppSidebar from "@/components/layout/appSidebar";
 import HeaderNotificationMenu from "@/components/shared/headerNotificationMenu";
 import HeaderProfileMenu from "@/components/shared/headerProfileMenu";
+import { HeaderProps } from "@/types/propTypes";
 
-const Header = ({
-  type,
-  isSidebarOpen,
-  setIsSidebarOpen,
-}: {
-  type: "default" | "landing" | "admin";
-  isSidebarOpen?: boolean;
-  setIsSidebarOpen?: Dispatch<SetStateAction<boolean>>;
-}) => {
+const Header = ({ type, isSidebarOpen, setIsSidebarOpen }: HeaderProps) => {
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isNotificationMenuOpen, setIsNotificationMenuOpen] = useState(false);
 

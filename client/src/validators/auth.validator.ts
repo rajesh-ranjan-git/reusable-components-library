@@ -5,7 +5,7 @@ import {
   NUMBER_REGEX,
   UPPER_CASE_REGEX,
   USERNAME_REGEX,
-} from "@/constants/common.constants";
+} from "@/constants/regex.constants";
 import { propertyConstraints } from "@/config/common.config";
 
 export const userNameValidator = (userName?: string) => {

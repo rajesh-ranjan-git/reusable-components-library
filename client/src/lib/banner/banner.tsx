@@ -5,11 +5,8 @@ import figlet from "figlet";
 import gradient from "gradient-string";
 import boxen from "boxen";
 
-import {
-  appConfig,
-  bannerFontsConfig,
-  bannerThemesConfig,
-} from "@/config/common.config";
+import { appConfig } from "@/config/common.config";
+import { bannerFontsConfig, bannerThemesConfig } from "@/config/banner.config";
 import { BannerProps } from "@/types/propTypes";
 import { TOAST_VARIANTS, useToast } from "@/hooks/toast";
 import { getRandomItem, toTitleCase } from "@/utils/common.utils";

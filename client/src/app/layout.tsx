@@ -1,13 +1,7 @@
 import "@/app/globals.css";
 import "@/lib/logger/logger";
 import type { Metadata, Viewport } from "next";
-import {
-  alkatra,
-  arima,
-  inter,
-  poppins,
-  tourney,
-} from "@/config/common.config";
+import { alkatra, arima, inter, poppins, tourney } from "@/config/font.config";
 import { ReactNodeProps } from "@/types/propTypes";
 import Banner from "@/lib/banner/banner";
 import ServiceWorkerRegister from "@/components/serviceWorker/serviceWorkerRegister";
@@ -16,6 +10,7 @@ import { ToastProvider } from "@/hooks/toast";
 import ThemeManager from "@/components/theme/themeManager";
 import Flash from "@/components/flash/flash";
 import ErrorWrapper from "@/components/errors/errorWrapper";
+import AuthWrapper from "@/components/errors/authWrapper";
 
 export const metadata: Metadata = {
   title: {
@@ -44,7 +39,9 @@ const RootLayout = ({ children }: Readonly<ReactNodeProps>) => {
           <ThemeManager />
           <Orb />
           <Flash />
-          <ErrorWrapper>{children}</ErrorWrapper>
+          <AuthWrapper>
+            <ErrorWrapper>{children}</ErrorWrapper>
+          </AuthWrapper>
         </ToastProvider>
       </body>
     </html>
