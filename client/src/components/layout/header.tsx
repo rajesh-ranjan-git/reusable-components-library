@@ -74,7 +74,7 @@ const Header = ({
                 height={100}
                 className={`shadow-glass-bg shadow-md rounded-full w-10 h-auto select-none ${type === "landing" ? "md:w-12" : ""}`}
               />
-              <span className="font-tourney font-semibold text-gradient text-xl md:text-3xl tracking-tight">
+              <span className="font-tourney font-semibold text-gradient text-xl md:text-3xl text-nowrap tracking-tight">
                 App Name
               </span>
             </Link>
@@ -82,7 +82,7 @@ const Header = ({
         </div>
 
         {type === "landing" ? (
-          <nav className="hidden md:flex items-center gap-4">
+          <nav className="hidden lg:flex items-center gap-4">
             <Link
               href="#features"
               className="text-sm transition-colors ease-in-out btn btn-ghost"
