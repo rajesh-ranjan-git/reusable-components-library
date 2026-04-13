@@ -3,16 +3,17 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { motion, AnimatePresence } from "motion/react";
 import { FiCheckCircle } from "react-icons/fi";
-import { MdSpaceDashboard } from "react-icons/md";
 import {
+  LuCompass,
   LuCreditCard,
+  LuLayoutDashboard,
   LuLogOut,
   LuMessageSquare,
   LuSettings,
   LuUser,
 } from "react-icons/lu";
-import { FaHome } from "react-icons/fa";
 import { staticImages } from "@/config/common.config";
+import { IoHomeOutline } from "react-icons/io5";
 
 type HeaderProfileMenuProps = {
   isOpen: boolean;
@@ -90,7 +91,7 @@ const HeaderProfileMenu = ({
           <ul>
             <li
               onClick={() => handleNavigation("/profile")}
-              className="flex items-center gap-3 hover:bg-glass-bg-hover px-4 py-1 w-full text-left transition-colors"
+              className="flex items-center gap-3 hover:bg-glass-bg-subtle px-4 py-1 w-full text-left transition-colors"
             >
               <div className="mt-0.5 p-1.5 border border-accent-purple-dark/30 rounded-full">
                 <LuUser size={16} className="text-text-secondary" />
@@ -100,17 +101,28 @@ const HeaderProfileMenu = ({
               </p>
             </li>
             <li
-              onClick={() => handleNavigation("/discover")}
-              className="flex items-center gap-3 hover:bg-glass-bg-hover px-4 py-1 w-full text-left transition-colors"
+              onClick={() => handleNavigation("/")}
+              className="flex items-center gap-2 hover:bg-glass-bg-subtle px-4 py-1 w-full text-left transition-colors"
             >
               <div className="mt-0.5 p-1.5 border border-accent-purple-dark/30 rounded-full">
-                <FaHome size={16} className="text-text-secondary" />
+                <IoHomeOutline size={16} className="text-text-secondary" />
+              </div>
+              <p className="text-text-primary text-sm leading-snug">
+                About App
+              </p>
+            </li>
+            <li
+              onClick={() => handleNavigation("/discover")}
+              className="flex items-center gap-3 hover:bg-glass-bg-subtle px-4 py-1 w-full text-left transition-colors"
+            >
+              <div className="mt-0.5 p-1.5 border border-accent-purple-dark/30 rounded-full">
+                <LuCompass size={16} className="text-text-secondary" />
               </div>
               <p className="text-text-primary text-sm leading-snug">Discover</p>
             </li>
             <li
               onClick={() => handleNavigation("/chat")}
-              className="flex items-center gap-3 hover:bg-glass-bg-hover px-4 py-1 w-full text-left transition-colors"
+              className="flex items-center gap-3 hover:bg-glass-bg-subtle px-4 py-1 w-full text-left transition-colors"
             >
               <div className="mt-0.5 p-1.5 border border-accent-purple-dark/30 rounded-full">
                 <LuMessageSquare size={16} className="text-text-secondary" />
@@ -119,7 +131,7 @@ const HeaderProfileMenu = ({
             </li>
             <li
               onClick={() => handleNavigation("/subscription")}
-              className="flex items-center gap-3 hover:bg-glass-bg-hover px-4 py-1 w-full text-left transition-colors"
+              className="flex items-center gap-3 hover:bg-glass-bg-subtle px-4 py-1 w-full text-left transition-colors"
             >
               <div className="mt-0.5 p-1.5 border border-accent-purple-dark/30 rounded-full">
                 <LuCreditCard size={16} className="text-text-secondary" />
@@ -130,29 +142,18 @@ const HeaderProfileMenu = ({
             </li>
             <li
               onClick={() => handleNavigation("/admin")}
-              className="flex items-center gap-3 hover:bg-glass-bg-hover px-4 py-1 w-full text-left transition-colors"
+              className="flex items-center gap-3 hover:bg-glass-bg-subtle px-4 py-1 w-full text-left transition-colors"
             >
               <div className="mt-0.5 p-1.5 border border-accent-purple-dark/30 rounded-full">
-                <MdSpaceDashboard size={16} className="text-text-secondary" />
+                <LuLayoutDashboard size={16} className="text-text-secondary" />
               </div>
               <p className="text-text-primary text-sm leading-snug">
                 Admin Dashboard
               </p>
             </li>
             <li
-              onClick={() => handleNavigation("/")}
-              className="flex items-center gap-2 hover:bg-glass-bg-hover px-4 py-1 w-full text-left transition-colors"
-            >
-              <div className="mt-0.5 p-1.5 border border-accent-purple-dark/30 rounded-full">
-                <LuSettings size={16} className="text-text-secondary" />
-              </div>
-              <p className="text-text-primary text-sm leading-snug">
-                About App
-              </p>
-            </li>
-            <li
               onClick={onClose}
-              className="flex items-center gap-2 hover:bg-glass-bg-hover px-4 py-1 w-full text-left transition-colors"
+              className="flex items-center gap-2 hover:bg-glass-bg-subtle px-4 py-1 w-full text-left transition-colors"
             >
               <div className="mt-0.5 p-1.5 border border-accent-purple-dark/30 rounded-full">
                 <LuSettings size={16} className="text-text-secondary" />

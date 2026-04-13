@@ -96,7 +96,7 @@ const HeaderNotificationMenu = ({
                   <li
                     key={notification.id}
                     onClick={() => handleNavigation(notification.path)}
-                    className="flex items-start gap-3 hover:bg-glass-bg-hover px-4 py-3 w-full text-left"
+                    className="flex items-start gap-3 hover:bg-glass-bg-subtle px-4 py-3 w-full text-left"
                   >
                     <div className="mt-0.5 p-1.5 border border-accent-purple-dark/30 rounded-full">
                       <Icon size={16} className={notification.color} />
@@ -121,7 +121,7 @@ const HeaderNotificationMenu = ({
 
           <div
             onClick={onClose}
-            className="flex justify-center items-center gap-2 hover:bg-glass-bg-hover mt-1 px-4 py-1 border-accent-purple-dark/30 border-t w-full text-status-error-text text-left cursor-pointer"
+            className="flex justify-center items-center gap-2 hover:bg-glass-bg-subtle mt-1 px-4 py-1 border-accent-purple-dark/30 border-t w-full text-status-error-text text-left cursor-pointer"
           >
             <button className="w-full h-full text-text-secondary hover:text-text-primary text-xs leading-snug">
               Mark all as read
