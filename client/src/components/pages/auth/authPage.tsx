@@ -51,8 +51,9 @@ const AuthPage = () => {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
-    name: "",
     email: "",
+    firstName: "",
+    lastName: "",
     password: "",
     username: "",
   });
@@ -296,18 +297,33 @@ const AuthPage = () => {
                         <LuMail className="right-3 bottom-2 absolute w-4 h-4 text-text-secondary -translate-y-1/2" />
                       </div>
 
-                      <div className="relative flex flex-col gap-1 mb-2">
-                        <label className="ml-2">Full Name</label>
-                        <input
-                          type="text"
-                          placeholder="Full Name"
-                          value={formData.name}
-                          className="pr-9"
-                          onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                            handleChange("name", e.target.value)
-                          }
-                        />
-                        <LuUser className="right-3 bottom-2 absolute w-4 h-4 text-text-secondary -translate-y-1/2" />
+                      <div className="flex gap-1 md:gap-2">
+                        <div className="relative flex flex-col gap-1 mb-2">
+                          <label className="ml-2">First Name</label>
+                          <input
+                            type="text"
+                            placeholder="First Name"
+                            value={formData.firstName}
+                            className="pr-9"
+                            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                              handleChange("firstName", e.target.value)
+                            }
+                          />
+                          <LuUser className="right-3 bottom-2 absolute w-4 h-4 text-text-secondary -translate-y-1/2" />
+                        </div>
+                        <div className="relative flex flex-col gap-1 mb-2">
+                          <label className="ml-2">Last Name</label>
+                          <input
+                            type="text"
+                            placeholder="Last Name"
+                            value={formData.lastName}
+                            className="pr-9"
+                            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                              handleChange("lastName", e.target.value)
+                            }
+                          />
+                          <LuUser className="right-3 bottom-2 absolute w-4 h-4 text-text-secondary -translate-y-1/2" />
+                        </div>
                       </div>
 
                       <div className="relative flex flex-col gap-1 mb-2">
