@@ -27,6 +27,8 @@ import {
   nameValidator,
   passwordValidator,
 } from "@/validators/auth.validator";
+import { registerAction } from "@/lib/actions/authActions";
+import { useToast } from "@/hooks/toast";
 
 const DecorativeRings = () => (
   <div className="z-(--z-background) absolute inset-0 flex justify-center items-center overflow-hidden pointer-events-none">
@@ -61,6 +63,8 @@ const AuthPage = () => {
 
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  const { showToast } = useToast();
 
   const emailInput = useInputFieldValidator<string>({
     initialValue: "",
@@ -106,12 +110,12 @@ const AuthPage = () => {
     },
   });
 
-  // const initialState = { message: "" };
+  const initialState = { message: "" };
 
-  // const [state, formAction, isPending] = useActionState(
-  //   pathname.includes(authRoutes.login) ? loginAction : registerAction,
-  //   initialState,
-  // );
+  const [state, formAction, isPending] = useActionState(
+    pathname === authRoutes.register ? registerAction : null,
+    initialState,
+  );
 
   const handleToggleMode = () => {
     const nextIsLogin = !isLoginState;
@@ -136,11 +140,26 @@ const AuthPage = () => {
   };
 
   useEffect(() => {
+    if (!state?.success) {
+      showToast({
+        title: state.title,
+        message: state.message,
+        variant: "error",
+      });
+    }
+
+    logger.debug(
+      "debug from authPage useEffect state after form submit : ",
+      state,
+    );
+  }, [state]);
+
+  useEffect(() => {
     emailInput.reset();
     passwordInput.reset();
     firstNameInput.reset();
     lastNameInput.reset();
-  }, [pathname]);
+  }, [pathname, state]);
 
   return (
     <LayoutGroup>
@@ -340,13 +359,14 @@ const AuthPage = () => {
                   className="absolute inset-0 flex justify-center items-center px-4 sm:px-6 md:px-8 py-2 sm:py-4 md:py-6 w-full overflow-y-auto custom-scrollbar"
                 >
                   <div className="flex flex-col my-auto py-2 w-full max-w-md">
-                    <Form action={() => {}} autoComplete="false">
+                    <Form action={formAction} autoComplete="false">
                       <h2 className="mb-2 text-center">Register</h2>
 
                       <div className="relative flex flex-col gap-1 mb-2">
                         <label className="ml-2">Email</label>
                         <input
                           type="text"
+                          name="email"
                           placeholder="you@example.com"
                           value={emailInput.raw}
                           className="pr-9"
@@ -360,12 +380,23 @@ const AuthPage = () => {
 
                       <FormErrorMessage error={emailInput.error} />
 
+                      <FormErrorMessage
+                        error={
+                          !state?.success &&
+                          state?.errors &&
+                          state?.errors?.userName
+                            ? state?.errors?.userName
+                            : null
+                        }
+                      />
+
                       <div className="flex gap-1 md:gap-2">
                         <div className="flex flex-col w-full">
                           <div className="relative flex flex-col gap-1 mb-2">
                             <label className="ml-2">First Name</label>
                             <input
                               type="text"
+                              name="firstName"
                               placeholder="First Name"
                               value={firstNameInput.raw}
                               className="pr-9"
@@ -387,6 +418,7 @@ const AuthPage = () => {
                             <label className="ml-2">Last Name</label>
                             <input
                               type="text"
+                              name="lastName"
                               placeholder="Last Name"
                               value={lastNameInput.raw}
                               className="pr-9"
@@ -406,6 +438,7 @@ const AuthPage = () => {
                         <label className="ml-2">Password</label>
                         <input
                           type={showPassword ? "text" : "password"}
+                          name="password"
                           placeholder="Password"
                           value={passwordInput.raw}
                           className="pr-9"
@@ -449,10 +482,10 @@ const AuthPage = () => {
 
                       <button
                         type="submit"
-                        disabled={loading}
+                        disabled={isPending}
                         className="w-full text-text-on-accent transition-all disabled:cursor-not-allowed btn btn-primary"
                       >
-                        {loading ? (
+                        {isPending ? (
                           <TbLoader3 size={20} className="animate-spin" />
                         ) : (
                           "Register"
