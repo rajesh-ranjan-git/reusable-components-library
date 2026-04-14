@@ -100,19 +100,33 @@ export const validateRegister = (data) => {
 };
 
 export const validateLogin = (data) => {
-  const {
-    isEmailValid,
-    message: emailErrorMessage,
-    validatedEmail,
-  } = emailValidator(data.email);
+  const { userName, email, password } = data;
 
-  if (!isEmailValid) {
+  if (!userName && !email) {
     throw AppError.unprocessable({
-      message: emailErrorMessage,
-      code: "EMAIL VALIDATION FAILED",
-      details: { email: data.email },
+      message: "Please provide a valid username or email to login!",
+      code: "LOGIN FAILED",
+      details: { userName, email },
     });
   }
+
+  const validatedData = userName
+    ? userNameValidator(userName)
+    : emailValidator(email);
+
+  if (validatedData?.message) {
+    throw AppError.unprocessable({
+      message: validatedData.message,
+      code: "LOGIN FAILED",
+      details: { userName, email },
+    });
+  }
+
+  const isUsingUsername = !!userName;
+
+  const identifier = isUsingUsername
+    ? validatedData.validatedUserName
+    : validatedData.validatedEmail;
 
   const {
     isPasswordValid,
@@ -128,7 +142,7 @@ export const validateLogin = (data) => {
   }
 
   return {
-    email: validatedEmail,
+    ...(isUsingUsername ? { userName: identifier } : { email: identifier }),
     password: validatedPassword,
   };
 };

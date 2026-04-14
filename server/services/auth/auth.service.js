@@ -98,11 +98,23 @@ class AuthService {
     };
   }
 
-  async login({ email, password }, { ipAddress, device, userAgent }) {
-    const account = await Account.findOne({
-      email: email.toLowerCase(),
-      provider: "local",
-    });
+  async login({ userName, email, password }, { ipAddress, device, userAgent }) {
+    let profile;
+    if (userName) {
+      profile = await Profile.findOne({
+        userName,
+      }).select("user");
+    }
+
+    const account = userName
+      ? await Account.findOne({
+          user: profile?.user,
+          provider: "local",
+        })
+      : await Account.findOne({
+          email,
+          provider: "local",
+        });
 
     if (!account) {
       throw AppError.notFound({

@@ -67,7 +67,9 @@ class ResponseService {
       code: err.code || "UNEXPECTED ERROR",
       statusCode:
         err.statusCode || httpStatusConfig.internalServerError.statusCode,
-      message: err.message || "An unexpected error has occurred!",
+      message: err.message.startsWith("Unexpected token")
+        ? "Please provide a valid input!"
+        : err.message || "An unexpected error has occurred!",
       details: null,
       timestamp: getDateToStore(new Date()),
       metadata:
@@ -75,7 +77,9 @@ class ResponseService {
           ? {
               path: err?.metadata?.path || req.originalUrl || req.url,
               requestId: err?.requestId || req.headers["x-request-id"],
-              isOperational: err?.isOperational || false,
+              isOperational: err.message.startsWith("Unexpected token")
+                ? true
+                : err?.isOperational || false,
               method: req.method,
             }
           : null,
