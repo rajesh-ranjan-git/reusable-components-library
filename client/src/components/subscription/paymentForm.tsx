@@ -47,7 +47,7 @@ const PaymentForm = () => {
     <form onSubmit={handleSubmit} className="p-6 md:p-8 glass-heavy">
       <div className="flex flex-col gap-4">
         <div>
-          <h2 className="mb-1 font-bold text-text-primary text-xl">
+          <h2 className="mb-1 font-arima font-bold text-text-primary text-xl tracking-wide">
             Payment Method
           </h2>
           <p className="text-text-secondary text-sm">
@@ -74,7 +74,7 @@ const PaymentForm = () => {
 
         <div className="space-y-4">
           <div>
-            <label className="ml-1 text-xs">Cardholder Name</label>
+            <label className="ml-2 text-xs">Cardholder Name</label>
 
             <div className="relative">
               <input
@@ -82,7 +82,7 @@ const PaymentForm = () => {
                 placeholder="Jane Doe"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="pl-10 rounded-xl bg-accent-purple-light/40"
+                className="pl-10 rounded-xl"
               />
               <LuUser
                 className="top-1/2 left-4 absolute text-text-secondary -translate-y-1/2"
@@ -92,14 +92,14 @@ const PaymentForm = () => {
           </div>
 
           <div>
-            <label className="ml-1 text-xs">Card Number</label>
+            <label className="ml-2 text-xs">Card Number</label>
             <div className="relative">
               <input
                 type="text"
                 placeholder="0000 0000 0000 0000"
                 value={cardNumber}
                 onChange={handleCardNumberChange}
-                className="pl-10 rounded-xl bg-accent-purple-light/40"
+                className="pl-10 rounded-xl"
               />
               <LuCreditCard
                 className="top-1/2 left-4 absolute text-text-secondary -translate-y-1/2"
@@ -110,23 +110,23 @@ const PaymentForm = () => {
 
           <div className="gap-4 grid grid-cols-2">
             <div>
-              <label className="ml-1 text-xs">Expiry Date</label>
+              <label className="ml-2 text-xs">Expiry Date</label>
               <input
                 type="text"
                 placeholder="MM/YY"
                 value={expiry}
                 onChange={handleExpiryChange}
-                className="rounded-xl text-center bg-accent-purple-light/40"
+                className="rounded-xl text-center"
               />
             </div>
             <div>
-              <label className="ml-1 text-xs">CVV</label>
+              <label className="ml-2 text-xs">CVV</label>
               <input
                 type="text"
                 placeholder="123"
                 value={cvv}
                 onChange={handleCvvChange}
-                className="rounded-xl text-center bg-accent-purple-light/40"
+                className="rounded-xl text-center"
               />
             </div>
           </div>

@@ -5,11 +5,17 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence, Variants, LayoutGroup } from "motion/react";
-import { LuGithub, LuFacebook, LuLinkedin, LuEyeClosed } from "react-icons/lu";
+import {
+  LuGithub,
+  LuFacebook,
+  LuLinkedin,
+  LuEyeClosed,
+  LuUser,
+  LuMail,
+} from "react-icons/lu";
 import { TbLoader3 } from "react-icons/tb";
 import { FcGoogle } from "react-icons/fc";
-import { FaRegEye, FaUser } from "react-icons/fa";
-import { IoMail } from "react-icons/io5";
+import { FaRegEye } from "react-icons/fa";
 import { staticImages } from "@/config/common.config";
 import SocialButton from "@/components/auth/socialButton";
 
@@ -172,9 +178,9 @@ const AuthPage = () => {
                       <h2 className="mb-4 text-center">Login</h2>
 
                       <div className="relative flex flex-col gap-1 mb-2">
-                        <label>Username / Email</label>
+                        <label className="ml-2">Username / Email</label>
                         <input
-                          type="email"
+                          type="text"
                           placeholder="you@example.com"
                           value={formData.email}
                           className="pr-9"
@@ -182,11 +188,11 @@ const AuthPage = () => {
                             handleChange("email", e.target.value)
                           }
                         />
-                        <FaUser className="right-3 bottom-2 absolute w-4 h-4 text-text-secondary -translate-y-1/2" />
+                        <LuUser className="right-3 bottom-2 absolute w-4 h-4 text-text-secondary -translate-y-1/2" />
                       </div>
 
                       <div className="relative flex flex-col gap-1 mb-2">
-                        <label>Password</label>
+                        <label className="ml-2">Password</label>
                         <input
                           type={showPassword ? "text" : "password"}
                           placeholder="Password"
@@ -277,7 +283,7 @@ const AuthPage = () => {
                       <h2 className="mb-2 text-center">Register</h2>
 
                       <div className="relative flex flex-col gap-1 mb-2">
-                        <label>Username / Email</label>
+                        <label className="ml-2">Email</label>
                         <input
                           type="email"
                           placeholder="you@example.com"
@@ -287,11 +293,11 @@ const AuthPage = () => {
                             handleChange("email", e.target.value)
                           }
                         />
-                        <IoMail className="right-3 bottom-2 absolute w-4 h-4 text-text-secondary -translate-y-1/2" />
+                        <LuMail className="right-3 bottom-2 absolute w-4 h-4 text-text-secondary -translate-y-1/2" />
                       </div>
 
                       <div className="relative flex flex-col gap-1 mb-2">
-                        <label>Full Name</label>
+                        <label className="ml-2">Full Name</label>
                         <input
                           type="text"
                           placeholder="Full Name"
@@ -301,11 +307,11 @@ const AuthPage = () => {
                             handleChange("name", e.target.value)
                           }
                         />
-                        <FaUser className="right-3 bottom-2 absolute w-4 h-4 text-text-secondary -translate-y-1/2" />
+                        <LuUser className="right-3 bottom-2 absolute w-4 h-4 text-text-secondary -translate-y-1/2" />
                       </div>
 
                       <div className="relative flex flex-col gap-1 mb-2">
-                        <label>Password</label>
+                        <label className="ml-2">Password</label>
                         <input
                           type={showPassword ? "text" : "password"}
                           placeholder="Password"
