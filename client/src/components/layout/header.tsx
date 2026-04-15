@@ -73,9 +73,9 @@ const Header = ({ type, isSidebarOpen, setIsSidebarOpen }: HeaderProps) => {
           {type === "admin" ? (
             <Link
               href={adminRoutes.dashboard}
-              className="group flex items-center gap-2"
+              className="group flex flex-1 items-center gap-2 w-54 overflow-hidden"
             >
-              <h1 className="pt-1.5 font-arima md:text-3xl">
+              <h1 className="pt-1.5 font-arima md:text-3xl truncate">
                 {currentAdminPath}
               </h1>
             </Link>

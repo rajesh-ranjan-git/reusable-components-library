@@ -187,3 +187,11 @@ export const loginAction = async (
     };
   }
 };
+
+export const logoutAction = async () => {
+  try {
+    return await api.post(apiUrls.auth.logout);
+  } catch (error) {
+    return error as ApiErrorResponse;
+  }
+};

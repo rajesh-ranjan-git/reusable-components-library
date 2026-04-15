@@ -31,8 +31,11 @@ const AuthWrapper = ({ children }: ReactNodeProps) => {
   const setLoggedInUserId = useAppStore((state) => state.setLoggedInUserId);
   const accessToken = useAppStore((state) => state.accessToken);
   const setAccessToken = useAppStore((state) => state.setAccessToken);
+  const isLoggingOut = useAppStore((state) => state.isLoggingOut);
 
   useEffect(() => {
+    if (isLoggingOut) return;
+
     let isMounted = true;
 
     const validateUser = async () => {

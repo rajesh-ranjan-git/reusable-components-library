@@ -20,6 +20,8 @@ import {
   defaultRoutes,
   profileRoutes,
 } from "@/lib/routes/routes";
+import { logoutAction } from "@/lib/actions/authActions";
+import { useAppStore } from "@/store/store";
 
 type HeaderProfileMenuProps = {
   isOpen: boolean;
@@ -33,7 +35,12 @@ const HeaderProfileMenu = ({
   positionClass = "top-full right-0 mt-3",
 }: HeaderProfileMenuProps) => {
   const menuRef = useRef<HTMLDivElement | null>(null);
+
   const router = useRouter();
+
+  const setAccessToken = useAppStore((state) => state.setAccessToken);
+  const setLoggedInUserId = useAppStore((state) => state.setLoggedInUserId);
+  const setIsLoggingOut = useAppStore((state) => state.setIsLoggingOut);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -58,6 +65,20 @@ const HeaderProfileMenu = ({
   const handleNavigation = (path: string) => {
     router.push(path);
     onClose();
+  };
+
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+
+    await logoutAction();
+
+    setAccessToken(null);
+    setLoggedInUserId(null);
+
+    router.push(defaultRoutes.landing);
+    onClose();
+
+    setTimeout(() => setIsLoggingOut(false), 0);
   };
 
   return (
@@ -174,10 +195,7 @@ const HeaderProfileMenu = ({
 
           <ul>
             <li
-              onClick={() => {
-                router.push(defaultRoutes.landing);
-                onClose();
-              }}
+              onClick={() => handleLogout()}
               className="flex justify-center items-center gap-2 hover:bg-status-error-bg px-4 py-1 w-full text-status-error-text text-left cursor-pointer"
             >
               <div className="mt-0.5 p-1.5 rounded-full">

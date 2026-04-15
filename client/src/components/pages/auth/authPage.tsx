@@ -69,6 +69,7 @@ const AuthPage = () => {
 
   const [showPassword, setShowPassword] = useState(false);
 
+  const setAccessToken = useAppStore((state) => state.setAccessToken);
   const setLoggedInUserId = useAppStore((state) => state.setLoggedInUserId);
 
   const { showToast } = useToast();
@@ -194,6 +195,7 @@ const AuthPage = () => {
         variant: "error",
       });
     } else {
+      setAccessToken(state.data.accessToken);
       setLoggedInUserId(state.data.user.id);
 
       showToast({

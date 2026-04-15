@@ -11,6 +11,8 @@ type AppState = {
   setAccessToken: Dispatch<SetStateAction<string | null>>;
   loggedInUserId: string | null;
   setLoggedInUserId: Dispatch<SetStateAction<string | null>>;
+  isLoggingOut: boolean;
+  setIsLoggingOut: Dispatch<SetStateAction<boolean>>;
 };
 
 export const useAppStore = create<AppState>()(
@@ -39,6 +41,14 @@ export const useAppStore = create<AppState>()(
             typeof loggedInUserIdUpdater === "function"
               ? loggedInUserIdUpdater(state.loggedInUserId)
               : loggedInUserIdUpdater,
+        })),
+      isLoggingOut: false,
+      setIsLoggingOut: (isLoggingOutUpdater) =>
+        set((state) => ({
+          isLoggingOut:
+            typeof isLoggingOutUpdater === "function"
+              ? isLoggingOutUpdater(state.isLoggingOut)
+              : isLoggingOutUpdater,
         })),
     }),
     {

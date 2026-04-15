@@ -16,6 +16,8 @@ import {
 import { staticImages } from "@/config/common.config";
 import { adminRoutes, defaultRoutes } from "@/lib/routes/routes";
 import { AdminSidebarProps } from "@/types/propTypes";
+import { useAppStore } from "@/store/store";
+import { logoutAction } from "@/lib/actions/authActions";
 
 const AdminSidebar = ({
   isSidebarOpen,
@@ -26,6 +28,10 @@ const AdminSidebar = ({
   const pathname = usePathname();
   const router = useRouter();
 
+  const setAccessToken = useAppStore((state) => state.setAccessToken);
+  const setLoggedInUserId = useAppStore((state) => state.setLoggedInUserId);
+  const setIsLoggingOut = useAppStore((state) => state.setIsLoggingOut);
+
   const navItems = [
     { label: "Dashboard", icon: FaHome, path: adminRoutes.dashboard },
     { label: "Users", icon: LuUsers, path: adminRoutes.users },
@@ -33,6 +39,19 @@ const AdminSidebar = ({
     { label: "Reports", icon: LuFileText, path: adminRoutes.reports },
     { label: "Settings", icon: LuSettings, path: adminRoutes.settings },
   ];
+
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+
+    await logoutAction();
+
+    setAccessToken(null);
+    setLoggedInUserId(null);
+
+    router.push(defaultRoutes.landing);
+
+    setTimeout(() => setIsLoggingOut(false), 0);
+  };
 
   return (
     <>
@@ -116,7 +135,7 @@ const AdminSidebar = ({
               >
                 <Icon size={20} className="self-center shrink-0" />
                 {!collapsed && (
-                  <span className="font-medium leading-none whitespace-nowrap">
+                  <span className="font-medium truncate leading-none whitespace-nowrap">
                     {item.label}
                   </span>
                 )}
@@ -128,7 +147,7 @@ const AdminSidebar = ({
         <div className="px-3 py-2 border-glass-border border-t">
           <button
             className={`group flex justify-center items-center gap-3 hover:bg-status-error-bg p-2 border border-transparent hover:border-status-error-border overflow-hidden text-text-secondary hover:text-status-error-text transition-colors ${collapsed ? "rounded-full w-max" : "rounded-lg w-full"}`}
-            onClick={() => router.push(defaultRoutes.landing)}
+            onClick={() => handleLogout()}
           >
             <LuLogOut size={20} className="group-hover:scale-110 shrink-0" />
             {!collapsed && (
