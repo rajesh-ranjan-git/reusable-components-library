@@ -175,6 +175,12 @@ const AuthPage = () => {
           "User registered successfully, please login to continue!",
         variant: "success",
       });
+
+      if (pathname === authRoutes.register) {
+        handleToggleMode();
+      } else {
+        router.push(defaultRoutes.landing);
+      }
     }
   }, [state]);
 
