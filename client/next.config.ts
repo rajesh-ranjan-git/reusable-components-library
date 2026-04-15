@@ -44,7 +44,6 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  allowedDevOrigins: ["192.168.1.6"],
 
   // Optional: Expose NEXT_PUBLIC_* values to the client
   env: {
