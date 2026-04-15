@@ -26,8 +26,13 @@ import {
   emailValidator,
   nameValidator,
   passwordValidator,
+  userNameValidator,
 } from "@/validators/auth.validator";
-import { AuthFormStateType, registerAction } from "@/lib/actions/authActions";
+import {
+  AuthFormStateType,
+  loginAction,
+  registerAction,
+} from "@/lib/actions/authActions";
 import { useToast } from "@/hooks/toast";
 
 const DecorativeRings = () => (
@@ -61,7 +66,6 @@ const AuthPage = () => {
   );
   const isLogin = isLoginState;
 
-  const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
   const { showToast } = useToast();
@@ -110,6 +114,23 @@ const AuthPage = () => {
     },
   });
 
+  const validateLoginIdentifier = (val: string): string => {
+    if (!val) return "Please provide email or username to login!";
+
+    const { message: emailError } = emailValidator(val);
+
+    const { message: userNameError } = userNameValidator(val);
+
+    if (!emailError || !userNameError) return "";
+
+    return "Please provide email or username to login!";
+  };
+
+  const loginField = useInputFieldValidator<string>({
+    initialValue: "",
+    validate: validateLoginIdentifier,
+  });
+
   const initialState: AuthFormStateType = {
     success: false,
     status: "IDLE",
@@ -129,6 +150,8 @@ const AuthPage = () => {
   ): Promise<AuthFormStateType> => {
     if (pathname === authRoutes.register) {
       return registerAction(prevState, formData);
+    } else if (pathname.includes(authRoutes.login)) {
+      return loginAction(prevState, formData);
     }
 
     return prevState;
@@ -159,6 +182,7 @@ const AuthPage = () => {
   };
 
   useEffect(() => {
+    logger.debug("debug status:", status);
     if (state && state.status === "IDLE") return;
 
     if (!state?.success) {
@@ -278,30 +302,32 @@ const AuthPage = () => {
                   className="absolute inset-0 flex justify-center items-center px-4 sm:px-6 md:px-8 py-2 sm:py-4 md:py-6 w-full overflow-y-auto no-scrollbar"
                 >
                   <div className="flex flex-col my-auto py-2 md:py-4 w-full max-w-md">
-                    <Form action={() => {}} autoComplete="false">
+                    <Form action={formAction} autoComplete="false">
                       <h2 className="mb-4 text-center">Login</h2>
 
                       <div className="relative flex flex-col gap-1 mb-2">
                         <label className="ml-2">Username / Email</label>
                         <input
                           type="text"
+                          name="loginField"
                           placeholder="you@example.com"
-                          value={emailInput.raw}
+                          value={loginField.raw}
                           className="pr-9"
                           onInput={(e) =>
-                            emailInput.handleInput(e.currentTarget.value)
+                            loginField.handleInput(e.currentTarget.value)
                           }
-                          onBlur={emailInput.handleBlur}
+                          onBlur={loginField.handleBlur}
                         />
                         <LuUser className="right-3 bottom-2 absolute w-4 h-4 text-text-secondary -translate-y-1/2" />
                       </div>
 
-                      <FormErrorMessage error={emailInput.error} />
+                      <FormErrorMessage error={loginField.error} />
 
                       <div className="relative flex flex-col gap-1 mb-2">
                         <label className="ml-2">Password</label>
                         <input
                           type={showPassword ? "text" : "password"}
+                          name="password"
                           placeholder="Password"
                           value={passwordInput.raw}
                           className="pr-9"
@@ -336,10 +362,10 @@ const AuthPage = () => {
 
                       <button
                         type="submit"
-                        disabled={loading}
+                        disabled={isPending}
                         className="w-full text-text-on-accent transition-all disabled:cursor-not-allowed btn btn-primary"
                       >
-                        {loading ? (
+                        {isPending ? (
                           <TbLoader3 size={20} className="animate-spin" />
                         ) : (
                           "Login"
