@@ -10,6 +10,9 @@ import {
 } from "../../../validators/auth.validator.js";
 import { responseService } from "../../../services/response/response.service.js";
 import { asyncHandler } from "../../../utils/common.utils.js";
+import { rbacService } from "../../../services/rbac/rbac.service.js";
+import Profile from "../../../models/user/profile/profile.model.js";
+import Account from "../../../models/user/auth/account.model.js";
 
 export const register = asyncHandler(async (req, res) => {
   const value = validateRegister(req.data.body);
@@ -58,11 +61,7 @@ export const login = asyncHandler(async (req, res) => {
     status: "LOGIN SUCCESS",
     message: "Logged in successfully!",
     data: {
-      user: {
-        id: user._id,
-        status: user.status,
-        emailVerified: user.emailVerified,
-      },
+      user,
       accessToken: tokens.accessToken,
       expiresIn: tokens.accessTokenExpiresIn,
     },
@@ -255,9 +254,34 @@ export const refreshTokens = asyncHandler(async (req, res) => {
 });
 
 export const getMe = asyncHandler(async (req, res) => {
+  const user = req.data.user;
+
+  const { email } = await Account.findOne({
+    user: user.id,
+  }).select("email");
+
+  const profile = await Profile.findOne({
+    user: user.id,
+  }).select("-_id userName firstName lastName avatarUrl");
+
+  const userRoles = await rbacService.getUserRoles(user._id);
+  const userRoleLevel = await rbacService.getHighestRoleLevel(userRoles);
+  const userRoleName = userRoles.reduce(
+    (acc, curr) => (curr.priority === userRoleLevel ? curr.name : acc),
+    null,
+  );
+
+  const userFields = {
+    id: user.id,
+    status: user.status,
+    email,
+    role: userRoleName,
+    profile,
+  };
+
   responseService.successResponseHandler(req, res, {
     status: "FETCH USER SUCCESS",
     message: "User details fetched successfully!",
-    data: { user: req.data.user },
+    data: { user: userFields },
   });
 });

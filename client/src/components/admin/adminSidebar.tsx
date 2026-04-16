@@ -29,7 +29,7 @@ const AdminSidebar = ({
   const router = useRouter();
 
   const setAccessToken = useAppStore((state) => state.setAccessToken);
-  const setLoggedInUserId = useAppStore((state) => state.setLoggedInUserId);
+  const setLoggedInUser = useAppStore((state) => state.setLoggedInUser);
   const setIsLoggingOut = useAppStore((state) => state.setIsLoggingOut);
 
   const navItems = [
@@ -46,7 +46,7 @@ const AdminSidebar = ({
     await logoutAction();
 
     setAccessToken(null);
-    setLoggedInUserId(null);
+    setLoggedInUser(null);
 
     router.push(defaultRoutes.landing);
 

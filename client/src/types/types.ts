@@ -18,3 +18,16 @@ export type StoredDataType<T> = {
   data: T;
   expiresAt?: number;
 };
+
+export type LoggedInUserType = {
+  id: string;
+  status: string;
+  email: string;
+  role: string;
+  profile: {
+    userName: string;
+    firstName: string;
+    lastName: string;
+    avatarUrl: string;
+  } | null;
+} | null;

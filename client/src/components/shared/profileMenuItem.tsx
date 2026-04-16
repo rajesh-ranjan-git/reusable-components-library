@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 
-export interface ProfileMenuItemsProps {
+export interface ProfileMenuItemProps {
   item: {
     title: string;
     url?: string;
@@ -9,10 +9,7 @@ export interface ProfileMenuItemsProps {
   handleNavigation: (url: string) => void;
 }
 
-const ProfileMenuItems = ({
-  item,
-  handleNavigation,
-}: ProfileMenuItemsProps) => {
+const ProfileMenuItem = ({ item, handleNavigation }: ProfileMenuItemProps) => {
   return (
     <li
       onClick={() => handleNavigation(item.url ?? "")}
@@ -26,4 +23,4 @@ const ProfileMenuItems = ({
   );
 };
 
-export default ProfileMenuItems;
+export default ProfileMenuItem;

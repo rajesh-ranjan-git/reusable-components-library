@@ -2,15 +2,15 @@ import { Dispatch, SetStateAction } from "react";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { themeConfig } from "@/config/common.config";
-import { ThemeTypes } from "@/types/types";
+import { LoggedInUserType, ThemeTypes } from "@/types/types";
 
 type AppState = {
   activeTheme: ThemeTypes;
   setActiveTheme: Dispatch<SetStateAction<ThemeTypes>>;
   accessToken: string | null;
   setAccessToken: Dispatch<SetStateAction<string | null>>;
-  loggedInUserId: string | null;
-  setLoggedInUserId: Dispatch<SetStateAction<string | null>>;
+  loggedInUser: LoggedInUserType;
+  setLoggedInUser: Dispatch<SetStateAction<LoggedInUserType>>;
   isLoggingOut: boolean;
   setIsLoggingOut: Dispatch<SetStateAction<boolean>>;
 };
@@ -34,13 +34,13 @@ export const useAppStore = create<AppState>()(
               ? accessTokenUpdater(state.accessToken)
               : accessTokenUpdater,
         })),
-      loggedInUserId: null,
-      setLoggedInUserId: (loggedInUserIdUpdater) =>
+      loggedInUser: null,
+      setLoggedInUser: (loggedInUserUpdater) =>
         set((state) => ({
-          loggedInUserId:
-            typeof loggedInUserIdUpdater === "function"
-              ? loggedInUserIdUpdater(state.loggedInUserId)
-              : loggedInUserIdUpdater,
+          loggedInUser:
+            typeof loggedInUserUpdater === "function"
+              ? loggedInUserUpdater(state.loggedInUser)
+              : loggedInUserUpdater,
         })),
       isLoggingOut: false,
       setIsLoggingOut: (isLoggingOutUpdater) =>
@@ -54,11 +54,7 @@ export const useAppStore = create<AppState>()(
     {
       name: "app-storage",
       version: 1,
-      partialize: (state) => ({
-        activeTheme: state.activeTheme,
-        accessToken: state.accessToken,
-        loggedInUserId: state.loggedInUserId,
-      }),
+      partialize: (state) => ({}),
     },
   ),
 );

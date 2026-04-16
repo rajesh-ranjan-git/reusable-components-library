@@ -5,14 +5,13 @@ import { fetchMe, refreshTokens } from "@/lib/actions/actions";
 import { authRoutes, defaultRoutes } from "@/lib/routes/routes";
 import { useAppStore } from "@/store/store";
 import { ReactNodeProps } from "@/types/propTypes";
+import { LoggedInUserType } from "@/types/types";
 import { toTitleCase } from "@/utils/common.utils";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 type FetchMeResponseType = {
-  user: {
-    id: string;
-  };
+  user: LoggedInUserType;
 };
 
 type RefreshResponseType = {
@@ -27,8 +26,8 @@ const AuthWrapper = ({ children }: ReactNodeProps) => {
 
   const { showToast } = useToast();
 
-  const loggedInUserId = useAppStore((state) => state.loggedInUserId);
-  const setLoggedInUserId = useAppStore((state) => state.setLoggedInUserId);
+  const loggedInUser = useAppStore((state) => state.loggedInUser);
+  const setLoggedInUser = useAppStore((state) => state.setLoggedInUser);
   const accessToken = useAppStore((state) => state.accessToken);
   const setAccessToken = useAppStore((state) => state.setAccessToken);
   const isLoggingOut = useAppStore((state) => state.isLoggingOut);
@@ -46,7 +45,7 @@ const AuthWrapper = ({ children }: ReactNodeProps) => {
       const isPublicRoute = isAuthRoute || pathname === defaultRoutes.landing;
 
       if (!isPublicRoute) {
-        if (loggedInUserId && accessToken) {
+        if (loggedInUser && accessToken) {
           if (isMounted) setIsChecking(false);
           return;
         }
@@ -77,7 +76,7 @@ const AuthWrapper = ({ children }: ReactNodeProps) => {
         if (response?.success) {
           const data = response.data as FetchMeResponseType;
 
-          setLoggedInUserId(data.user.id);
+          setLoggedInUser(data.user);
 
           if (isMounted) setIsChecking(false);
           return;
@@ -107,9 +106,9 @@ const AuthWrapper = ({ children }: ReactNodeProps) => {
   }, [
     pathname,
     router,
-    loggedInUserId,
+    loggedInUser,
     accessToken,
-    setLoggedInUserId,
+    setLoggedInUser,
     setAccessToken,
   ]);
 

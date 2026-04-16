@@ -70,7 +70,7 @@ const AuthPage = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const setAccessToken = useAppStore((state) => state.setAccessToken);
-  const setLoggedInUserId = useAppStore((state) => state.setLoggedInUserId);
+  const setLoggedInUser = useAppStore((state) => state.setLoggedInUser);
 
   const { showToast } = useToast();
 
@@ -196,7 +196,7 @@ const AuthPage = () => {
       });
     } else {
       setAccessToken(state.data.accessToken);
-      setLoggedInUserId(state.data.user.id);
+      setLoggedInUser(state.data.user);
 
       showToast({
         title: state.status,
@@ -317,6 +317,7 @@ const AuthPage = () => {
                           type="text"
                           name="loginField"
                           placeholder="you@example.com"
+                          autoComplete="off"
                           value={loginField.raw}
                           className="pr-9"
                           onInput={(e) =>
@@ -335,6 +336,7 @@ const AuthPage = () => {
                           type={showPassword ? "text" : "password"}
                           name="password"
                           placeholder="Password"
+                          autoComplete="off"
                           value={passwordInput.raw}
                           className="pr-9"
                           onInput={(e) =>
@@ -430,6 +432,7 @@ const AuthPage = () => {
                           type="text"
                           name="email"
                           placeholder="you@example.com"
+                          autoComplete="off"
                           value={emailInput.raw}
                           className="pr-9"
                           onInput={(e) =>
@@ -450,6 +453,7 @@ const AuthPage = () => {
                               type="text"
                               name="firstName"
                               placeholder="First Name"
+                              autoComplete="off"
                               value={firstNameInput.raw}
                               className="pr-9"
                               onInput={(e) =>
@@ -472,6 +476,7 @@ const AuthPage = () => {
                               type="text"
                               name="lastName"
                               placeholder="Last Name"
+                              autoComplete="off"
                               value={lastNameInput.raw}
                               className="pr-9"
                               onInput={(e) =>
@@ -492,6 +497,7 @@ const AuthPage = () => {
                           type={showPassword ? "text" : "password"}
                           name="password"
                           placeholder="Password"
+                          autoComplete="off"
                           value={passwordInput.raw}
                           className="pr-9"
                           onInput={(e) =>

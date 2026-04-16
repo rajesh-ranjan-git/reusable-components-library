@@ -96,7 +96,7 @@ class AuthService {
     if (userName) {
       profile = await Profile.findOne({
         userName,
-      }).select("user");
+      }).select("user userName firstName lastName");
     }
 
     const account = userName
@@ -179,14 +179,32 @@ class AuthService {
 
     await User.findByIdAndUpdate(user._id, { lastSeen: new Date() });
 
-    const roles = await rbacService.getUserRoles(user._id);
-    const permissionsSet = await rbacService.getUserPermissions(user._id);
-    const permissions = [...permissionsSet];
+    const userRoles = await rbacService.getUserRoles(user._id);
+    const userPermissionsSet = await rbacService.getUserPermissions(user._id);
+    const userPermissions = [...userPermissionsSet];
 
     const tokens = tokenService.generateAuthTokens(user._id, {
-      roles,
-      permissions,
+      roles: userRoles,
+      permissions: userPermissions,
     });
+
+    profile = await Profile.findOne({
+      user: user.id,
+    }).select("-_id userName firstName lastName avatarUrl");
+
+    const userRoleLevel = await rbacService.getHighestRoleLevel(userRoles);
+    const userRoleName = userRoles.reduce(
+      (acc, curr) => (curr.priority === userRoleLevel ? curr.name : acc),
+      null,
+    );
+
+    const userFields = {
+      id: user.id,
+      status: user.status,
+      email,
+      role: userRoleName,
+      profile,
+    };
 
     await sessionService.createSession({
       userId: user._id,
@@ -203,7 +221,7 @@ class AuthService {
       ipAddress,
     });
 
-    return { user, tokens };
+    return { user: userFields, tokens };
   };
 
   logout = async (userId, refreshToken, ipAddress) => {

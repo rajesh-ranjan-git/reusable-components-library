@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import { motion, AnimatePresence } from "motion/react";
 import { FiCheckCircle } from "react-icons/fi";
@@ -23,7 +23,9 @@ import {
 } from "@/lib/routes/routes";
 import { logoutAction } from "@/lib/actions/authActions";
 import { useAppStore } from "@/store/store";
-import ProfileMenuItems from "./profileMenuItems";
+import ProfileMenuItem from "@/components/shared/profileMenuItem";
+import { getFullName } from "@/helpers/helpers";
+import { toTitleCase } from "@/utils/common.utils";
 
 type HeaderProfileMenuProps = {
   isOpen: boolean;
@@ -39,8 +41,13 @@ const profileMenuItems = {
   },
   about: {
     title: "About App",
-    url: defaultRoutes.discover,
+    url: defaultRoutes.landing,
     icon: <IoHomeOutline size={16} className="text-text-secondary" />,
+  },
+  discover: {
+    title: "Discover",
+    url: defaultRoutes.discover,
+    icon: <LuCompass size={16} className="text-text-secondary" />,
   },
   chats: {
     title: "Chats",
@@ -59,6 +66,14 @@ const profileMenuItems = {
   },
 };
 
+const adminDashboardMenuItem = {
+  dashboard: {
+    title: "Admin Dashboard",
+    url: adminRoutes.dashboard,
+    icon: <LuLayoutDashboard size={16} className="text-text-secondary" />,
+  },
+};
+
 const HeaderProfileMenu = ({
   isOpen,
   onClose,
@@ -66,10 +81,12 @@ const HeaderProfileMenu = ({
 }: HeaderProfileMenuProps) => {
   const menuRef = useRef<HTMLDivElement | null>(null);
 
+  const pathname = usePathname();
   const router = useRouter();
 
   const setAccessToken = useAppStore((state) => state.setAccessToken);
-  const setLoggedInUserId = useAppStore((state) => state.setLoggedInUserId);
+  const loggedInUser = useAppStore((state) => state.loggedInUser);
+  const setLoggedInUser = useAppStore((state) => state.setLoggedInUser);
   const setIsLoggingOut = useAppStore((state) => state.setIsLoggingOut);
 
   useEffect(() => {
@@ -93,7 +110,7 @@ const HeaderProfileMenu = ({
   }, [isOpen, onClose]);
 
   const handleNavigation = (path: string) => {
-    router.push(path);
+    if (pathname !== path) router.push(path);
     onClose();
   };
 
@@ -103,7 +120,7 @@ const HeaderProfileMenu = ({
     await logoutAction();
 
     setAccessToken(null);
-    setLoggedInUserId(null);
+    setLoggedInUser(null);
 
     router.push(defaultRoutes.landing);
     onClose();
@@ -133,21 +150,32 @@ const HeaderProfileMenu = ({
 
             <div className="min-w-0">
               <p className="font-semibold text-text-primary text-sm truncate">
-                Rajesh Ranjan
+                {getFullName(loggedInUser)}
               </p>
-              <p className="flex items-center gap-1 mt-0.5 text-text-secondary text-xs">
-                <FiCheckCircle
-                  size={12}
-                  className="text-text-primary shrink-0"
-                />{" "}
-                <span className="truncate">Pro Member</span>
-              </p>
+              {loggedInUser?.role && (
+                <p className="flex items-center gap-1 mt-0.5 text-text-secondary text-xs">
+                  <FiCheckCircle
+                    size={12}
+                    className="text-text-primary shrink-0"
+                  />
+                  <span className="truncate">
+                    {toTitleCase(loggedInUser.role)}
+                  </span>
+                </p>
+              )}
             </div>
           </div>
 
           <ul>
+            {loggedInUser?.role === "ADMIN" && (
+              <ProfileMenuItem
+                item={adminDashboardMenuItem.dashboard}
+                handleNavigation={handleNavigation}
+              />
+            )}
+
             {Object.entries(profileMenuItems).map(([key, item]) => (
-              <ProfileMenuItems
+              <ProfileMenuItem
                 key={key}
                 item={item}
                 handleNavigation={handleNavigation}

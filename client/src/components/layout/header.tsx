@@ -23,7 +23,7 @@ const Header = ({ type, isSidebarOpen, setIsSidebarOpen }: HeaderProps) => {
 
   const pathname = usePathname();
 
-  const loggedInUserId = useAppStore((state) => state.loggedInUserId);
+  const loggedInUser = useAppStore((state) => state.loggedInUser);
 
   const toggleProfileMenu = (e: MouseEvent) => {
     e.stopPropagation();
@@ -135,7 +135,7 @@ const Header = ({ type, isSidebarOpen, setIsSidebarOpen }: HeaderProps) => {
           </div>
         )}
 
-        {!loggedInUserId ? (
+        {!loggedInUser ? (
           <div className="flex items-center gap-2">
             <span className="hidden md:flex shadow-md badge badge-blue">
               v1.0
