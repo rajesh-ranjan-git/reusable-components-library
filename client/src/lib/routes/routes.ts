@@ -16,6 +16,12 @@ export const profileRoutes = {
 export const chatRoutes = {
   chat: "/chat",
 };
+
+export const subscriptionRoutes = {
+  subscription: "/subscription",
+  payment: "/payment",
+};
+
 export const adminRoutes = {
   dashboard: "/admin/dashboard",
   users: "/admin/users",

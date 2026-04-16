@@ -19,14 +19,44 @@ import {
   chatRoutes,
   defaultRoutes,
   profileRoutes,
+  subscriptionRoutes,
 } from "@/lib/routes/routes";
 import { logoutAction } from "@/lib/actions/authActions";
 import { useAppStore } from "@/store/store";
+import ProfileMenuItems from "./profileMenuItems";
 
 type HeaderProfileMenuProps = {
   isOpen: boolean;
   onClose: () => void;
   positionClass?: string;
+};
+
+const profileMenuItems = {
+  profile: {
+    title: "View Profile",
+    url: profileRoutes.profile,
+    icon: <LuUser size={16} className="text-text-secondary" />,
+  },
+  about: {
+    title: "About App",
+    url: defaultRoutes.discover,
+    icon: <IoHomeOutline size={16} className="text-text-secondary" />,
+  },
+  chats: {
+    title: "Chats",
+    url: chatRoutes.chat,
+    icon: <LuMessageSquare size={16} className="text-text-secondary" />,
+  },
+  subscription: {
+    title: "Subscription",
+    url: subscriptionRoutes.subscription,
+    icon: <LuCreditCard size={16} className="text-text-secondary" />,
+  },
+  settings: {
+    id: "settings",
+    title: "Account Settings",
+    icon: <LuSettings size={16} className="text-text-secondary" />,
+  },
 };
 
 const HeaderProfileMenu = ({
@@ -116,79 +146,13 @@ const HeaderProfileMenu = ({
           </div>
 
           <ul>
-            <li
-              onClick={() => handleNavigation(profileRoutes.profile)}
-              className="flex items-center gap-3 hover:bg-glass-bg-subtle px-4 py-1 w-full text-left transition-colors"
-            >
-              <div className="mt-0.5 p-1.5 border border-accent-purple-dark/30 rounded-full">
-                <LuUser size={16} className="text-text-secondary" />
-              </div>
-              <p className="text-text-primary text-sm leading-snug">
-                View Profile
-              </p>
-            </li>
-            <li
-              onClick={() => handleNavigation(defaultRoutes.landing)}
-              className="flex items-center gap-2 hover:bg-glass-bg-subtle px-4 py-1 w-full text-left transition-colors"
-            >
-              <div className="mt-0.5 p-1.5 border border-accent-purple-dark/30 rounded-full">
-                <IoHomeOutline size={16} className="text-text-secondary" />
-              </div>
-              <p className="text-text-primary text-sm leading-snug">
-                About App
-              </p>
-            </li>
-            <li
-              onClick={() => handleNavigation(defaultRoutes.discover)}
-              className="flex items-center gap-3 hover:bg-glass-bg-subtle px-4 py-1 w-full text-left transition-colors"
-            >
-              <div className="mt-0.5 p-1.5 border border-accent-purple-dark/30 rounded-full">
-                <LuCompass size={16} className="text-text-secondary" />
-              </div>
-              <p className="text-text-primary text-sm leading-snug">Discover</p>
-            </li>
-            <li
-              onClick={() => handleNavigation(chatRoutes.chat)}
-              className="flex items-center gap-3 hover:bg-glass-bg-subtle px-4 py-1 w-full text-left transition-colors"
-            >
-              <div className="mt-0.5 p-1.5 border border-accent-purple-dark/30 rounded-full">
-                <LuMessageSquare size={16} className="text-text-secondary" />
-              </div>
-              <p className="text-text-primary text-sm leading-snug">Chats</p>
-            </li>
-            <li
-              onClick={() => handleNavigation("/subscription")}
-              className="flex items-center gap-3 hover:bg-glass-bg-subtle px-4 py-1 w-full text-left transition-colors"
-            >
-              <div className="mt-0.5 p-1.5 border border-accent-purple-dark/30 rounded-full">
-                <LuCreditCard size={16} className="text-text-secondary" />
-              </div>
-              <p className="text-text-primary text-sm leading-snug">
-                Subscriptions
-              </p>
-            </li>
-            <li
-              onClick={() => handleNavigation(adminRoutes.dashboard)}
-              className="flex items-center gap-3 hover:bg-glass-bg-subtle px-4 py-1 w-full text-left transition-colors"
-            >
-              <div className="mt-0.5 p-1.5 border border-accent-purple-dark/30 rounded-full">
-                <LuLayoutDashboard size={16} className="text-text-secondary" />
-              </div>
-              <p className="text-text-primary text-sm leading-snug">
-                Admin Dashboard
-              </p>
-            </li>
-            <li
-              onClick={onClose}
-              className="flex items-center gap-2 hover:bg-glass-bg-subtle px-4 py-1 w-full text-left transition-colors"
-            >
-              <div className="mt-0.5 p-1.5 border border-accent-purple-dark/30 rounded-full">
-                <LuSettings size={16} className="text-text-secondary" />
-              </div>
-              <p className="text-text-primary text-sm leading-snug">
-                Account Settings
-              </p>
-            </li>
+            {Object.entries(profileMenuItems).map(([key, item]) => (
+              <ProfileMenuItems
+                key={key}
+                item={item}
+                handleNavigation={handleNavigation}
+              />
+            ))}
           </ul>
 
           <hr className="mt-2 mb-0 text-text-secondary divider" />
