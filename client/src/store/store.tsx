@@ -56,7 +56,6 @@ export const useAppStore = create<AppState>()(
       version: 1,
       partialize: (state) => ({
         activeTheme: state.activeTheme,
-        accessToken: state.accessToken,
         loggedInUser: state.loggedInUser,
       }),
     },

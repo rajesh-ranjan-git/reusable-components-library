@@ -3,7 +3,6 @@
 import { useToast } from "@/hooks/toast";
 import { fetchMe, refreshTokens } from "@/lib/actions/actions";
 import { getCookies } from "@/lib/api/cookiesHandler";
-import { authRoutes, defaultRoutes } from "@/lib/routes/routes";
 import { useAppStore } from "@/store/store";
 import { ReactNodeProps } from "@/types/propTypes";
 import { LoggedInUserType } from "@/types/types";
@@ -33,68 +32,63 @@ const AuthWrapper = ({ children }: ReactNodeProps) => {
   const setAccessToken = useAppStore((state) => state.setAccessToken);
   const isLoggingOut = useAppStore((state) => state.isLoggingOut);
 
+  const isAuthenticated = !!loggedInUser && !!accessToken;
+
   useEffect(() => {
     if (isLoggingOut) return;
 
     let isMounted = true;
 
     const validateUser = async () => {
-      const isAuthRoute = Object.values(authRoutes).some((route) =>
-        pathname.startsWith(route),
-      );
+      const refreshToken = await getCookies("refreshToken");
 
-      const isPublicRoute = isAuthRoute || pathname === defaultRoutes.landing;
+      if (!refreshToken) {
+        setAccessToken(null);
+        setLoggedInUser(null);
 
-      if (!isAuthRoute) {
-        const refreshToken = await getCookies("refreshToken");
+        if (isMounted) setIsChecking(false);
+        return;
+      }
 
-        if (!refreshToken && pathname === defaultRoutes.landing) {
+      if (loggedInUser && accessToken) {
+        if (isMounted) setIsChecking(false);
+        return;
+      }
+
+      let token = accessToken;
+
+      if (!token) {
+        const refreshResponse = await refreshTokens();
+
+        if (refreshResponse?.success) {
+          const refreshData = refreshResponse.data as RefreshResponseType;
+
+          token = refreshData.accessToken;
+          setAccessToken(token);
+        } else {
+          showToast({
+            title: "SESSION EXPIRED",
+            message: "Your session has expired, please login again!",
+            variant: "error",
+          });
+
           setAccessToken(null);
           setLoggedInUser(null);
+
+          if (isMounted) setIsChecking(false);
+          return;
         }
       }
 
-      if (!isPublicRoute) {
-        if (loggedInUser && accessToken) {
-          if (isMounted) setIsChecking(false);
-          return;
-        }
+      const response = await fetchMe(token as string);
 
-        let token = accessToken;
+      if (response?.success) {
+        const data = response.data as FetchMeResponseType;
 
-        if (!token) {
-          const refreshResponse = await refreshTokens();
-
-          if (refreshResponse?.success) {
-            const refreshData = refreshResponse.data as RefreshResponseType;
-
-            token = refreshData.accessToken;
-            setAccessToken(token);
-          } else {
-            showToast({
-              title: "SESSION EXPIRED",
-              message: "Your session has expired, please login again!",
-              variant: "error",
-            });
-
-            router.push(authRoutes.login);
-          }
-        }
-
-        const response = await fetchMe(token as string);
-
-        if (response?.success) {
-          const data = response.data as FetchMeResponseType;
-
-          setLoggedInUser(data.user);
-
-          if (isMounted) setIsChecking(false);
-          return;
-        }
-
-        if (isMounted) {
-          router.replace(`${authRoutes.login}?from=${pathname}`);
-        }
+        setLoggedInUser(data.user);
+      } else {
+        setAccessToken(null);
+        setLoggedInUser(null);
 
         if (Number(response?.statusCode) >= 500) {
           showToast({
@@ -113,14 +107,7 @@ const AuthWrapper = ({ children }: ReactNodeProps) => {
     return () => {
       isMounted = false;
     };
-  }, [
-    pathname,
-    router,
-    loggedInUser,
-    accessToken,
-    setLoggedInUser,
-    setAccessToken,
-  ]);
+  }, []);
 
   if (isChecking) {
     return null;
