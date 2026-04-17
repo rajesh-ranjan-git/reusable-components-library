@@ -28,6 +28,6 @@ export type LoggedInUserType = {
     userName: string;
     firstName: string;
     lastName: string;
-    avatarUrl: string;
+    avatar: string;
   } | null;
 } | null;

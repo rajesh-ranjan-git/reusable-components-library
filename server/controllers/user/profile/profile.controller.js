@@ -5,9 +5,10 @@ import {
   validateUpdateProfile,
 } from "../../../validators/auth.validator.js";
 import { responseService } from "../../../services/response/response.service.js";
-import { asyncHandler } from "../../../utils/common.utils.js";
+import { asyncHandler, toTitleCase } from "../../../utils/common.utils.js";
 import { httpStatusConfig } from "../../../config/http.config.js";
 import { genderProperties } from "../../../config/common.config.js";
+import { googleDriveService } from "../../../services/drive/google.drive.service.js";
 
 export const getMyProfile = asyncHandler(async (req, res) => {
   const profile = await Profile.findOne({ user: req.data.userId }).lean();
@@ -228,3 +229,80 @@ export const updateGender = asyncHandler(async (req, res) => {
     data: { gender: gender.trim().toLowerCase() },
   });
 });
+
+export const uploadProfileImage = async (req, res) => {
+  const userId = req.data.userId;
+  const file = req.file;
+  const type = req.data.params.type;
+
+  if (!file) {
+    throw AppError.unprocessable({
+      message: "Please provide image to upload!",
+      code: "IMAGE UPLOAD FAILED",
+      details: { file },
+    });
+  }
+
+  if (!["avatar", "cover"].includes(type)) {
+    throw AppError.unprocessable({
+      message: "Please provide a valid image type!",
+      code: "IMAGE UPLOAD FAILED",
+      details: { type },
+    });
+  }
+
+  const profile = await Profile.findOne({ user: userId }).select(
+    "avatarFileId coverFileId",
+  );
+
+  if (!profile) {
+    throw AppError.notFound({
+      message: "Profile details not found!",
+      code: "PROFILE NOT FOUND",
+    });
+  }
+
+  if (type === "avatar" && profile.avatarFileId) {
+    await googleDriveService.deleteFromDrive(profile.avatarFileId);
+  }
+
+  if (type === "cover" && profile.coverFileId) {
+    await googleDriveService.deleteFromDrive(profile.coverFileId);
+  }
+
+  const folderId = await googleDriveService.getUploadFolderId(type);
+
+  const { url, fileId } = await googleDriveService.uploadToDrive(
+    file,
+    folderId,
+  );
+
+  let updateField = {};
+  if (type === "avatar") {
+    updateField = {
+      avatar: url,
+      avatarFileId: fileId,
+    };
+  } else {
+    updateField = {
+      cover: url,
+      coverFileId: fileId,
+    };
+  }
+
+  const updatedProfile = await Profile.findOneAndUpdate(
+    { user: userId },
+    { $set: updateField },
+    {
+      returnDocument: "after",
+      runValidators: true,
+    },
+  );
+
+  responseService.successResponseHandler(req, res, {
+    status: "IMAGE UPLOAD SUCCESS",
+    statusCode: httpStatusConfig.created.statusCode,
+    message: `${toTitleCase(type)} image uploaded successfully!`,
+    data: profile,
+  });
+};

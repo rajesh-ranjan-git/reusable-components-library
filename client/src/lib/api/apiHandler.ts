@@ -75,11 +75,17 @@ export async function apiHandler<TResponse = unknown, TBody = unknown>(
     fetchOptions = {},
   } = options;
 
+  const isFormData =
+    typeof FormData !== "undefined" && body instanceof FormData;
+
   const headers: Record<string, string> = {
-    "Content-Type": "application/json",
     Accept: "application/json",
     ...extraHeaders,
   };
+
+  if (!isFormData) {
+    headers["Content-Type"] = "application/json";
+  }
 
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
@@ -93,7 +99,7 @@ export async function apiHandler<TResponse = unknown, TBody = unknown>(
   };
 
   if (body !== undefined && method !== "GET" && method !== "DELETE") {
-    init.body = JSON.stringify(body);
+    init.body = isFormData ? body : JSON.stringify(body);
   }
 
   const url = `${HOST_API_URL}${endpoint}`;

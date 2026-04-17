@@ -47,8 +47,11 @@ const profileSchema = new mongoose.Schema(
 
     bio: String,
 
-    avatarUrl: String,
-    coverPhotoUrl: String,
+    avatar: { type: String, default: null },
+    avatarFileId: { type: String, default: null },
+
+    cover: { type: String, default: null },
+    coverFileId: { type: String, default: null },
 
     company: String,
     jobProfile: String,

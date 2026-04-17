@@ -27,7 +27,7 @@ export const oauthCallback = (provider) =>
       id: providerUserId,
       email,
       displayName,
-      avatarUrl,
+      avatar,
       accessToken,
       refreshToken: oauthRefreshToken,
     } = oauthProfile;
@@ -89,7 +89,7 @@ export const oauthCallback = (provider) =>
           userName: uniqueUsername,
           userName: oauthProfile.userName || null,
           lastName: oauthProfile.lastName || null,
-          avatarUrl: avatarUrl || null,
+          avatar: avatar || null,
         });
 
         await SocialLink.create({ user: userId });

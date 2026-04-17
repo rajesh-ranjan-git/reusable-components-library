@@ -22,7 +22,10 @@ import { getRemainingTime } from "../../utils/date.utils.js";
 import { ROLES } from "../../constants/roles.constants.js";
 
 class AuthService {
-  register = async ({ email, password, firstName, lastName }, ipAddress) => {
+  register = async (
+    { userName, email, password, firstName, lastName },
+    ipAddress,
+  ) => {
     const existingAccount = await Account.findOne({ email, provider: "local" });
     if (existingAccount) {
       throw AppError.conflict({
@@ -32,11 +35,13 @@ class AuthService {
       });
     }
 
-    const userName = await this._generateUniqueUsername({
-      email,
-      firstName,
-      lastName,
-    });
+    const generatedUserName = userName
+      ? userName
+      : await this._generateUniqueUsername({
+          email,
+          firstName,
+          lastName,
+        });
 
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
 
@@ -61,7 +66,7 @@ class AuthService {
 
     await Profile.create({
       user: user._id,
-      userName,
+      userName: generatedUserName,
       firstName,
       lastName,
     });
@@ -190,7 +195,7 @@ class AuthService {
 
     profile = await Profile.findOne({
       user: user.id,
-    }).select("-_id userName firstName lastName avatarUrl");
+    }).select("-_id userName firstName lastName avatar");
 
     const userRoleLevel = await rbacService.getHighestRoleLevel(userRoles);
     const userRoleName = userRoles.reduce(

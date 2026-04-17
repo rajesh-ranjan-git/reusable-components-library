@@ -6,4 +6,7 @@ export const apiUrls = {
     login: "/auth/login",
     logout: "/auth/logout",
   },
+  profile: {
+    uploadImage: "/user/profile/upload",
+  },
 };

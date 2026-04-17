@@ -1,4 +1,4 @@
-import { useState, useRef, ChangeEvent } from "react";
+import { useState, useRef, ChangeEvent, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -16,6 +16,13 @@ import { FiMoreHorizontal } from "react-icons/fi";
 import ImageUploadMenu from "@/components/shared/imageUploadMenu";
 import CameraModal from "@/components/shared/cameraModal";
 import { chatRoutes } from "@/lib/routes/routes";
+import {
+  compressImage,
+  dataURLtoImage,
+  validateImage,
+} from "@/helpers/helpers";
+import { uploadImage } from "@/lib/actions/profileActions";
+import { useAppStore } from "@/store/store";
 
 type User = {
   name: string;
@@ -40,6 +47,11 @@ const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
     useState<ImageTarget>(null);
   const [localAvatar, setLocalAvatar] = useState(user.avatar);
   const [localCover, setLocalCover] = useState(user.coverImage);
+  const [objectUrls, setObjectUrls] = useState<string[]>([]);
+  const [isImageUploading, setIsImageUploading] = useState(false);
+
+  const accessToken = useAppStore((state) => state.accessToken);
+  const loggedInUser = useAppStore((state) => state.loggedInUser);
 
   const router = useRouter();
 
@@ -47,7 +59,11 @@ const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
 
   const handleUploadClick = (target: ImageTarget) => {
     setCurrentImageTarget(target);
-    fileInputRef.current?.click();
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+      fileInputRef.current.click();
+    }
   };
 
   const handleCameraClick = (target: ImageTarget) => {
@@ -55,23 +71,64 @@ const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
     setIsCameraOpen(true);
   };
 
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      if (currentImageTarget === "avatar") setLocalAvatar(url);
-      if (currentImageTarget === "cover") setLocalCover(url);
-    }
+  const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    setIsImageUploading(true);
+
+    const image = e.target.files?.[0];
+
+    if (!image || !currentImageTarget) return;
+
+    validateImage(image);
+
+    const compressedImage = await compressImage(image);
+
+    const imageUrl = createPreviewUrl(compressedImage);
+
+    if (currentImageTarget === "avatar") setLocalAvatar(imageUrl);
+    if (currentImageTarget === "cover") setLocalCover(imageUrl);
+
+    await uploadImage(compressedImage, currentImageTarget, accessToken);
+
+    setIsImageUploading(false);
   };
 
-  const handleCapture = (imgSrc: string) => {
+  const handleCapture = async (imgSrc: string) => {
+    setIsImageUploading(true);
+
+    if (!currentImageTarget) return;
+
     if (currentImageTarget === "avatar") setLocalAvatar(imgSrc);
     if (currentImageTarget === "cover") setLocalCover(imgSrc);
+
+    const image = await dataURLtoImage(
+      imgSrc,
+      `${currentImageTarget}-${loggedInUser?.id}-${Date.now()}.jpg`,
+    );
+
+    validateImage(image);
+
+    const compressedImage = await compressImage(image);
+
+    await uploadImage(compressedImage, currentImageTarget, accessToken);
+
+    setIsImageUploading(false);
   };
 
   const handleImagePreview = (src: string) => {
     setPreviewImage(src);
   };
+
+  const createPreviewUrl = (file: File) => {
+    const url = URL.createObjectURL(file);
+    setObjectUrls((prev) => [...prev, url]);
+    return url;
+  };
+
+  useEffect(() => {
+    return () => {
+      objectUrls.forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, [objectUrls]);
 
   return (
     <div className="z-(--z-raised) relative mb-6 glass-heavy rounded-t-2xl">
