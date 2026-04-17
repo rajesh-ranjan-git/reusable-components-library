@@ -15,7 +15,7 @@ type User = {
   location: string;
   website: string;
   joinedDate: string;
-  coverImage: string;
+  cover: string;
   avatar: string;
   online: boolean;
 };
@@ -39,7 +39,7 @@ const mockUser: User = {
   location: "London, UK",
   website: "https://sarahml.dev",
   joinedDate: "January 2024",
-  coverImage:
+  cover:
     "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80",
   avatar: "https://i.pravatar.cc/150?u=sarah",
   online: false,

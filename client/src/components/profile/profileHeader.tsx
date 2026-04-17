@@ -25,6 +25,8 @@ import { uploadImage } from "@/lib/actions/profileActions";
 import { useAppStore } from "@/store/store";
 import { useToast } from "@/hooks/toast";
 import { toTitleCase } from "@/utils/common.utils";
+import { staticImages } from "@/config/common.config";
+import { TbLoader3 } from "react-icons/tb";
 
 type User = {
   name: string;
@@ -32,7 +34,7 @@ type User = {
   location: string;
   website: string;
   joinedDate: string;
-  coverImage: string;
+  cover: string;
   avatar: string;
   online: boolean;
 };
@@ -48,9 +50,10 @@ const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
   const [currentImageTarget, setCurrentImageTarget] =
     useState<ImageTarget>(null);
   const [localAvatar, setLocalAvatar] = useState(user.avatar);
-  const [localCover, setLocalCover] = useState(user.coverImage);
+  const [localCover, setLocalCover] = useState(user.cover);
   const [objectUrls, setObjectUrls] = useState<string[]>([]);
   const [isImageUploading, setIsImageUploading] = useState(false);
+  const [previousImage, setPreviousImage] = useState<string | null>(null);
 
   const router = useRouter();
 
@@ -76,79 +79,101 @@ const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
   };
 
   const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
-    setIsImageUploading(true);
-
     const file = e.target.files?.[0];
 
     if (!file || !currentImageTarget) return;
 
-    const uniqueName = `${currentImageTarget}-${loggedInUser?.id}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+    try {
+      if (currentImageTarget === "avatar") {
+        setPreviousImage(localAvatar);
+      }
+      if (currentImageTarget === "cover") {
+        setPreviousImage(localCover);
+      }
 
-    const image = new File([file], uniqueName, {
-      type: file.type,
-    });
+      setIsImageUploading(true);
 
-    validateImage(image);
+      const uniqueImageName = `${currentImageTarget}-${loggedInUser?.id}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
 
-    const compressedImage = await compressImage(image);
-
-    const imageUrl = createPreviewUrl(compressedImage);
-
-    if (currentImageTarget === "avatar") setLocalAvatar(imageUrl);
-    if (currentImageTarget === "cover") setLocalCover(imageUrl);
-
-    const response = await uploadImage(
-      compressedImage,
-      currentImageTarget,
-      accessToken!,
-    );
-
-    if (!response.success) {
-      showToast({
-        title: response.code,
-        message: response.message,
-        variant: "error",
+      const image = new File([file], uniqueImageName, {
+        type: file.type,
       });
 
-      setPreviewImage(null);
-    }
+      validateImage(image);
 
-    setIsImageUploading(false);
+      const compressedImage = await compressImage(image);
+
+      const imageUrl = createPreviewUrl(compressedImage);
+
+      if (currentImageTarget === "avatar") setLocalAvatar(imageUrl);
+      if (currentImageTarget === "cover") setLocalCover(imageUrl);
+
+      const response = await uploadImage(
+        compressedImage,
+        currentImageTarget,
+        accessToken!,
+      );
+
+      if (!response.success) {
+        showToast({
+          title: response.code,
+          message: response.message,
+          variant: "error",
+        });
+
+        if (currentImageTarget === "avatar" && previousImage) {
+          setLocalAvatar(previousImage);
+        }
+        if (currentImageTarget === "cover" && previousImage) {
+          setLocalCover(previousImage);
+        }
+      }
+    } catch (error) {
+    } finally {
+      setIsImageUploading(false);
+    }
   };
 
   const handleCapture = async (imgSrc: string) => {
-    setIsImageUploading(true);
-
     if (!currentImageTarget) return;
 
-    if (currentImageTarget === "avatar") setLocalAvatar(imgSrc);
-    if (currentImageTarget === "cover") setLocalCover(imgSrc);
+    try {
+      setIsImageUploading(true);
 
-    const uniqueName = `${currentImageTarget}-${loggedInUser?.id}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}.jpg`;
+      if (currentImageTarget === "avatar") {
+        setLocalAvatar(imgSrc);
+        setPreviousImage(localAvatar);
+      }
+      if (currentImageTarget === "cover") {
+        setLocalCover(imgSrc);
+        setPreviousImage(localCover);
+      }
 
-    const image = await dataURLtoImage(imgSrc, uniqueName);
+      const uniqueImageName = `${currentImageTarget}-${loggedInUser?.id}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}.jpg`;
 
-    validateImage(image);
+      const image = await dataURLtoImage(imgSrc, uniqueImageName);
 
-    const compressedImage = await compressImage(image);
+      validateImage(image);
 
-    const response = await uploadImage(
-      compressedImage,
-      currentImageTarget,
-      accessToken!,
-    );
+      const compressedImage = await compressImage(image);
 
-    if (!response.success) {
-      showToast({
-        title: response.code,
-        message: response.message,
-        variant: "error",
-      });
+      const response = await uploadImage(
+        compressedImage,
+        currentImageTarget,
+        accessToken!,
+      );
 
-      setPreviewImage(null);
+      if (!response.success) {
+        showToast({
+          title: response.code,
+          message: response.message,
+          variant: "error",
+        });
+      }
+    } catch (error) {
+    } finally {
+      setIsImageUploading(false);
     }
-
-    setIsImageUploading(false);
   };
 
   const handleImagePreview = (src: string) => {
@@ -156,28 +181,50 @@ const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
   };
 
   const createPreviewUrl = (file: File) => {
-    const url = URL.createObjectURL(file);
-    setObjectUrls((prev) => [...prev, url]);
-    return url;
+    const imageUrl = URL.createObjectURL(file);
+
+    if (currentImageTarget === "avatar") {
+      if (localAvatar?.startsWith("blob:")) {
+        URL.revokeObjectURL(localAvatar);
+      }
+      setLocalAvatar(imageUrl);
+    }
+
+    if (currentImageTarget === "cover") {
+      if (localCover?.startsWith("blob:")) {
+        URL.revokeObjectURL(localCover);
+      }
+      setLocalCover(imageUrl);
+    }
+
+    return imageUrl;
   };
 
   useEffect(() => {
     return () => {
       objectUrls.forEach((url) => URL.revokeObjectURL(url));
     };
-  }, [objectUrls]);
+  }, []);
 
   return (
     <div className="z-(--z-raised) relative mb-6 glass-heavy rounded-t-2xl">
       <div className="group relative bg-black rounded-t-2xl w-full h-32 md:h-48">
         <Image
-          src={localCover}
-          alt="Cover"
+          src={localCover ? localCover : staticImages.cover.src}
+          alt={user.name}
           width={1600}
           height={800}
           className="opacity-80 group-hover:opacity-60 rounded-t-2xl w-full h-full object-cover transition-opacity cursor-pointer"
-          onClick={() => handleImagePreview(localCover)}
+          onClick={() =>
+            handleImagePreview(localCover ? localCover : staticImages.cover.src)
+          }
         />
+
+        {isImageUploading && currentImageTarget === "cover" && (
+          <div className="absolute inset-0 flex justify-center items-center bg-black/50 rounded-t-2xl">
+            <TbLoader3 className="w-6 h-6 animate-spin" />
+          </div>
+        )}
 
         {isOwnProfile && (
           <div className="top-4 right-4 z-(--z-modal) absolute flex flex-col items-end">
@@ -186,7 +233,7 @@ const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
                 e.stopPropagation();
                 setActiveMenu(activeMenu === "cover" ? null : "cover");
               }}
-              className="hidden relative sm:flex px-2 sm:px-4 hover:text-text-primary text-xs transition-colors text-accent-purple-light glass-interactive"
+              className="hidden relative sm:flex backdrop-blur-md px-2 sm:px-4 hover:text-text-primary text-xs transition-colors text-accent-purple-light glass-interactive"
             >
               <LuCamera size={16} />
               <span className="hidden sm:inline">Update Cover Photo</span>
@@ -219,13 +266,23 @@ const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
         <div className="flex md:flex-row flex-col justify-between md:items-end gap-4 -mt-12 md:-mt-16 mb-4">
           <div className="group inline-block relative self-start md:self-auto pointer-events-auto">
             <Image
-              src={localAvatar}
+              src={localAvatar ? localAvatar : staticImages.avatar.src}
               alt={user.name}
               width={400}
               height={400}
               className="z-(--z-base) relative bg-glass shadow-xl border-4 border-bg rounded-xl w-24 md:w-32 h-24 md:h-32 object-cover hover:scale-[1.02] transition-transform cursor-pointer"
-              onClick={() => handleImagePreview(localAvatar)}
+              onClick={() =>
+                handleImagePreview(
+                  localAvatar ? localAvatar : staticImages.avatar.src,
+                )
+              }
             />
+
+            {isImageUploading && currentImageTarget === "avatar" && (
+              <div className="absolute inset-0 flex justify-center items-center bg-black/50 rounded-xl">
+                <TbLoader3 className="w-6 h-6 animate-spin" />
+              </div>
+            )}
             <div
               className={`absolute bottom-1 right-1 w-4 h-4 rounded-full border-2 border-bg z-(--z-raised) ${user.online ? "bg-green-500" : "bg-gray-500"}`}
             ></div>
@@ -237,7 +294,7 @@ const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
                     e.stopPropagation();
                     setActiveMenu(activeMenu === "avatar" ? null : "avatar");
                   }}
-                  className="relative bg-glass-bg-strong backdrop-blur-md px-2 hover:text-text-primary text-xs transition-colors text-accent-purple-dark glass-interactive"
+                  className="relative backdrop-blur-md px-2 hover:text-text-primary text-xs transition-colors text-accent-purple-dark glass-interactive"
                 >
                   <LuCamera size={18} />
                 </button>
@@ -346,7 +403,7 @@ const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
                   }}
                   transition={{ type: "spring", damping: 20, stiffness: 300 }}
                   src={previewImage}
-                  alt="Preview"
+                  alt={user.name}
                   className="relative shadow-[0_0_50px_rgba(0,0,0,0.5)] rounded-xl max-w-full max-h-[90vh] object-contain"
                   onClick={(e) => e.stopPropagation()}
                 />

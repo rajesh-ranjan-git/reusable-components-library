@@ -42,9 +42,9 @@ export const staticImages: StaticImageType = {
     src: "/assets/avatar/user.webp",
     alt: "avatar-icon",
   },
-  profilePlaceholder: {
-    src: "/assets/avatar/user.webp",
-    alt: "profile-pic",
+  coverPlaceholder: {
+    src: "/assets/cover/cover.webp",
+    alt: "cover-pic",
   },
 };
 
