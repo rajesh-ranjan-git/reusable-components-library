@@ -2,12 +2,14 @@
 
 import { useToast } from "@/hooks/toast";
 import { fetchMe, refreshTokens } from "@/lib/actions/actions";
+import { logoutAction } from "@/lib/actions/authActions";
 import { getCookies } from "@/lib/api/cookiesHandler";
+import { authRoutes } from "@/lib/routes/routes";
 import { useAppStore } from "@/store/store";
 import { ReactNodeProps } from "@/types/propTypes";
 import { LoggedInUserType } from "@/types/types";
 import { toTitleCase } from "@/utils/common.utils";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 type FetchMeResponseType = {
@@ -21,7 +23,6 @@ type RefreshResponseType = {
 const AuthWrapper = ({ children }: ReactNodeProps) => {
   const [isChecking, setIsChecking] = useState(true);
 
-  const pathname = usePathname();
   const router = useRouter();
 
   const { showToast } = useToast();
@@ -31,8 +32,6 @@ const AuthWrapper = ({ children }: ReactNodeProps) => {
   const accessToken = useAppStore((state) => state.accessToken);
   const setAccessToken = useAppStore((state) => state.setAccessToken);
   const isLoggingOut = useAppStore((state) => state.isLoggingOut);
-
-  const isAuthenticated = !!loggedInUser && !!accessToken;
 
   useEffect(() => {
     if (isLoggingOut) return;
@@ -72,8 +71,12 @@ const AuthWrapper = ({ children }: ReactNodeProps) => {
             variant: "error",
           });
 
+          await logoutAction();
+
           setAccessToken(null);
           setLoggedInUser(null);
+
+          router.push(authRoutes.login);
 
           if (isMounted) setIsChecking(false);
           return;
