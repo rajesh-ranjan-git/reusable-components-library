@@ -33,7 +33,7 @@ export const getMyProfile = asyncHandler(async (req, res) => {
     });
   }
 
-  responseService.successResponseHandler(req, res, {
+  return responseService.successResponseHandler(req, res, {
     status: "PROFILE FETCH SUCCESS",
     message: "Profile fetched successfully!",
     data: { profile },
@@ -68,7 +68,7 @@ export const getUserProfile = asyncHandler(async (req, res) => {
     });
   }
 
-  responseService.successResponseHandler(req, res, {
+  return responseService.successResponseHandler(req, res, {
     status: "PROFILE FETCH SUCCESS",
     message: "Profile fetched successfully!",
     data: { profile },
@@ -125,7 +125,7 @@ export const updateProfile = asyncHandler(async (req, res) => {
     });
   }
 
-  responseService.successResponseHandler(req, res, {
+  return responseService.successResponseHandler(req, res, {
     status: "PROFILE UPDATE SUCCESS",
     message: "Profile updated successfully!",
     data: { profile },
@@ -179,7 +179,7 @@ export const updateUsername = asyncHandler(async (req, res) => {
     });
   }
 
-  responseService.successResponseHandler(req, res, {
+  return responseService.successResponseHandler(req, res, {
     status: "USERNAME UPDATE SUCCESS",
     message: "Username updated successfully!",
     data: { userName: validatedUserName },
@@ -231,7 +231,7 @@ export const updateGender = asyncHandler(async (req, res) => {
     });
   }
 
-  responseService.successResponseHandler(req, res, {
+  return responseService.successResponseHandler(req, res, {
     status: "PROFILE UPDATE SUCCESS",
     statusCode: httpStatusConfig.created.statusCode,
     message: "Gender updated successfully!",
@@ -336,7 +336,7 @@ export const uploadProfileImage = async (req, res) => {
     }
   }
 
-  responseService.successResponseHandler(req, res, {
+  return responseService.successResponseHandler(req, res, {
     status: `${type.toUpperCase()} UPDATE SUCCESS`,
     statusCode: httpStatusConfig.created.statusCode,
     message: `${toTitleCase(type)} updated successfully!`,
@@ -507,7 +507,7 @@ export const updateSkills = async (req, res) => {
     },
   );
 
-  responseService.successResponseHandler(req, res, {
+  return responseService.successResponseHandler(req, res, {
     status: "SKILLS UPDATE SUCCESS",
     message: "Skills updated successfully!",
     data: updatedProfile.skills,
@@ -555,7 +555,7 @@ export const updateExperience = async (req, res) => {
       },
     );
 
-    responseService.successResponseHandler(req, res, {
+    return responseService.successResponseHandler(req, res, {
       status: "EXPERIENCE UPDATE SUCCESS",
       message: "New experience added successfully!",
       data: updatedProfile.experiences,
@@ -625,7 +625,7 @@ export const updateExperience = async (req, res) => {
       { returnDocument: "after", runValidators: true },
     );
 
-    responseService.successResponseHandler(req, res, {
+    return responseService.successResponseHandler(req, res, {
       status: "EXPERIENCE UPDATE SUCCESS",
       message: "Experience updated successfully!",
       data: updatedProfile.experiences,
@@ -664,7 +664,7 @@ export const updateExperience = async (req, res) => {
       },
     );
 
-    responseService.successResponseHandler(req, res, {
+    return responseService.successResponseHandler(req, res, {
       status: "EXPERIENCE DELETE SUCCESS",
       message: "Experience deleted successfully!",
       data: updatedProfile.experiences,
@@ -712,7 +712,7 @@ export const updateExperience = async (req, res) => {
       },
     );
 
-    responseService.successResponseHandler(req, res, {
+    return responseService.successResponseHandler(req, res, {
       status: "EXPERIENCE UPDATE SUCCESS",
       message: "Experiences replaced successfully!",
       data: updatedProfile.experiences,

@@ -145,7 +145,7 @@ export const getLinkedProviders = asyncHandler(async (req, res) => {
     .select("provider createdAt -_id")
     .lean();
 
-  responseService.successResponseHandler(req, res, {
+  return responseService.successResponseHandler(req, res, {
     status: "PROVIDER FETCH SUCCESS",
     message: "Providers fetched successfully!",
     data: { providers },
@@ -191,7 +191,7 @@ export const unlinkProvider = asyncHandler(async (req, res) => {
     });
   }
 
-  responseService.successResponseHandler(req, res, {
+  return responseService.successResponseHandler(req, res, {
     status: "PROVIDER UNLINK SUCCESS",
     message: `${provider} unlinked successfully!`,
   });

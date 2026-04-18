@@ -18,7 +18,7 @@ export const getAccountInfo = asyncHandler(async (req, res) => {
     Profile.findOne({ user: req.data.userId }).lean(),
   ]);
 
-  responseService.successResponseHandler(req, res, {
+  return responseService.successResponseHandler(req, res, {
     status: "ACCOUNT FETCH SUCCESS",
     message: "Account details fetched successfully!",
     data: { user: req.data.user, account, profile },
@@ -78,7 +78,7 @@ export const updateEmail = asyncHandler(async (req, res) => {
     ipAddress: req.ip,
   });
 
-  responseService.successResponseHandler(req, res, {
+  return responseService.successResponseHandler(req, res, {
     status: "EMAIL UPDATE SUCCESS",
     message: "Email updated successfully!",
   });
@@ -101,7 +101,7 @@ export const deleteAccount = asyncHandler(async (req, res) => {
     ipAddress: req.ip,
   });
 
-  responseService.successResponseHandler(req, res, {
+  return responseService.successResponseHandler(req, res, {
     status: "ACCOUNT DELETE SUCCESS",
     message: "Account deleted successfully!",
   });
@@ -119,7 +119,7 @@ export const getDashboardSummary = asyncHandler(async (req, res) => {
         .lean(),
     ]);
 
-  responseService.successResponseHandler(req, res, {
+  return responseService.successResponseHandler(req, res, {
     status: "DASHBOARD SUMMARY FETCH SUCCESS",
     message: "Dashboard summary fetched successfully!",
     data: {

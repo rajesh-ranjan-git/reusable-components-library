@@ -39,7 +39,7 @@ export const getMyActivity = asyncHandler(async (req, res) => {
     ActivityLog.countDocuments(filter),
   ]);
 
-  responseService.successResponseHandler(req, res, {
+  return responseService.successResponseHandler(req, res, {
     status: "ACTIVITY FETCH SUCCESS",
     message: "Activity details fetched successfully!",
     data: {
@@ -65,7 +65,7 @@ export const getActivityTypes = asyncHandler(async (req, res) => {
     });
   }
 
-  responseService.successResponseHandler(req, res, {
+  return responseService.successResponseHandler(req, res, {
     status: "ACTIVITY FETCH SUCCESS",
     message: "Activity type fetched successfully!",
     data: { types },
@@ -82,7 +82,7 @@ export const clearMyActivity = asyncHandler(async (req, res) => {
     });
   }
 
-  responseService.successResponseHandler(req, res, {
+  return responseService.successResponseHandler(req, res, {
     status: "ACTIVITY CLEAR SUCCESS",
     message: "Activity logs cleared successfully!",
     data: { deleted: result.deletedCount },

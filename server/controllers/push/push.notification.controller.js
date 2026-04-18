@@ -23,7 +23,7 @@ export const subscribe = async (req, res, next) => {
       { upsert: true, returnDocument: "after", runValidators: true },
     );
 
-    responseService.successResponseHandler(req, res, {
+    return responseService.successResponseHandler(req, res, {
       status: "SUBSCRIPTION SUCCESS",
       statusCode: httpStatusConfig.created.statusCode,
       message: "Subscribed to push notifications successfully!",

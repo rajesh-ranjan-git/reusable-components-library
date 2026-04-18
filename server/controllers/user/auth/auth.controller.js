@@ -26,7 +26,7 @@ export const register = asyncHandler(async (req, res) => {
     });
   }
 
-  responseService.successResponseHandler(req, res, {
+  return responseService.successResponseHandler(req, res, {
     status: "REGISTRATION SUCCESS",
     statusCode: httpStatusConfig.created.statusCode,
     message: result.message,
@@ -57,7 +57,7 @@ export const login = asyncHandler(async (req, res) => {
     path: "/",
   });
 
-  responseService.successResponseHandler(req, res, {
+  return responseService.successResponseHandler(req, res, {
     status: "LOGIN SUCCESS",
     message: "Logged in successfully!",
     data: {
@@ -76,7 +76,7 @@ export const logout = asyncHandler(async (req, res) => {
   }
 
   res.clearCookie("refreshToken", { path: "/" });
-  responseService.successResponseHandler(req, res, {
+  return responseService.successResponseHandler(req, res, {
     status: "LOGOUT SUCCESS",
     message: "Logged out successfully!",
   });
@@ -102,7 +102,7 @@ export const verifyEmail = asyncHandler(async (req, res) => {
     });
   }
 
-  responseService.successResponseHandler(req, res, {
+  return responseService.successResponseHandler(req, res, {
     status: "EMAIL VERIFICATION SUCCESS",
     message: result.message,
   });
@@ -134,7 +134,7 @@ export const resendVerification = asyncHandler(async (req, res) => {
     });
   }
 
-  responseService.successResponseHandler(req, res, {
+  return responseService.successResponseHandler(req, res, {
     status: "EMAIL VERIFICATION SENT",
     message: result.message,
   });
@@ -166,7 +166,7 @@ export const forgotPassword = asyncHandler(async (req, res) => {
     });
   }
 
-  responseService.successResponseHandler(req, res, {
+  return responseService.successResponseHandler(req, res, {
     status: "PASSWORD RESET LINK SENT",
     message: result.message,
   });
@@ -184,7 +184,7 @@ export const resetPassword = asyncHandler(async (req, res) => {
     });
   }
 
-  responseService.successResponseHandler(req, res, {
+  return responseService.successResponseHandler(req, res, {
     status: "PASSWORD RESET SUCCESS",
     message: result.message,
   });
@@ -209,7 +209,7 @@ export const updatePassword = asyncHandler(async (req, res) => {
     });
   }
 
-  responseService.successResponseHandler(req, res, {
+  return responseService.successResponseHandler(req, res, {
     status: "PASSWORD UPDATE SUCCESS",
     message: result.message,
   });
@@ -243,7 +243,7 @@ export const refreshTokens = asyncHandler(async (req, res) => {
     path: "/",
   });
 
-  responseService.successResponseHandler(req, res, {
+  return responseService.successResponseHandler(req, res, {
     status: "TOKENS REFRESH SUCCESS",
     message: "Your tokens has been refreshed successfully!",
     data: {
@@ -279,7 +279,7 @@ export const getMe = asyncHandler(async (req, res) => {
     profile,
   };
 
-  responseService.successResponseHandler(req, res, {
+  return responseService.successResponseHandler(req, res, {
     status: "FETCH USER SUCCESS",
     message: "User details fetched successfully!",
     data: { user: userFields },
