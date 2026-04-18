@@ -21,6 +21,7 @@ import {
   datePropertyValidator,
   stringPropertiesValidator,
 } from "../../../validators/common.validator.js";
+import { validateExperience } from "../../../validators/profile.validator.js";
 
 export const getMyProfile = asyncHandler(async (req, res) => {
   const profile = await Profile.findOne({ user: req.data.userId }).lean();
@@ -527,120 +528,7 @@ export const updateExperience = async (req, res) => {
   }
 
   if (action === "add") {
-    if (!experience?.company || !experience?.role || !experience?.startDate) {
-      throw AppError.unprocessable({
-        message:
-          "Please provide company, role and startDate to update experience!",
-        code: "EXPERIENCE UPDATE FAILED",
-        details: { experience },
-      });
-    }
-
-    const {
-      isPropertyValid: isCompanyValid,
-      message: companyErrorMessage,
-      validatedProperty: validatedCompany,
-    } = stringPropertiesValidator(
-      "company",
-      experience?.company,
-      propertyConstraints.minStringLength,
-      propertyConstraints.maxStringLength,
-    );
-
-    if (!isCompanyValid) {
-      throw AppError.unprocessable({
-        message: companyErrorMessage,
-        code: "EXPERIENCE UPDATE FAILED",
-        details: { experience },
-      });
-    }
-
-    const {
-      isPropertyValid: isRoleValid,
-      message: roleErrorMessage,
-      validatedProperty: validatedRole,
-    } = stringPropertiesValidator(
-      "role",
-      experience?.role,
-      propertyConstraints.minStringLength,
-      propertyConstraints.maxStringLength,
-    );
-
-    if (!isRoleValid) {
-      throw AppError.unprocessable({
-        message: roleErrorMessage,
-        code: "EXPERIENCE UPDATE FAILED",
-        details: { experience },
-      });
-    }
-
-    const {
-      isPropertyValid: isStartDateValid,
-      message: startDateErrorMessage,
-      validatedProperty: validatedStartDate,
-    } = datePropertyValidator("start date", experience?.startDate);
-
-    if (!isStartDateValid) {
-      throw AppError.unprocessable({
-        message: startDateErrorMessage,
-        code: "EXPERIENCE UPDATE FAILED",
-        details: { experience },
-      });
-    }
-
-    let validatedEndDate;
-
-    if (experience?.endDate) {
-      const {
-        isPropertyValid: isEndDateValid,
-        message: endDateErrorMessage,
-        validatedProperty,
-      } = datePropertyValidator("end date", experience?.endDate);
-
-      if (!isEndDateValid) {
-        throw AppError.unprocessable({
-          message: endDateErrorMessage,
-          code: "EXPERIENCE UPDATE FAILED",
-          details: { experience },
-        });
-      }
-
-      validatedEndDate = validatedProperty;
-    }
-
-    let validatedDescription;
-
-    if (experience?.description) {
-      const {
-        isPropertyValid: isDescriptionValid,
-        message: descriptionErrorMessage,
-        validatedProperty,
-      } = stringPropertiesValidator(
-        "description",
-        experience?.description,
-        propertyConstraints.minStringLength,
-        propertyConstraints.maxStringLength,
-      );
-
-      if (!isDescriptionValid) {
-        throw AppError.unprocessable({
-          message: descriptionErrorMessage,
-          code: "EXPERIENCE UPDATE FAILED",
-          details: { experience },
-        });
-      }
-
-      validatedDescription = validatedProperty;
-    }
-
-    const newExperience = {
-      company: validatedCompany,
-      role: validatedRole,
-      startDate: new Date(validatedStartDate),
-      endDate: validatedEndDate ? new Date(validatedEndDate) : null,
-      isCurrent: experience?.isCurrent && experience?.isCurrent === true,
-      description: experience?.description || "",
-    };
+    const newExperience = validateExperience(experience);
 
     let updateQuery;
 
@@ -683,32 +571,40 @@ export const updateExperience = async (req, res) => {
       });
     }
 
-    if (!experience) {
+    const experienceToUpdate = profile.experiences?.filter(
+      (experience) => experience.id === experienceId,
+    );
+
+    if (!experienceToUpdate.length) {
       throw AppError.unprocessable({
-        message: "Please provide a valid experience details to update!",
-        code: "EXPERIENCE UPDATE FAILED",
-        details: { experience },
+        message: "Experience with the provided experienceId does not exist!",
+        code: "EXPERIENCE NOT FOUND",
+        details: { experienceId },
       });
     }
 
+    const updatedExperience = validateExperience(experience);
+
     const updateFields = {};
 
-    if (experience.company)
-      updateFields["experiences.$.company"] = experience.company.trim();
-    if (experience.role)
-      updateFields["experiences.$.role"] = experience.role.trim();
-    if (experience.startDate)
-      updateFields["experiences.$.startDate"] = new Date(experience.startDate);
-    if ("endDate" in experience)
-      updateFields["experiences.$.endDate"] = experience.endDate
-        ? new Date(experience.endDate)
+    if (updatedExperience.company)
+      updateFields["experiences.$.company"] = updatedExperience.company;
+    if (updatedExperience.role)
+      updateFields["experiences.$.role"] = experience.role;
+    if (updatedExperience.startDate)
+      updateFields["experiences.$.startDate"] = new Date(
+        updatedExperience.startDate,
+      );
+    if ("endDate" in updatedExperience)
+      updateFields["experiences.$.endDate"] = updatedExperience.endDate
+        ? new Date(updatedExperience.endDate)
         : null;
-    if ("description" in experience)
-      updateFields["experiences.$.description"] = experience.description;
+    if ("description" in updatedExperience)
+      updateFields["experiences.$.description"] = updatedExperience.description;
 
     let updateQuery = { $set: updateFields };
 
-    if (experience.isCurrent) {
+    if (updatedExperience.isCurrent) {
       updateQuery = {
         $set: {
           ...updateFields,
@@ -726,7 +622,7 @@ export const updateExperience = async (req, res) => {
     const updatedProfile = await Profile.findOneAndUpdate(
       { user: userId, "experiences._id": experienceId },
       updateQuery,
-      { new: true, runValidators: true },
+      { returnDocument: "after", runValidators: true },
     );
 
     responseService.successResponseHandler(req, res, {
@@ -741,6 +637,18 @@ export const updateExperience = async (req, res) => {
       throw AppError.unprocessable({
         message: "Please provide a valid experienceId!",
         code: "EXPERIENCE UPDATE FAILED",
+        details: { experienceId },
+      });
+    }
+
+    const experienceToDelete = profile.experiences?.filter(
+      (experience) => experience._id === experienceId,
+    );
+
+    if (!experienceToDelete) {
+      throw AppError.unprocessable({
+        message: "Experience with the provided experienceId does not exist!",
+        code: "EXPERIENCE NOT FOUND",
         details: { experienceId },
       });
     }
@@ -772,14 +680,20 @@ export const updateExperience = async (req, res) => {
       });
     }
 
-    const formattedExperiences = experiences.map((experience) => ({
-      company: experience.company?.trim(),
-      role: experience.role?.trim(),
-      startDate: new Date(experience.startDate),
-      endDate: experience.endDate ? new Date(experience.endDate) : null,
-      isCurrent: experience.isCurrent || false,
-      description: experience.description || "",
-    }));
+    const formattedExperiences = experiences.map((experience) => {
+      const validatedExperience = validateExperience(experience);
+
+      return {
+        company: validatedExperience.company?.trim(),
+        role: validatedExperience.role?.trim(),
+        startDate: new Date(validatedExperience.startDate),
+        endDate: validatedExperience.endDate
+          ? new Date(validatedExperience.endDate)
+          : null,
+        isCurrent: validatedExperience.isCurrent || false,
+        description: validatedExperience.description || "",
+      };
+    });
 
     let foundCurrent = false;
     formattedExperiences.forEach((experience) => {

@@ -130,7 +130,7 @@ export const stringPropertiesValidator = (
     };
   }
 
-  const trimmedProperty = propertyValue.trim();
+  const trimmedProperty = propertyValue.trim().toLowerCase();
 
   if (/^\d+(\.\d+)?$/.test(trimmedProperty)) {
     return {
@@ -160,16 +160,14 @@ export const stringPropertiesValidator = (
     };
   }
 
-  const normalized = trimmedProperty.toLowerCase();
-
-  if (normalized.length < minLength) {
+  if (trimmedProperty.length < minLength) {
     return {
       isPropertyValid: false,
       message: `${toTitleCase(propertyName)} must be at least ${minLength} characters long!`,
     };
   }
 
-  if (normalized.length > maxLength) {
+  if (trimmedProperty.length > maxLength) {
     return {
       isPropertyValid: false,
       message: `${toTitleCase(propertyName)} must not exceed ${maxLength} characters!`,
@@ -178,7 +176,7 @@ export const stringPropertiesValidator = (
 
   return {
     isPropertyValid: true,
-    validatedProperty: normalized,
+    validatedProperty: trimmedProperty,
   };
 };
 
