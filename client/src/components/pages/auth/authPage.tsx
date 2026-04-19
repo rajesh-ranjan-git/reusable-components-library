@@ -35,6 +35,17 @@ import {
 } from "@/lib/actions/authActions";
 import { useToast } from "@/hooks/toast";
 import { useAppStore } from "@/store/store";
+import {
+  loadGoogleScript,
+  loginWithProvider,
+  providerLogin,
+} from "@/lib/actions/oAuthActions";
+import { LoggedInUserType } from "@/types/types";
+
+type ProviderLoginDataType = {
+  user: LoggedInUserType;
+  accessToken: string;
+};
 
 const DecorativeRings = () => (
   <div className="z-(--z-background) absolute inset-0 flex justify-center items-center overflow-hidden pointer-events-none">
@@ -183,6 +194,41 @@ const AuthPage = () => {
       transition: { duration: 0.8, ease: "easeOut" },
     },
     exit: { opacity: 0, scale: 0.95, transition: { duration: 0.4 } },
+  };
+
+  const handleProviderLogin = async (provider: string) => {
+    await loadGoogleScript();
+
+    const token = await loginWithProvider(provider);
+
+    if (token) {
+      const providerLoginResponse = await providerLogin(
+        provider,
+        token as string,
+      );
+
+      if (!providerLoginResponse?.success) {
+        showToast({
+          title: providerLoginResponse.code,
+          message: providerLoginResponse.message,
+          variant: "error",
+        });
+      } else {
+        const providerLoginData =
+          providerLoginResponse.data as ProviderLoginDataType;
+
+        setAccessToken(providerLoginData.accessToken);
+        setLoggedInUser(providerLoginData.user);
+
+        showToast({
+          title: providerLoginResponse.status,
+          message: providerLoginResponse.message ?? "Legged in successfully!",
+          variant: "success",
+        });
+
+        router.push(defaultRoutes.landing);
+      }
+    }
   };
 
   useEffect(() => {
@@ -389,25 +435,25 @@ const AuthPage = () => {
                       <SocialButton
                         provider="Google"
                         icon={FcGoogle}
-                        onClick={() => {}}
-                        iconOnly
-                      />
-                      <SocialButton
-                        provider="Facebook"
-                        icon={LuFacebook}
-                        onClick={() => {}}
+                        onClick={() => handleProviderLogin("google")}
                         iconOnly
                       />
                       <SocialButton
                         provider="GitHub"
                         icon={LuGithub}
-                        onClick={() => {}}
+                        onClick={() => handleProviderLogin("github")}
+                        iconOnly
+                      />
+                      <SocialButton
+                        provider="Facebook"
+                        icon={LuFacebook}
+                        onClick={() => handleProviderLogin("facebook")}
                         iconOnly
                       />
                       <SocialButton
                         provider="LinkedIn"
                         icon={LuLinkedin}
-                        onClick={() => {}}
+                        onClick={() => handleProviderLogin("linkedin")}
                         iconOnly
                       />
                     </div>
@@ -559,25 +605,25 @@ const AuthPage = () => {
                       <SocialButton
                         provider="Google"
                         icon={FcGoogle}
-                        onClick={() => {}}
-                        iconOnly
-                      />
-                      <SocialButton
-                        provider="Facebook"
-                        icon={LuFacebook}
-                        onClick={() => {}}
+                        onClick={() => handleProviderLogin("google")}
                         iconOnly
                       />
                       <SocialButton
                         provider="GitHub"
                         icon={LuGithub}
-                        onClick={() => {}}
+                        onClick={() => handleProviderLogin("github")}
+                        iconOnly
+                      />
+                      <SocialButton
+                        provider="Facebook"
+                        icon={LuFacebook}
+                        onClick={() => handleProviderLogin("facebook")}
                         iconOnly
                       />
                       <SocialButton
                         provider="LinkedIn"
                         icon={LuLinkedin}
-                        onClick={() => {}}
+                        onClick={() => handleProviderLogin("linkedin")}
                         iconOnly
                       />
                     </div>

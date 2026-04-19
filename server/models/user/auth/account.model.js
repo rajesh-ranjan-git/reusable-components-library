@@ -15,7 +15,7 @@ const accountSchema = new mongoose.Schema(
 
     provider: {
       type: String,
-      enum: ["local", "google", "github", "facebook"],
+      enum: ["local", "google", "github", "facebook", "linkedin"],
       required: true,
     },
 

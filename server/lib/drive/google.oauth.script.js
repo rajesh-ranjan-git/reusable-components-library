@@ -12,7 +12,7 @@ const oauth2Client = new google.auth.OAuth2(
   GOOGLE_DRIVE_IMAGE_STORAGE_OAUTH_REDIRECT_URI,
 );
 
-const scopes = ["https://www.googleapis.com/auth/drive"];
+// const scopes = ["https://www.googleapis.com/auth/drive"];
 
 // const url = oauth2Client.generateAuthUrl({
 //   access_type: "offline",
@@ -22,7 +22,7 @@ const scopes = ["https://www.googleapis.com/auth/drive"];
 
 // console.log("Authorize this app:", url);
 
-const code = "REFRESH_TOKEN_HERE";
+const code = "GOOGLE_DRIVE_IMAGE_STORAGE_OAUTH_REFRESH_TOKEN";
 
 async function getToken() {
   const { tokens } = await oauth2Client.getToken(code);

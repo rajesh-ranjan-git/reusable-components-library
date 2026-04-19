@@ -37,7 +37,7 @@ class AuthService {
 
     const generatedUserName = userName
       ? userName
-      : await this._generateUniqueUsername({
+      : await this.generateUniqueUsername({
           email,
           firstName,
           lastName,
@@ -563,7 +563,7 @@ class AuthService {
       .slice(0, 12);
   };
 
-  _generateUniqueUsername = async ({ email, firstName, lastName }) => {
+  generateUniqueUsername = async ({ email, firstName, lastName }) => {
     let base = "";
 
     if (firstName) {

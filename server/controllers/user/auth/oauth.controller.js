@@ -10,135 +10,224 @@ import { responseService } from "../../../services/response/response.service.js"
 import { asyncHandler } from "../../../utils/common.utils.js";
 import { activityService } from "../../../services/activity/activity.service.js";
 import { rbacService } from "../../../services/rbac/rbac.service.js";
+import { tokenService } from "../../../services/auth/token.service.js";
+import { emailValidator } from "../../../validators/auth.validator.js";
+import { authService } from "../../../services/auth/auth.service.js";
+import Role from "../../../models/user/rbac/role.model.js";
+import UserRole from "../../../models/user/rbac/user.role.model.js";
+import { ROLES } from "../../../constants/roles.constants.js";
 
-export const oauthCallback = (provider) =>
-  asyncHandler(async (req, res) => {
-    const oauthProfile = req.data.oauthProfile;
+export const oauthCallback = asyncHandler(async (req, res) => {
+  const { provider } = req.data.params;
+  const oauthProfile = req.data.oauthProfile;
 
-    if (!oauthProfile || !oauthProfile.id || !oauthProfile.email) {
-      throw AppError.badRequest({
-        message: "OAuth profile is incomplete, missing email or provider ID!",
-        code: "INCOMPLETE OAUTH",
-        details: { oauthProfile: req.data.oauthProfile },
-      });
-    }
+  if (!oauthProfile || !oauthProfile.id || !oauthProfile.email) {
+    throw AppError.unprocessable({
+      message: "OAuth profile is incomplete, missing email or provider ID!",
+      code: "OAUTH VALIDATION FAILED",
+      details: { oauthProfile },
+    });
+  }
 
-    const {
-      id: providerUserId,
-      email,
-      displayName,
-      avatar,
+  const {
+    id: providerUserId,
+    email,
+    displayName,
+    avatar,
+    accessToken,
+    refreshToken: oauthRefreshToken,
+  } = oauthProfile;
+
+  if (!email) {
+    throw AppError.badRequest({
+      message: `${provider} did not return email!`,
+    });
+  }
+
+  const {
+    isEmailValid,
+    message: emailErrorMessage,
+    validatedEmail,
+  } = emailValidator(email);
+
+  if (!isEmailValid) {
+    throw AppError.unprocessable({
+      message: emailErrorMessage,
+      code: "OAUTH VALIDATION FAILED",
+      details: { email },
+    });
+  }
+
+  let authProvider = await AuthProvider.findOne({ provider, providerUserId });
+  let userId;
+
+  if (authProvider) {
+    await authProvider.updateOne({
       accessToken,
       refreshToken: oauthRefreshToken,
-    } = oauthProfile;
+    });
+    userId = authProvider.user;
+  } else {
+    const existingAccount = await Account.findOne({
+      email: validatedEmail,
+    });
 
-    let authProvider = await AuthProvider.findOne({ provider, providerUserId });
-    let userId;
+    if (existingAccount) {
+      userId = existingAccount.user;
 
-    if (authProvider) {
-      await authProvider.updateOne({
+      await AuthProvider.create({
+        user: userId,
+        provider,
+        providerUserId,
         accessToken,
         refreshToken: oauthRefreshToken,
       });
-      userId = authProvider.user;
     } else {
-      const existingAccount = await Account.findOne({
-        email: email.toLowerCase(),
+      const user = await User.create({
+        emailVerified: true,
+        emailVerifiedAt: new Date(),
+        status: "active",
+      });
+      userId = user._id;
+
+      await Account.create({
+        user: userId,
+        provider,
+        email: validatedEmail,
       });
 
-      if (existingAccount) {
-        userId = existingAccount.user;
-
-        await AuthProvider.create({
-          user: userId,
-          provider,
-          providerUserId,
-          accessToken,
-          refreshToken: oauthRefreshToken,
-        });
-      } else {
-        const user = await User.create({
-          emailVerified: true,
-          emailVerifiedAt: new Date(),
-          status: "active",
-        });
-        userId = user._id;
-
-        await Account.create({
-          user: userId,
-          provider,
-          email: email.toLowerCase(),
-        });
-
-        await AuthProvider.create({
-          user: userId,
-          provider,
-          providerUserId,
-          accessToken,
-          refreshToken: oauthRefreshToken,
-        });
-
-        const baseUsername = (displayName || email.split("@")[0])
-          .toLowerCase()
-          .replace(/[^a-z0-9_]/g, "_")
-          .slice(0, 20);
-        const uniqueUsername = await _uniqueUsername(baseUsername);
-
-        await Profile.create({
-          user: userId,
-          userName: uniqueUsername,
-          userName: oauthProfile.userName || null,
-          lastName: oauthProfile.lastName || null,
-          avatar: avatar || null,
-        });
-
-        await SocialLink.create({ user: userId });
-      }
-    }
-
-    const user = await User.findById(userId);
-
-    if (!user || user.status !== "active") {
-      throw AppError.forbidden({
-        message:
-          "Your account is suspended or inactive, please contact administrator!",
+      await AuthProvider.create({
+        user: userId,
+        provider,
+        providerUserId,
+        accessToken,
+        refreshToken: oauthRefreshToken,
       });
+
+      const role = await Role.findOne({ name: ROLES.USER });
+
+      await UserRole.create({
+        user: user._id,
+        role: role._id,
+      });
+
+      const firstName = displayName.split(" ")[0];
+      const lastName = displayName.split(" ").slice(1)[0];
+
+      const uniqueUsername = await authService.generateUniqueUsername({
+        email: validatedEmail,
+        firstName,
+        lastName,
+      });
+
+      await Profile.create({
+        user: userId,
+        userName: uniqueUsername,
+        firstName,
+        lastName,
+        avatar: avatar || null,
+      });
+
+      await SocialLink.create({ user: userId });
     }
+  }
 
-    const roles = await rbacService.getUserRoles(userId);
-    const permissionsSet = await rbacService.getUserPermissions(userId);
-    const permissions = [...permissionsSet];
+  const user = await User.findById(userId);
 
-    const tokens = tokenService.generateAuthTokens(userId, roles, permissions);
-
-    await sessionService.createSession({
-      userId,
-      refreshToken: tokens.refreshToken,
-      device: req.headers["user-agent"] || "oauth",
-      ipAddress: req.ip,
-      expiresAt: tokens.refreshTokenExpiry,
+  if (!user) {
+    throw AppError.notFound({
+      message: "User account does not exist!",
+      code: "ACCOUNT NOT FOUND",
+      details: { user },
     });
+  }
 
-    await User.findByIdAndUpdate(userId, { lastSeen: new Date() });
-
-    await activityService.logActivity({
-      user: userId,
-      action: "oauth_login",
-      metadata: { provider },
-      ipAddress: req.ip,
+  if (user.status === "deleted") {
+    throw AppError.unauthorized({
+      message: "User account has been deleted!",
+      code: "ACCOUNT DELETED",
+      details: { user },
     });
+  }
 
-    res.cookie("refreshToken", tokens.refreshToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "none",
-      expires: tokens.refreshTokenExpiry,
-      path: "/",
+  if (user.status === "suspended") {
+    throw AppError.unauthorized({
+      message: "User account has been suspended!",
+      code: "ACCOUNT SUSPENDED",
+      details: { user },
     });
+  }
 
-    const redirectUrl = `${CLIENT_URL}/auth/oauth/callback?accessToken=${tokens.accessToken}`;
-    res.redirect(redirectUrl);
+  if (user.status !== "active") {
+    throw AppError.notFound({
+      message: "User account is not active!",
+      code: "ACCOUNT NOT ACTIVE",
+    });
+  }
+
+  const userRoles = await rbacService.getUserRoles(userId);
+  const permissionsSet = await rbacService.getUserPermissions(userId);
+  const permissions = [...permissionsSet];
+
+  const tokens = tokenService.generateAuthTokens(
+    userId,
+    userRoles,
+    permissions,
+  );
+
+  await sessionService.createSession({
+    userId,
+    refreshToken: tokens.refreshToken,
+    device: req.headers["user-agent"] || "oauth",
+    ipAddress: req.ip,
+    expiresAt: tokens.refreshTokenExpiry,
   });
+
+  await User.findByIdAndUpdate(userId, { lastSeen: new Date() });
+
+  const profile = await Profile.findOne({
+    user: userId,
+  }).select("-_id userName firstName lastName avatar cover");
+
+  const userRoleLevel = await rbacService.getHighestRoleLevel(userRoles);
+  const userRoleName = userRoles.reduce(
+    (acc, curr) => (curr.priority === userRoleLevel ? curr.name : acc),
+    null,
+  );
+
+  const userFields = {
+    id: userId,
+    status: user.status,
+    email: validatedEmail,
+    role: userRoleName,
+    profile,
+  };
+
+  await activityService.logActivity({
+    user: userId,
+    action: "oauth_login",
+    metadata: { provider },
+    ipAddress: req.ip,
+  });
+
+  res.cookie("refreshToken", tokens.refreshToken, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    expires: tokens.refreshTokenExpiry,
+    path: "/",
+  });
+
+  return responseService.successResponseHandler(req, res, {
+    status: "LOGIN SUCCESS",
+    message: "Logged in successfully!",
+    data: {
+      user: userFields,
+      accessToken: tokens.accessToken,
+      expiresIn: tokens.accessTokenExpiresIn,
+    },
+  });
+});
 
 export const getLinkedProviders = asyncHandler(async (req, res) => {
   const providers = await AuthProvider.find({ user: req.data.userId })

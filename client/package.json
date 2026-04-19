@@ -12,9 +12,11 @@
     "dev": "concurrently --names \"🧩 CLIENT 🧩,🤖 SERVER 🤖\" --prefix \"[{name}]\" --timestamp --timestamp-format \"HH:mm:ss\" --prefix-colors \"yellow,green\" \"cross-env PORT=1997 NODE_ENV=development next dev\" \"cross-env NODE_ENV=development CONCURRENTLY=true nodemon --quiet ../server/src/server.js\"",
     "build": "next build",
     "start": "concurrently --names \"🧩 CLIENT  🧩,🤖 SERVER 🤖\" --prefix \"[{name}]\" --timestamp --timestamp-format \"HH:mm:ss\" --prefix-colors \"yellow,green\" \"cross-env PORT=1997 NODE_ENV=development next start\" \"cross-env NODE_ENV=development CONCURRENTLY=true nodemon --quiet ../server/src/server.js\"",
+    "seed": "node ../server/seed/rbac.seed.js",
     "lint": "eslint"
   },
   "dependencies": {
+    "@react-oauth/google": "^0.13.5",
     "boxen": "^8.0.1",
     "concurrently": "^9.2.1",
     "cross-env": "^10.1.0",
