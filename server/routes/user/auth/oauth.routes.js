@@ -15,6 +15,12 @@ oauthRouter.post(
   oauthVerifyMiddleware,
   oauthCallback,
 );
+oauthRouter.get(
+  "/provider/:provider",
+  requestMiddleware({ requireQuery: true, requireParams: true }),
+  oauthVerifyMiddleware,
+  oauthCallback,
+);
 oauthRouter.get("/provider", requestMiddleware({}), getLinkedProviders);
 oauthRouter.delete(
   "/provider/unlink",

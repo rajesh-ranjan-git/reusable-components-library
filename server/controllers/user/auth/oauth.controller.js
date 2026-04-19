@@ -218,7 +218,7 @@ export const oauthCallback = asyncHandler(async (req, res) => {
     path: "/",
   });
 
-  return responseService.successResponseHandler(req, res, {
+  return responseService.redirectResponseHandler(req, res, {
     status: "LOGIN SUCCESS",
     message: "Logged in successfully!",
     data: {

@@ -76,6 +76,7 @@ export const handleLinkedInLogin = () => {
 export const loginWithProvider = async (provider: string) => {
   switch (provider) {
     case "google":
+      await loadGoogleScript();
       return await handleGoogleLogin();
 
     case "github":

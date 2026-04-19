@@ -41,6 +41,7 @@ import {
   providerLogin,
 } from "@/lib/actions/oAuthActions";
 import { LoggedInUserType } from "@/types/types";
+import { useOAuthListener } from "@/hooks/useOAuthListener";
 
 type ProviderLoginDataType = {
   user: LoggedInUserType;
@@ -197,8 +198,6 @@ const AuthPage = () => {
   };
 
   const handleProviderLogin = async (provider: string) => {
-    await loadGoogleScript();
-
     const token = await loginWithProvider(provider);
 
     if (token) {
@@ -266,6 +265,8 @@ const AuthPage = () => {
     firstNameInput.reset();
     lastNameInput.reset();
   }, [pathname, state]);
+
+  useOAuthListener();
 
   return (
     <LayoutGroup>

@@ -1,21 +1,31 @@
+import AppError from "../services/error/error.service.js";
 import { oAuthService } from "../services/oauth/oauth.service.js";
 import { asyncHandler, toTitleCase } from "../utils/common.utils.js";
 
 export const oauthVerifyMiddleware = asyncHandler(async (req, res, next) => {
   const { provider } = req.data.params;
-  const { token } = req.data.body;
+
+  if (!["google", "github", "facebook", "linkedin"].includes(provider)) {
+    throw AppError.unprocessable({
+      message: "Provider must be google, github, facebook or linkedin only!",
+      code: "OAUTH VALIDATION FAILED",
+      details: { provider },
+    });
+  }
+
+  let token = null;
+
+  if (provider === "github") {
+    const code = req.data.query.code;
+
+    token = await oAuthService.getGithubAccessToken(code);
+  } else {
+    token = req.data.body.token;
+  }
 
   if (!token) {
     throw AppError.unprocessable({
       message: `Please provide OAuth token for ${toTitleCase(provider)}!`,
-      code: "OAUTH VALIDATION FAILED",
-      details: { token },
-    });
-  }
-
-  if (!["google", "github", "facebook", "linkedin"].includes(provider)) {
-    throw AppError.unprocessable({
-      message: "Provider must be google, guthub, facebook or linkedin only!",
       code: "OAUTH VALIDATION FAILED",
       details: { token },
     });

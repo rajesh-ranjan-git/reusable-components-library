@@ -1,5 +1,5 @@
 import { httpStatusConfig } from "../../config/http.config.js";
-import { MODE } from "../../constants/env.constants.js";
+import { CLIENT_URL, MODE } from "../../constants/env.constants.js";
 import { sanitizeMongoData } from "../../db/db.utils.js";
 import AppError from "../error/error.service.js";
 import { getDateToStore } from "../../utils/date.utils.js";
@@ -31,6 +31,38 @@ class ResponseService {
             }
           : null,
     });
+  }
+
+  redirectResponseHandler(
+    req,
+    res,
+    {
+      status = httpStatusConfig.success.message,
+      statusCode = httpStatusConfig.success.statusCode,
+      message = null,
+      data = null,
+    } = {},
+  ) {
+    const payload = {
+      success: true,
+      status,
+      statusCode,
+      message,
+      data: sanitizeMongoData(data),
+      timestamp: getDateToStore(new Date()),
+      metadata:
+        MODE === "development"
+          ? {
+              requestId: req.headers["x-request-id"],
+              path: req.originalUrl || req.url,
+              method: req.method,
+            }
+          : null,
+    };
+
+    const encoded = encodeURIComponent(JSON.stringify(payload));
+
+    return res.redirect(`${CLIENT_URL}/oauth?data=${encoded}`);
   }
 
   errorResponseHandler(err, req, res, next) {

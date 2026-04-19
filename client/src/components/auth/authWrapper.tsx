@@ -93,6 +93,8 @@ const AuthWrapper = ({ children }: ReactNodeProps) => {
         setAccessToken(null);
         setLoggedInUser(null);
 
+        await logoutAction();
+
         if (Number(response?.statusCode) >= 500) {
           showToast({
             title: toTitleCase(response.code),

@@ -16,10 +16,7 @@ export const authenticate = asyncHandler(async (req, res, next) => {
   }
 
   const payload = tokenService.verifyAccessToken(token);
-  const account = await Account.findOne({
-    user: payload.userId,
-    provider: "local",
-  });
+  const account = await Account.findOne({ user: payload.userId });
 
   if (!account) {
     throw AppError.notFound({
@@ -92,10 +89,7 @@ export const optionalAuthenticate = asyncHandler(async (req, res, next) => {
   try {
     const payload = tokenService.verifyAccessToken(token);
 
-    const account = await Account.findOne({
-      user: payload.userId,
-      provider: "local",
-    });
+    const account = await Account.findOne({ user: payload.userId });
 
     const user = await User.findById(account.user);
 

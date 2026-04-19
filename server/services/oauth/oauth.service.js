@@ -1,10 +1,36 @@
 import { OAuth2Client } from "google-auth-library";
-import { GOOGLE_OAUTH_CLIENT_ID } from "../../constants/env.constants.js";
+import {
+  GITHUB_OAUTH_CLIENT_ID,
+  GITHUB_OAUTH_CLIENT_SECRET,
+  GOOGLE_OAUTH_CLIENT_ID,
+} from "../../constants/env.constants.js";
 
 class OAuthService {
   constructor() {
     this._client = new OAuth2Client(GOOGLE_OAUTH_CLIENT_ID);
   }
+
+  getGithubAccessToken = async (code) => {
+    const tokenRes = await fetch(
+      "https://github.com/login/oauth/access_token",
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          client_id: GITHUB_OAUTH_CLIENT_ID,
+          client_secret: GITHUB_OAUTH_CLIENT_SECRET,
+          code,
+        }),
+      },
+    );
+
+    const tokenData = await tokenRes.json();
+
+    return tokenData.access_token;
+  };
 
   verifyGoogleToken = async (accessToken) => {
     const ticket = await this._client.verifyIdToken({
