@@ -141,7 +141,13 @@ const HeaderProfileMenu = ({
         >
           <div className="flex items-center gap-3 mb-2 px-4 py-3 border-accent-purple-dark/30 border-b">
             <Image
-              src={staticImages.avatarPlaceholder.src}
+              src={
+                loggedInUser?.profile?.avatar
+                  ? loggedInUser?.profile?.avatar
+                  : loggedInUser
+                    ? getFullName(loggedInUser)
+                    : staticImages.avatarPlaceholder.src
+              }
               alt={staticImages.avatarPlaceholder.alt}
               width={100}
               height={100}

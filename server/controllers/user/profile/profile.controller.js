@@ -22,6 +22,10 @@ import {
   stringPropertiesValidator,
 } from "../../../validators/common.validator.js";
 import { validateExperience } from "../../../validators/profile.validator.js";
+import {
+  uploadToCloudinary,
+  uploadToGoogleDrive,
+} from "../../../utils/upload.utils.js";
 
 export const getMyProfile = asyncHandler(async (req, res) => {
   const profile = await Profile.findOne({ user: req.data.userId }).lean();
@@ -296,19 +300,32 @@ export const updateDob = asyncHandler(async (req, res) => {
 export const uploadProfileImage = async (req, res) => {
   const userId = req.data.userId;
   const file = req.file;
-  const incomingType = req.data.params.type;
+  const { provider: incomingProvider, type: incomingType } = req.data.params;
+
+  if (
+    typeof incomingProvider !== "string" ||
+    !["drive", "cloudinary"].includes(incomingProvider.toLowerCase())
+  ) {
+    throw AppError.unprocessable({
+      message:
+        "Image upload service provider can only be 'drive' for google drive or 'cloudinary'!",
+      code: "IMAGE UPLOAD FAILED",
+      details: { provider: incomingProvider },
+    });
+  }
 
   if (
     typeof incomingType !== "string" ||
     !["avatar", "cover"].includes(incomingType.toLowerCase())
   ) {
     throw AppError.unprocessable({
-      message: "Please provide a valid image type!",
+      message: "Image type can be either 'avatar' or 'cover'!",
       code: "IMAGE UPLOAD FAILED",
-      details: { type },
+      details: { type: incomingType },
     });
   }
 
+  const provider = incomingProvider.toLowerCase();
   const type = incomingType.toLowerCase();
 
   if (!file) {
@@ -330,65 +347,10 @@ export const uploadProfileImage = async (req, res) => {
     });
   }
 
-  const folderId = await googleDriveService.getUploadFolderId(type);
-
-  const { url, fileId } = await googleDriveService.uploadToDrive(
-    file,
-    folderId,
-  );
-
-  if (!url || !fileId) {
-    throw AppError.internal({
-      message: `Failed to update ${type}, please try again!`,
-      code: `${type.toUpperCase()} UPDATE FAILED`,
-    });
-  }
-
-  let updateField = {};
-  if (type === "avatar") {
-    updateField = {
-      avatar: url,
-      avatarFileId: fileId,
-    };
-  } else {
-    updateField = {
-      cover: url,
-      coverFileId: fileId,
-    };
-  }
-
-  const updatedProfile = await Profile.findOneAndUpdate(
-    { user: userId },
-    { $set: updateField },
-    {
-      returnDocument: "after",
-      runValidators: true,
-    },
-  );
-
-  if (type === "avatar" && profile.avatarFileId) {
-    const deleteAvatarResponse = await googleDriveService.deleteFromDrive(
-      profile.avatarFileId,
-    );
-
-    if (!deleteAvatarResponse) {
-      logger.warn(
-        `🚨 [${type.toUpperCase()} DELETE FAILED] Failed to delete old ${type} image!`,
-      );
-    }
-  }
-
-  if (type === "cover" && profile.coverFileId) {
-    const deleteCoverResponse = await googleDriveService.deleteFromDrive(
-      profile.coverFileId,
-    );
-
-    if (!deleteCoverResponse) {
-      logger.warn(
-        `🚨 [${type.toUpperCase()} DELETE FAILED] Failed to delete old ${type} image!`,
-      );
-    }
-  }
+  const updatedProfile =
+    provider === "drive"
+      ? await uploadToGoogleDrive(userId, profile, type, file)
+      : await uploadToCloudinary(userId, profile, type, file);
 
   return responseService.successResponseHandler(req, res, {
     status: `${type.toUpperCase()} UPDATE SUCCESS`,

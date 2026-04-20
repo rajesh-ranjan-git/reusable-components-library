@@ -73,7 +73,7 @@ profileRouter.post(
   updateDob,
 );
 profileRouter.post(
-  "/profile/upload/:type",
+  "/profile/:provider/upload/:type",
   upload.single("image"),
   requestMiddleware({ requireParams: true }),
   authenticate,

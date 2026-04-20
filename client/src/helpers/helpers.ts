@@ -1,4 +1,5 @@
 import { ALLOWED_TYPES, MAX_IMAGE_SIZE } from "@/constants/common.constants";
+import { LoggedInUserType } from "@/types/types";
 import { toTitleCase } from "@/utils/common.utils";
 
 type UserProfileType = {
@@ -15,22 +16,41 @@ type UserProfileType = {
   updatedAt: string | null;
 } | null;
 
-export const getFullName = (user?: UserProfileType) => {
-  if (!user) return;
+export const normalizeUser = (user: UserProfileType | LoggedInUserType) => {
+  if (!user) return null;
 
-  if (user?.firstName && user?.lastName) {
-    return toTitleCase(`${user.firstName} ${user.lastName}`);
-  } else if (user?.firstName) {
-    return toTitleCase(user.firstName);
-  } else if (user?.lastName) {
-    return toTitleCase(user.lastName);
-  } else if (user?.userName) {
-    return user.userName;
-  } else if (user?.email) {
-    return user.email;
-  } else {
-    return "John Doe";
+  if ("profile" in user) {
+    return {
+      firstName: user.profile?.firstName ?? null,
+      lastName: user.profile?.lastName ?? null,
+      userName: user.profile?.userName ?? null,
+      email: user.email ?? null,
+    };
   }
+
+  return {
+    firstName: user.firstName,
+    lastName: user.lastName,
+    userName: user.userName,
+    email: user.email,
+  };
+};
+
+export const getFullName = (user?: UserProfileType | LoggedInUserType) => {
+  if (!user) return "John Doe";
+
+  const normalized = normalizeUser(user);
+  if (!normalized) return "John Doe";
+
+  const { firstName, lastName, userName, email } = normalized;
+
+  if (firstName && lastName) return toTitleCase(`${firstName} ${lastName}`);
+  if (firstName) return toTitleCase(firstName);
+  if (lastName) return toTitleCase(lastName);
+  if (userName) return userName;
+  if (email) return email;
+
+  return "John Doe";
 };
 
 export const validateImage = (image: File) => {

@@ -12,9 +12,13 @@ export const uploadImage = async (
     const formData = new FormData();
     formData.append("image", image);
 
-    return await api.post(`${apiUrls.profile.uploadImage}/${type}`, formData, {
-      token,
-    });
+    return await api.post(
+      `${apiUrls.profile.uploadImageToCloudinary}/${type}`,
+      formData,
+      {
+        token,
+      },
+    );
   } catch (error) {
     return error as ApiErrorResponse;
   }

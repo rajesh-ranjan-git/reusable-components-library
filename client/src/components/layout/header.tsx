@@ -179,7 +179,11 @@ const Header = ({ type, isSidebarOpen, setIsSidebarOpen }: HeaderProps) => {
                 className={`relative w-10 h-10 rounded-full glass overflow-hidden border transition-all shadow-md focus:outline-none focus:ring-1 focus:ring-accent-purple-dark z-(--z-raised) ${isProfileMenuOpen ? "border-accent-purple-dark" : "border-glass-border hover:border-glass-border-accent"}`}
               >
                 <Image
-                  src={staticImages.avatarPlaceholder.src}
+                  src={
+                    loggedInUser?.profile?.avatar
+                      ? loggedInUser?.profile?.avatar
+                      : staticImages.avatarPlaceholder.src
+                  }
                   alt={staticImages.avatarPlaceholder.alt}
                   fill
                   sizes="2.5rem"
