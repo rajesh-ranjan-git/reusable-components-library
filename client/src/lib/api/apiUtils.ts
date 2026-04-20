@@ -8,6 +8,7 @@ export const apiUrls = {
   },
   oAuth: "/oauth/provider",
   profile: {
+    fetchProfile: "/user/profile",
     uploadImage: "/user/profile/upload",
   },
 };

@@ -1,18 +1,31 @@
 import { ALLOWED_TYPES, MAX_IMAGE_SIZE } from "@/constants/common.constants";
-import { LoggedInUserType } from "@/types/types";
 import { toTitleCase } from "@/utils/common.utils";
 
-export const getFullName = (user: LoggedInUserType) => {
+type UserProfileType = {
+  id: string;
+  user: string;
+  email: string;
+  userName: string;
+  firstName: string | null;
+  lastName: string | null;
+  avatar: string | null;
+  cover: string | null;
+  bio: string | null;
+  createdAt: string;
+  updatedAt: string | null;
+} | null;
+
+export const getFullName = (user?: UserProfileType) => {
   if (!user) return;
 
-  if (user.profile?.firstName && user.profile?.lastName) {
-    return toTitleCase(`${user.profile.firstName} ${user.profile.lastName}`);
-  } else if (user?.profile?.firstName) {
-    return toTitleCase(user.profile.firstName);
-  } else if (user?.profile?.lastName) {
-    return toTitleCase(user.profile.lastName);
-  } else if (user?.profile?.userName) {
-    return user.profile.userName;
+  if (user?.firstName && user?.lastName) {
+    return toTitleCase(`${user.firstName} ${user.lastName}`);
+  } else if (user?.firstName) {
+    return toTitleCase(user.firstName);
+  } else if (user?.lastName) {
+    return toTitleCase(user.lastName);
+  } else if (user?.userName) {
+    return user.userName;
   } else if (user?.email) {
     return user.email;
   } else {

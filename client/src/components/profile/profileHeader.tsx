@@ -19,29 +19,32 @@ import { chatRoutes } from "@/lib/routes/routes";
 import {
   compressImage,
   dataURLtoImage,
+  getFullName,
   validateImage,
 } from "@/helpers/helpers";
 import { uploadImage } from "@/lib/actions/profileActions";
 import { useAppStore } from "@/store/store";
 import { useToast } from "@/hooks/toast";
-import { toTitleCase } from "@/utils/common.utils";
 import { staticImages } from "@/config/common.config";
 import { TbLoader3 } from "react-icons/tb";
 
-type User = {
-  name: string;
-  headline: string;
-  location: string;
-  website: string;
-  joinedDate: string;
-  cover: string;
-  avatar: string;
-  online: boolean;
-};
+type UserProfileType = {
+  id: string;
+  user: string;
+  email: string;
+  userName: string;
+  firstName: string | null;
+  lastName: string | null;
+  avatar: string | null;
+  cover: string | null;
+  bio: string | null;
+  createdAt: string;
+  updatedAt: string | null;
+} | null;
 
 type ImageTarget = "cover" | "avatar" | null;
 
-type ProfileHeaderProps = { isOwnProfile: boolean; user: User };
+type ProfileHeaderProps = { isOwnProfile: boolean; user: UserProfileType };
 
 const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
   const [activeMenu, setActiveMenu] = useState<ImageTarget>(null);
@@ -49,8 +52,8 @@ const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [currentImageTarget, setCurrentImageTarget] =
     useState<ImageTarget>(null);
-  const [localAvatar, setLocalAvatar] = useState(user.avatar);
-  const [localCover, setLocalCover] = useState(user.cover);
+  const [localAvatar, setLocalAvatar] = useState(user?.avatar);
+  const [localCover, setLocalCover] = useState(user?.cover);
   const [objectUrls, setObjectUrls] = useState<string[]>([]);
   const [isImageUploading, setIsImageUploading] = useState(false);
   const [previousImage, setPreviousImage] = useState<string | null>(null);
@@ -85,10 +88,10 @@ const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
 
     try {
       if (currentImageTarget === "avatar") {
-        setPreviousImage(localAvatar);
+        setPreviousImage(localAvatar as string);
       }
       if (currentImageTarget === "cover") {
-        setPreviousImage(localCover);
+        setPreviousImage(localCover as string);
       }
 
       setIsImageUploading(true);
@@ -142,11 +145,11 @@ const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
 
       if (currentImageTarget === "avatar") {
         setLocalAvatar(imgSrc);
-        setPreviousImage(localAvatar);
+        setPreviousImage(localAvatar as string);
       }
       if (currentImageTarget === "cover") {
         setLocalCover(imgSrc);
-        setPreviousImage(localCover);
+        setPreviousImage(localCover as string);
       }
 
       const uniqueImageName = `${currentImageTarget}-${loggedInUser?.id}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}.jpg`;
@@ -201,22 +204,31 @@ const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
   };
 
   useEffect(() => {
+    setLocalAvatar(user?.avatar);
+    setLocalCover(user?.cover);
+  }, [user]);
+
+  useEffect(() => {
     return () => {
       objectUrls.forEach((url) => URL.revokeObjectURL(url));
     };
   }, []);
 
+  if (!user) return;
+
   return (
     <div className="z-(--z-raised) relative mb-6 glass-heavy rounded-t-2xl">
       <div className="group relative bg-black rounded-t-2xl w-full h-32 md:h-48">
         <Image
-          src={localCover ? localCover : staticImages.cover.src}
-          alt={user.name}
+          src={localCover ? localCover : staticImages.coverPlaceholder.src}
+          alt={getFullName(user) ?? "User Cover"}
           width={1600}
           height={800}
           className="opacity-80 group-hover:opacity-60 rounded-t-2xl w-full h-full object-cover transition-opacity cursor-pointer"
           onClick={() =>
-            handleImagePreview(localCover ? localCover : staticImages.cover.src)
+            handleImagePreview(
+              localCover ? localCover : staticImages.coverPlaceholder.src,
+            )
           }
         />
 
@@ -266,14 +278,18 @@ const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
         <div className="flex md:flex-row flex-col justify-between md:items-end gap-4 -mt-12 md:-mt-16 mb-4">
           <div className="group inline-block relative self-start md:self-auto pointer-events-auto">
             <Image
-              src={localAvatar ? localAvatar : staticImages.avatar.src}
-              alt={user.name}
+              src={
+                localAvatar ? localAvatar : staticImages.avatarPlaceholder.src
+              }
+              alt={getFullName(user) ?? "User Cover"}
               width={400}
               height={400}
               className="z-(--z-base) relative bg-glass shadow-xl border-4 border-bg rounded-xl w-24 md:w-32 h-24 md:h-32 object-cover hover:scale-[1.02] transition-transform cursor-pointer"
               onClick={() =>
                 handleImagePreview(
-                  localAvatar ? localAvatar : staticImages.avatar.src,
+                  localAvatar
+                    ? localAvatar
+                    : staticImages.avatarPlaceholder.src,
                 )
               }
             />
@@ -284,7 +300,7 @@ const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
               </div>
             )}
             <div
-              className={`absolute bottom-1 right-1 w-4 h-4 rounded-full border-2 border-bg z-(--z-raised) ${user.online ? "bg-green-500" : "bg-gray-500"}`}
+              className={`absolute bottom-1 right-1 w-4 h-4 rounded-full border-2 border-bg z-(--z-raised) ${user ? "bg-green-500" : "bg-gray-500"}`}
             ></div>
 
             {isOwnProfile && (
@@ -294,7 +310,7 @@ const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
                     e.stopPropagation();
                     setActiveMenu(activeMenu === "avatar" ? null : "avatar");
                   }}
-                  className="relative backdrop-blur-md px-2 hover:text-text-primary text-xs transition-colors text-accent-purple-dark glass-interactive"
+                  className="relative backdrop-blur-md px-2 hover:text-text-primary text-xs transition-colors text-accent-purple-light glass-interactive"
                 >
                   <LuCamera size={18} />
                 </button>
@@ -337,17 +353,19 @@ const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
         </div>
 
         <div className="pointer-events-auto">
-          <h1 className="font-arima font-extrabold">{user.name}</h1>
+          <h1 className="font-arima font-extrabold">{getFullName(user)}</h1>
           <p className="mt-1 text-text-secondary text-base md:text-lg">
-            {user.headline}
+            {/* {user.bio} */}
+            {getFullName(user)}
           </p>
 
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2 mt-4 text-text-secondary text-sm">
             <div className="flex items-center gap-1.5 hover:text-text-primary transition-colors cursor-pointer">
               <LuMapPin size={16} />
-              {user.location}
+              {/* {user.location} */}
+              {getFullName(user)}
             </div>
-            <a
+            {/* <a
               href={user.website}
               target="_blank"
               rel="noreferrer"
@@ -355,10 +373,10 @@ const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
             >
               <FaLink size={16} />
               {user.website.replace(/^https?:\/\//, "")}
-            </a>
+            </a> */}
             <div className="flex items-center gap-1.5">
               <LuCalendar size={16} />
-              Joined {user.joinedDate}
+              Joined {user?.createdAt}
             </div>
           </div>
         </div>
@@ -403,7 +421,7 @@ const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
                   }}
                   transition={{ type: "spring", damping: 20, stiffness: 300 }}
                   src={previewImage}
-                  alt={user.name}
+                  alt={getFullName(user)}
                   className="relative shadow-[0_0_50px_rgba(0,0,0,0.5)] rounded-xl max-w-full max-h-[90vh] object-contain"
                   onClick={(e) => e.stopPropagation()}
                 />

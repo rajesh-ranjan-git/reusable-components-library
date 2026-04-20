@@ -19,3 +19,17 @@ export const uploadImage = async (
     return error as ApiErrorResponse;
   }
 };
+
+export const fetchProfile = async (
+  token: string,
+  userName?: string,
+): Promise<ApiResponse> => {
+  try {
+    return await api.get(
+      `${userName ? `${apiUrls.profile.fetchProfile}/${userName}` : apiUrls.profile.fetchProfile}`,
+      { token },
+    );
+  } catch (error) {
+    return error as ApiErrorResponse;
+  }
+};

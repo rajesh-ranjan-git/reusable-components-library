@@ -59,7 +59,7 @@ export const authorize = ({
     }
 
     if (enforceHierarchy && targetUserId) {
-      const targetUserRoles = await getUserRoles(targetUserId);
+      const targetUserRoles = await rbacService.getUserRoles(targetUserId);
 
       const currentLevel = rbacService.getHighestRoleLevel(req.data.roles);
       const targetLevel = rbacService.getHighestRoleLevel(targetUserRoles);

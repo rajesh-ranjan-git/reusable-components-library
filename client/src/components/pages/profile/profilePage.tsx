@@ -1,12 +1,37 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AppSidebar from "@/components/layout/appSidebar";
 import BottomNav from "@/components/layout/bottomNav";
 import ActivitySection from "@/components/profile/activitySection";
 import ProfileHeader from "@/components/profile/profileHeader";
 import TechStack from "@/components/profile/techStack";
 import Header from "@/components/layout/header";
+import { fetchProfile } from "@/lib/actions/profileActions";
+import { useAppStore } from "@/store/store";
+import { ApiSuccessResponse } from "@/lib/api/apiHandler";
+
+interface ProfilePageProps {
+  userName?: string;
+}
+
+type UserProfileResponseType = {
+  profile: UserProfileType;
+};
+
+type UserProfileType = {
+  id: string;
+  user: string;
+  email: string;
+  userName: string;
+  firstName: string | null;
+  lastName: string | null;
+  avatar: string | null;
+  cover: string | null;
+  bio: string | null;
+  createdAt: string;
+  updatedAt: string | null;
+} | null;
 
 type User = {
   name: string;
@@ -99,9 +124,42 @@ const mockActivities = [
   },
 ];
 
-const ProfilePage = () => {
+const ProfilePage = ({ userName }: ProfilePageProps) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [userProfile, setUserProfile] = useState<UserProfileType>(null);
   const [isOwnProfile] = useState(true);
+
+  const accessToken = useAppStore((state) => state.accessToken);
+
+  const getUserProfile = async (userName?: string) => {
+    if (userName) {
+      const response = await fetchProfile(accessToken!, userName);
+
+      if (response.success && response?.data) {
+        const data = response?.data as UserProfileResponseType;
+
+        setUserProfile(data.profile);
+      } else {
+        setUserProfile(null);
+      }
+    } else {
+      const response = await fetchProfile(accessToken!);
+
+      if (response.success && response.data) {
+        const data = response?.data as UserProfileResponseType;
+
+        setUserProfile(data.profile);
+      } else {
+        setUserProfile(null);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (accessToken) {
+      getUserProfile(userName);
+    }
+  }, [userName, accessToken]);
 
   return (
     <div className="flex flex-col bg-bg h-dvh overflow-hidden text-text-primary">
@@ -118,7 +176,7 @@ const ProfilePage = () => {
 
         <div className="flex-1 bg-bg/50 overflow-y-auto">
           <div className="mx-auto p-4 md:p-8 pb-24 md:pb-8 max-w-200">
-            <ProfileHeader isOwnProfile={isOwnProfile} user={mockUser} />
+            <ProfileHeader isOwnProfile={isOwnProfile} user={userProfile} />
 
             <div className="mb-6 p-6 leading-relaxed glass">
               <h3 className="mb-4">About Me</h3>
