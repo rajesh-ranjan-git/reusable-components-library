@@ -100,20 +100,22 @@ export const validateCreateAddress = (data) => {
     validatedAddressProperties["pinCode"] = validatedPinCode;
   }
 
-  if (
-    typeof isDefault !== "boolean" &&
-    !(
-      typeof isDefault === "string" &&
-      (isDefault.trim().toLowerCase() === "true" ||
-        isDefault.trim().toLowerCase() === "false")
-    )
-  ) {
-    errors["isDefault"] = "Please provide a valid default address flag!";
-  } else {
-    validatedAddressProperties["isDefault"] =
-      typeof isDefault === "string"
-        ? isDefault.trim().toLowerCase() === "true"
-        : isDefault;
+  if (isDefault !== undefined && isDefault !== null) {
+    if (
+      typeof isDefault !== "boolean" &&
+      !(
+        typeof isDefault === "string" &&
+        (isDefault.trim().toLowerCase() === "true" ||
+          isDefault.trim().toLowerCase() === "false")
+      )
+    ) {
+      errors["isDefault"] = "Please provide a valid default address flag!";
+    } else {
+      validatedAddressProperties["isDefault"] =
+        typeof isDefault === "string"
+          ? isDefault.trim().toLowerCase() === "true"
+          : isDefault;
+    }
   }
 
   return { validatedAddressProperties, errors };

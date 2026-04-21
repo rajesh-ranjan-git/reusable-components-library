@@ -103,7 +103,7 @@ const profileSchema = new mongoose.Schema(
           },
           level: {
             type: String,
-            enum: ["beginner", "intermediate", "pro"],
+            enum: ["beginner", "intermediate", "advanced", "expert"],
             default: "beginner",
           },
         },

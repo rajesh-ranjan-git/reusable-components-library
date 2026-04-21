@@ -19,6 +19,7 @@ import { googleDriveService } from "../../../services/drive/google.drive.service
 import { isValidObjectId } from "mongoose";
 import {
   datePropertyValidator,
+  numberRegexPropertiesValidator,
   stringPropertiesValidator,
 } from "../../../validators/common.validator.js";
 import { validateExperience } from "../../../validators/profile.validator.js";
@@ -29,6 +30,7 @@ import {
 import { rbacService } from "../../../services/rbac/rbac.service.js";
 import Account from "../../../models/user/auth/account.model.js";
 import User from "../../../models/user/auth/user.model.js";
+import { PHONE_REGEX } from "../../../constants/regex.constants.js";
 
 export const getMyProfile = asyncHandler(async (req, res) => {
   const userId = req.data.userId;
@@ -306,6 +308,54 @@ export const updateGender = asyncHandler(async (req, res) => {
   });
 });
 
+export const updatePhone = asyncHandler(async (req, res) => {
+  const profile = await Profile.findOne({ user: req.data.userId });
+
+  const { phone } = req.data.body;
+
+  if (!phone) {
+    throw AppError.unprocessable({
+      message: "Please provide phone no. to update!",
+      code: "PHONE VALIDATION FAILED",
+      details: { phone },
+    });
+  }
+
+  const {
+    isPropertyValid: isPhoneValid,
+    message: phoneErrorMessage,
+    validatedProperty: validatedPhone,
+  } = numberRegexPropertiesValidator("phone", phone, PHONE_REGEX);
+
+  if (!isPhoneValid) {
+    throw AppError.unprocessable({
+      message: phoneErrorMessage,
+      code: "PHONE VALIDATION FAILED",
+      details: { phone },
+    });
+  }
+
+  const updatedProfile = await Profile.findOneAndUpdate(
+    { user: req.data.userId },
+    { $set: { phone: validatedPhone } },
+    { returnDocument: "after", runValidators: true },
+  );
+
+  if (!updatedProfile) {
+    throw AppError.notFound({
+      message: "Profile details not found!",
+      code: "PROFILE NOT FOUND",
+    });
+  }
+
+  return responseService.successResponseHandler(req, res, {
+    status: "PROFILE UPDATE SUCCESS",
+    statusCode: httpStatusConfig.created.statusCode,
+    message: "Phone no. updated successfully!",
+    data: { phone: validatedPhone },
+  });
+});
+
 export const updateDob = asyncHandler(async (req, res) => {
   const profile = await Profile.findOne({ user: req.data.userId });
 
@@ -492,7 +542,9 @@ export const updateSkills = async (req, res) => {
       }
 
       if (key === "level") {
-        if (!["beginner", "intermediate", "pro"].includes(value)) {
+        if (
+          !["beginner", "intermediate", "advanced", "expert"].includes(value)
+        ) {
           throw AppError.unprocessable({
             message: "Please provide valid skill level to update!",
             code: "SKILLS UPDATE FAILED",
@@ -513,7 +565,9 @@ export const updateSkills = async (req, res) => {
 
     return {
       name: validatedSkills.name?.trim().toLowerCase(),
-      level: ["beginner", "intermediate", "pro"].includes(validatedSkills.level)
+      level: ["beginner", "intermediate", "advanced", "expert"].includes(
+        validatedSkills.level,
+      )
         ? validatedSkills.level
         : "beginner",
     };
@@ -612,15 +666,20 @@ export const updateExperience = async (req, res) => {
     let updateQuery;
 
     if (newExperience.isCurrent) {
-      updateQuery = {
-        $set: { "experiences.$[elem].isCurrent": false },
-        $push: { experiences: newExperience },
-      };
-    } else {
-      updateQuery = {
-        $push: { experiences: newExperience },
-      };
+      await Profile.updateOne(
+        { user: userId },
+        {
+          $set: { "experiences.$[].isCurrent": false },
+        },
+      );
     }
+
+    await Profile.updateOne(
+      { user: userId },
+      {
+        $push: { experiences: newExperience },
+      },
+    );
 
     const updatedProfile = await Profile.findOneAndUpdate(
       { user: userId },
@@ -629,7 +688,7 @@ export const updateExperience = async (req, res) => {
         arrayFilters: newExperience.isCurrent
           ? [{ "elem.isCurrent": true }]
           : undefined,
-        new: true,
+        returnDocument: "after",
         runValidators: true,
       },
     );

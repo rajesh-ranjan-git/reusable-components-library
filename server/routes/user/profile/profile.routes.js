@@ -9,6 +9,7 @@ import {
   updateSkills,
   updateExperience,
   updateDob,
+  updatePhone,
 } from "../../../controllers/user/profile/profile.controller.js";
 import { requestMiddleware } from "../../../middlewares/request.middleware.js";
 import { authenticate } from "../../../middlewares/authenticate.middleware.js";
@@ -64,6 +65,13 @@ profileRouter.post(
   authenticate,
   authorize({ permissions: [PERMISSIONS.PROFILE_UPDATE_OWN] }),
   updateGender,
+);
+profileRouter.post(
+  "/profile/phone",
+  requestMiddleware({ requireBody: true }),
+  authenticate,
+  authorize({ permissions: [PERMISSIONS.PROFILE_UPDATE_OWN] }),
+  updatePhone,
 );
 profileRouter.post(
   "/profile/dob",

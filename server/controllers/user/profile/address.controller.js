@@ -29,10 +29,23 @@ export const getAddresses = asyncHandler(async (req, res) => {
 });
 
 export const getAddress = asyncHandler(async (req, res) => {
+  const userId = req.data.userId;
+  const { addressId } = req.data.params;
+
+  const address = await Address.findById(addressId);
+
+  if (!address) {
+    throw AppError.notFound({
+      message: "No address found with provided addressId!",
+      code: "ADDRESS NOT FOUND",
+      details: { addressId },
+    });
+  }
+
   return responseService.successResponseHandler(req, res, {
     status: "ADDRESS FETCH SUCCESS",
     message: "Address fetched successfully!",
-    data: { address: req.data.resource.address },
+    data: { address },
   });
 });
 
@@ -51,7 +64,7 @@ export const createAddress = asyncHandler(async (req, res) => {
     req.data.body,
   );
 
-  if (errors && Object.values(errors).length) {
+  if (errors && Object.values(errors).length > 0) {
     throw AppError.unprocessable({
       message: "Failed to create new address!",
       code: "ADDRESS CREATE FAILED",
@@ -95,13 +108,24 @@ export const createAddress = asyncHandler(async (req, res) => {
 });
 
 export const updateAddress = asyncHandler(async (req, res) => {
-  const address = req.data.resource.address;
+  const userId = req.data.userId;
+  const { addressId } = req.data.params;
+
+  const address = await Address.findById(addressId);
+
+  if (!address) {
+    throw AppError.notFound({
+      message: "No address found with provided addressId!",
+      code: "ADDRESS NOT FOUND",
+      details: { addressId },
+    });
+  }
 
   const { validatedAddressProperties, errors } = validateUpdateAddress(
     req.data.body,
   );
 
-  if (errors && Object.values(errors).length) {
+  if (errors && Object.values(errors).length > 0) {
     throw AppError.unprocessable({
       message: "Failed to update address!",
       code: "ADDRESS UPDATE FAILED",
@@ -160,12 +184,13 @@ export const updateAddress = asyncHandler(async (req, res) => {
 });
 
 export const deleteAddress = asyncHandler(async (req, res) => {
-  const addressId = req.data.resource.address.id;
+  const { addressId } = req.data.params;
+
   const address = await Address.findByIdAndDelete(addressId);
 
   if (!address) {
-    throw AppError.internal({
-      message: "Failed to delete address for provided address ID!",
+    throw AppError.notFound({
+      message: "No address found for provided addressId!",
       code: "ADDRESS DELETE FAILED",
     });
   }
@@ -202,21 +227,24 @@ export const deleteAllAddresses = asyncHandler(async (req, res) => {
 });
 
 export const setDefaultAddress = asyncHandler(async (req, res) => {
+  const { addressId } = req.data.params;
+
   await Address.updateMany(
     { user: req.data.userId },
     { $set: { isDefault: false } },
   );
 
   const updatedAddress = await Address.findByIdAndUpdate(
-    req.data.resource.address.id,
+    addressId,
     { $set: { isDefault: true } },
     { returnDocument: "after", runValidators: true },
   );
 
   if (!updatedAddress) {
-    throw AppError.internal({
-      message: "Failed to set default address!",
-      code: "ADDRESS UPDATE FAILED",
+    throw AppError.notFound({
+      message: "No address found with provided addressId!",
+      code: "ADDRESS NOT FOUND",
+      details: { addressId },
     });
   }
 

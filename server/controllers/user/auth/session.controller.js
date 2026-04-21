@@ -36,10 +36,9 @@ export const getActiveSessions = asyncHandler(async (req, res) => {
 });
 
 export const revokeSession = asyncHandler(async (req, res) => {
-  await sessionService.revokeSessionById(
-    req.data.resource.session.id,
-    req.data.userId,
-  );
+  const { sessionId } = req.data.params;
+
+  await sessionService.revokeSessionById(sessionId, req.data.userId);
 
   return responseService.successResponseHandler(req, res, {
     status: "SESSION REVOKE SUCCESS",
