@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { LuChevronDown } from "react-icons/lu";
 import {
   LineChart,
   Line,
@@ -9,6 +8,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import { LuChevronDown } from "react-icons/lu";
 
 const data = [
   { name: "Jan", activeUsers: 4000, newMatches: 2400 },

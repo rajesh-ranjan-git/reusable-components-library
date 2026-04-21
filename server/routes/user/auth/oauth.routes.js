@@ -1,11 +1,11 @@
 import express from "express";
+import { requestMiddleware } from "../../../middlewares/request.middleware.js";
+import { oauthVerifyMiddleware } from "../../../middlewares/oauth.middleware.js";
 import {
   oauthCallback,
   getLinkedProviders,
   unlinkProvider,
 } from "../../../controllers/user/auth/oauth.controller.js";
-import { requestMiddleware } from "../../../middlewares/request.middleware.js";
-import { oauthVerifyMiddleware } from "../../../middlewares/oauth.middleware.js";
 
 const oauthRouter = express.Router();
 

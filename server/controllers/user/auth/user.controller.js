@@ -3,12 +3,12 @@ import Account from "../../../models/user/auth/account.model.js";
 import Profile from "../../../models/user/profile/profile.model.js";
 import Address from "../../../models/user/profile/address.model.js";
 import ActivityLog from "../../../models/user/auth/activity.log.model.js";
-import { sessionService } from "../../../services/auth/session.service.js";
 import { asyncHandler } from "../../../utils/common.utils.js";
-import { responseService } from "../../../services/response/response.service.js";
 import { emailValidator } from "../../../validators/auth.validator.js";
-import AppError from "../../../services/error/error.service.js";
+import { sessionService } from "../../../services/auth/session.service.js";
 import { activityService } from "../../../services/activity/activity.service.js";
+import { responseService } from "../../../services/response/response.service.js";
+import AppError from "../../../services/error/error.service.js";
 
 export const getAccountInfo = asyncHandler(async (req, res) => {
   const [account, profile] = await Promise.all([

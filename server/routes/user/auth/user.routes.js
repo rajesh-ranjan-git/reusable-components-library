@@ -1,14 +1,14 @@
 import express from "express";
+import { PERMISSIONS } from "../../../constants/permission.constants.js";
+import { requestMiddleware } from "../../../middlewares/request.middleware.js";
+import { authenticate } from "../../../middlewares/authenticate.middleware.js";
+import { authorize } from "../../../middlewares/authorize.middleware.js";
 import {
   getAccountInfo,
   updateEmail,
   deleteAccount,
   getDashboardSummary,
 } from "../../../controllers/user/auth/user.controller.js";
-import { requestMiddleware } from "../../../middlewares/request.middleware.js";
-import { authenticate } from "../../../middlewares/authenticate.middleware.js";
-import { authorize } from "../../../middlewares/authorize.middleware.js";
-import { PERMISSIONS } from "../../../constants/permission.constants.js";
 
 const userRouter = express.Router();
 

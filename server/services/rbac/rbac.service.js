@@ -1,10 +1,10 @@
-import UserRole from "../../models/user/rbac/user.role.model.js";
-import { ROLE_PERMISSIONS_MAP } from "../../config/role.permission.map.config.js";
-import { PERMISSIONS } from "../../constants/permission.constants.js";
-import { ROLE_HIERARCHY } from "../../constants/roles.constants.js";
-import { sanitizeMongoData } from "../../db/db.utils.js";
-import AppError from "../../services/error/error.service.js";
 import { isValidObjectId } from "mongoose";
+import { ROLE_HIERARCHY } from "../../constants/roles.constants.js";
+import { PERMISSIONS } from "../../constants/permission.constants.js";
+import { ROLE_PERMISSIONS_MAP } from "../../config/role.permission.map.config.js";
+import { sanitizeMongoData } from "../../db/db.utils.js";
+import UserRole from "../../models/user/rbac/user.role.model.js";
+import AppError from "../../services/error/error.service.js";
 
 class RBACService {
   async getUserRoles(userId) {

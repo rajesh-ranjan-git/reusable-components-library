@@ -1,6 +1,7 @@
 import { httpStatusConfig } from "../../../config/http.config.js";
-import { authService } from "../../../services/auth/auth.service.js";
-import AppError from "../../../services/error/error.service.js";
+import Account from "../../../models/user/auth/account.model.js";
+import Profile from "../../../models/user/profile/profile.model.js";
+import { asyncHandler } from "../../../utils/common.utils.js";
 import {
   validateRegister,
   validateLogin,
@@ -8,11 +9,10 @@ import {
   validateUpdatePassword,
   emailValidator,
 } from "../../../validators/auth.validator.js";
-import { responseService } from "../../../services/response/response.service.js";
-import { asyncHandler } from "../../../utils/common.utils.js";
+import { authService } from "../../../services/auth/auth.service.js";
 import { rbacService } from "../../../services/rbac/rbac.service.js";
-import Profile from "../../../models/user/profile/profile.model.js";
-import Account from "../../../models/user/auth/account.model.js";
+import { responseService } from "../../../services/response/response.service.js";
+import AppError from "../../../services/error/error.service.js";
 
 export const register = asyncHandler(async (req, res) => {
   const value = validateRegister(req.data.body);

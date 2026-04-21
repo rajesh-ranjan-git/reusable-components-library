@@ -1,16 +1,16 @@
 "use client";
 
-import { useToast } from "@/hooks/toast";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { LoggedInUserType } from "@/types/types";
+import { ReactNodeProps } from "@/types/propTypes";
+import { useAppStore } from "@/store/store";
+import { toTitleCase } from "@/utils/common.utils";
 import { fetchMe, refreshTokens } from "@/lib/actions/actions";
 import { logoutAction } from "@/lib/actions/authActions";
 import { getCookies } from "@/lib/api/cookiesHandler";
 import { authRoutes } from "@/lib/routes/routes";
-import { useAppStore } from "@/store/store";
-import { ReactNodeProps } from "@/types/propTypes";
-import { LoggedInUserType } from "@/types/types";
-import { toTitleCase } from "@/utils/common.utils";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useToast } from "@/hooks/toast";
 
 type FetchMeResponseType = {
   user: LoggedInUserType;

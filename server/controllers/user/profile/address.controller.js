@@ -1,13 +1,13 @@
-import Address from "../../../models/user/profile/address.model.js";
 import { MAX_ADDRESSES } from "../../../constants/common.constants.js";
-import { asyncHandler } from "../../../utils/common.utils.js";
 import { httpStatusConfig } from "../../../config/http.config.js";
+import Address from "../../../models/user/profile/address.model.js";
+import { asyncHandler } from "../../../utils/common.utils.js";
 import {
   validateCreateAddress,
   validateUpdateAddress,
 } from "../../../validators/address.validator.js";
-import AppError from "../../../services/error/error.service.js";
 import { responseService } from "../../../services/response/response.service.js";
+import AppError from "../../../services/error/error.service.js";
 
 export const getAddresses = asyncHandler(async (req, res) => {
   const addresses = await Address.find({ user: req.data.userId })

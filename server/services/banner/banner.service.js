@@ -7,8 +7,8 @@ import {
   bannerFontsConfig,
   bannerThemesConfig,
 } from "../../config/banner.config.js";
-import { getDateToShow } from "../../utils/date.utils.js";
 import { getRandomItem, toTitleCase } from "../../utils/common.utils.js";
+import { getDateToShow } from "../../utils/date.utils.js";
 
 const systemInfo = (port = HOST_PORT) => {
   const info = `

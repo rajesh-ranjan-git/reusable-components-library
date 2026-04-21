@@ -1,7 +1,7 @@
 "use client";
 
-import { CLIENT_URL } from "@/constants/env.constants";
 import { useEffect } from "react";
+import { CLIENT_URL } from "@/constants/env.constants";
 
 const OAuthPopupHandlerPage = () => {
   useEffect(() => {

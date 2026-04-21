@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { notFound } from "next/navigation";
 import {
   LuActivity,
   LuDollarSign,
@@ -8,15 +9,14 @@ import {
   LuTarget,
   LuUsers,
 } from "react-icons/lu";
+import { AdminPageProps } from "@/types/propTypes";
+import { toTitleCase } from "@/utils/common.utils";
+import { adminRoutes } from "@/lib/routes/routes";
+import Header from "@/components/layout/header";
 import ActivityFeed from "@/components/admin/activityFeed";
 import AdminSidebar from "@/components/admin/adminSidebar";
 import ChartCard from "@/components/admin/chartCard";
 import StatCard from "@/components/admin/statCard";
-import Header from "@/components/layout/header";
-import { AdminPageProps } from "@/types/propTypes";
-import { toTitleCase } from "@/utils/common.utils";
-import { adminRoutes } from "@/lib/routes/routes";
-import { notFound } from "next/navigation";
 
 const AdminPage = ({ type }: AdminPageProps) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);

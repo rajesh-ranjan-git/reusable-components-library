@@ -3,8 +3,8 @@ import {
   DEFAULT_PAGE_SIZE,
   MAX_PAGE_SIZE,
 } from "../../../constants/common.constants.js";
-import { responseService } from "../../../services/response/response.service.js";
 import { asyncHandler } from "../../../utils/common.utils.js";
+import { responseService } from "../../../services/response/response.service.js";
 import AppError from "../../../services/error/error.service.js";
 
 export const getMyActivity = asyncHandler(async (req, res) => {

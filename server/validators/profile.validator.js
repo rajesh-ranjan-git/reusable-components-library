@@ -1,9 +1,9 @@
 import { propertyConstraints } from "../config/common.config.js";
-import AppError from "../services/error/error.service.js";
 import {
   datePropertyValidator,
   stringPropertiesValidator,
 } from "./common.validator.js";
+import AppError from "../services/error/error.service.js";
 
 export const validateExperience = (experience) => {
   if (!experience?.company || !experience?.role || !experience?.startDate) {

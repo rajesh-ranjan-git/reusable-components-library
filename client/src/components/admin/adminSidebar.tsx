@@ -1,7 +1,6 @@
-import { Dispatch, SetStateAction } from "react";
-import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname, useRouter } from "next/navigation";
 import { FaHome } from "react-icons/fa";
 import { IoBarChart } from "react-icons/io5";
 import {
@@ -14,9 +13,9 @@ import {
   LuX,
 } from "react-icons/lu";
 import { staticImages } from "@/config/common.config";
-import { adminRoutes, defaultRoutes } from "@/lib/routes/routes";
 import { AdminSidebarProps } from "@/types/propTypes";
 import { useAppStore } from "@/store/store";
+import { adminRoutes, defaultRoutes } from "@/lib/routes/routes";
 import { logoutAction } from "@/lib/actions/authActions";
 
 const AdminSidebar = ({

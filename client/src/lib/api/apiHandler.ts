@@ -1,5 +1,5 @@
-import { httpStatusConfig } from "@/config/http.config";
 import { HOST_API_URL } from "@/constants/env.constants";
+import { httpStatusConfig } from "@/config/http.config";
 
 export interface ResponseMetadata {
   requestId?: string;

@@ -1,13 +1,13 @@
 "use client";
 
 import { useActionState, useEffect, useState } from "react";
-import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
+import Form from "next/form";
+import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence, Variants, LayoutGroup } from "motion/react";
 import {
   LuGithub,
-  LuFacebook,
   LuLinkedin,
   LuEyeClosed,
   LuUser,
@@ -17,27 +17,26 @@ import { TbLoader3 } from "react-icons/tb";
 import { FcGoogle } from "react-icons/fc";
 import { FaRegEye } from "react-icons/fa";
 import { staticImages } from "@/config/common.config";
-import SocialButton from "@/components/auth/socialButton";
-import { authRoutes, defaultRoutes } from "@/lib/routes/routes";
-import Form from "next/form";
-import useInputFieldValidator from "@/hooks/useInputFieldValidation";
-import FormErrorMessage from "@/components/errors/formErrorMessage";
+import { LoggedInUserType } from "@/types/types";
+import { useAppStore } from "@/store/store";
 import {
   emailValidator,
   nameValidator,
   passwordValidator,
   userNameValidator,
 } from "@/validators/auth.validator";
+import { authRoutes, defaultRoutes } from "@/lib/routes/routes";
 import {
   AuthFormStateType,
   loginAction,
   registerAction,
 } from "@/lib/actions/authActions";
 import { useToast } from "@/hooks/toast";
-import { useAppStore } from "@/store/store";
-import { loginWithProvider, providerLogin } from "@/lib/actions/oAuthActions";
-import { LoggedInUserType } from "@/types/types";
+import useInputFieldValidator from "@/hooks/useInputFieldValidation";
 import { useOAuthListener } from "@/hooks/useOAuthListener";
+import SocialButton from "@/components/auth/socialButton";
+import FormErrorMessage from "@/components/errors/formErrorMessage";
+import { loginWithProvider, providerLogin } from "@/lib/actions/oAuthActions";
 
 type ProviderLoginDataType = {
   user: LoggedInUserType;

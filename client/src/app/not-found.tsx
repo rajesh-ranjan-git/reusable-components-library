@@ -1,11 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import { IoIosWarning } from "react-icons/io";
 import { staticImages } from "@/config/common.config";
-import GoBackButton from "@/components/ui/buttons/goBackButton";
 import Header from "@/components/layout/header";
-import { useState } from "react";
+import GoBackButton from "@/components/ui/buttons/goBackButton";
 
 const NotFound = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);

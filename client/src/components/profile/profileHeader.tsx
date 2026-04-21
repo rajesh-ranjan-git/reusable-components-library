@@ -1,6 +1,7 @@
 import { useState, useRef, ChangeEvent, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "motion/react";
 import {
@@ -11,25 +12,24 @@ import {
   LuUserPlus,
   LuX,
 } from "react-icons/lu";
+import { TbLoader3 } from "react-icons/tb";
 import { FaEdit, FaLink } from "react-icons/fa";
 import { FiMoreHorizontal } from "react-icons/fi";
-import ImageUploadMenu from "@/components/shared/imageUploadMenu";
-import CameraModal from "@/components/shared/cameraModal";
-import { chatRoutes } from "@/lib/routes/routes";
+import { staticImages } from "@/config/common.config";
+import { useAppStore } from "@/store/store";
+import { toTitleCase } from "@/utils/common.utils";
+import { getDateToShow } from "@/utils/date.utils";
 import {
   compressImage,
   dataURLtoImage,
   getFullName,
   validateImage,
 } from "@/helpers/helpers";
+import { chatRoutes } from "@/lib/routes/routes";
 import { uploadImage } from "@/lib/actions/profileActions";
-import { useAppStore } from "@/store/store";
 import { useToast } from "@/hooks/toast";
-import { staticImages } from "@/config/common.config";
-import { TbLoader3 } from "react-icons/tb";
-import { toTitleCase } from "@/utils/common.utils";
-import { getDateToShow } from "@/utils/date.utils";
-import Link from "next/link";
+import ImageUploadMenu from "@/components/shared/imageUploadMenu";
+import CameraModal from "@/components/shared/cameraModal";
 
 type Skill = {
   name: string;

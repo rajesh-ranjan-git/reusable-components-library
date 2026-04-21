@@ -1,14 +1,14 @@
 import "../services/logger/logger.service.js";
 import { setDbAdapter } from "../services/logger/logger.service.js";
-import connectDB from "../db/db.connect.js";
-import Permission from "../models/user/rbac/permission.model.js";
-import Role from "../models/user/rbac/role.model.js";
-import Log from "../models/log/log.model.js";
 import { PERMISSIONS } from "../constants/permission.constants.js";
-import { ROLE_PERMISSIONS_MAP } from "../config/role.permission.map.config.js";
 import { ROLE_HIERARCHY, ROLES } from "../constants/roles.constants.js";
-import { authService } from "../services/auth/auth.service.js";
+import { ROLE_PERMISSIONS_MAP } from "../config/role.permission.map.config.js";
+import connectDB from "../db/db.connect.js";
+import Log from "../models/log/log.model.js";
+import Role from "../models/user/rbac/role.model.js";
 import UserRole from "../models/user/rbac/user.role.model.js";
+import Permission from "../models/user/rbac/permission.model.js";
+import { authService } from "../services/auth/auth.service.js";
 
 const seedRBAC = async () => {
   try {

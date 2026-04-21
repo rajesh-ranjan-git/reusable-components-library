@@ -12,8 +12,11 @@ import {
   LuSettings,
   LuUser,
 } from "react-icons/lu";
-import { staticImages } from "@/config/common.config";
 import { IoHomeOutline } from "react-icons/io5";
+import { staticImages } from "@/config/common.config";
+import { useAppStore } from "@/store/store";
+import { toTitleCase } from "@/utils/common.utils";
+import { getFullName } from "@/helpers/helpers";
 import {
   adminRoutes,
   chatRoutes,
@@ -22,10 +25,7 @@ import {
   subscriptionRoutes,
 } from "@/lib/routes/routes";
 import { logoutAction } from "@/lib/actions/authActions";
-import { useAppStore } from "@/store/store";
 import ProfileMenuItem from "@/components/shared/profileMenuItem";
-import { getFullName } from "@/helpers/helpers";
-import { toTitleCase } from "@/utils/common.utils";
 
 type HeaderProfileMenuProps = {
   isOpen: boolean;

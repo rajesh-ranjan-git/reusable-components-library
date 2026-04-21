@@ -1,8 +1,8 @@
 import { Server } from "socket.io";
-import User from "../../models/user/auth/user.model.js";
 import { HOST_URL, CLIENT_URL } from "../../constants/env.constants.js";
-import AppError from "../error/error.service.js";
+import User from "../../models/user/auth/user.model.js";
 import { tokenService } from "../auth/token.service.js";
+import AppError from "../error/error.service.js";
 
 export const generateRoomId = async (users) => {
   if (!users || users.length === 0) {

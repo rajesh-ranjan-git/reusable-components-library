@@ -14,7 +14,6 @@ import {
 import { toTitleCase } from "@/utils/common.utils";
 import {
   listPropertiesValidator,
-  numberPropertiesValidator,
   stringPropertiesValidator,
 } from "@/validators/common.validator";
 

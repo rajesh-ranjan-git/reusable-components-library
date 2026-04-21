@@ -5,8 +5,8 @@ import Link from "next/link";
 import { FiCheckCircle } from "react-icons/fi";
 import { LuArrowLeft } from "react-icons/lu";
 import { TbLoader3 } from "react-icons/tb";
-import AuthLayout from "@/components/auth/authLayout";
 import { authRoutes } from "@/lib/routes/routes";
+import AuthLayout from "@/components/auth/authLayout";
 
 const ForgotPasswordPage = () => {
   const [email, setEmail] = useState("");

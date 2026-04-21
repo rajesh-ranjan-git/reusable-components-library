@@ -1,10 +1,10 @@
 import { isValidObjectId } from "mongoose";
 import { socialPlatforms } from "../../../config/common.config.js";
 import Social from "../../../models/user/profile/social.model.js";
-import { regexPropertiesValidator } from "../../../validators/common.validator.js";
 import { asyncHandler, toTitleCase } from "../../../utils/common.utils.js";
-import AppError from "../../../services/error/error.service.js";
+import { regexPropertiesValidator } from "../../../validators/common.validator.js";
 import { responseService } from "../../../services/response/response.service.js";
+import AppError from "../../../services/error/error.service.js";
 
 export const getSocialLinks = asyncHandler(async (req, res) => {
   let links = await Social.findOne({ user: req.data.userId }).lean();

@@ -1,38 +1,38 @@
-import Profile from "../../../models/user/profile/profile.model.js";
-import AppError from "../../../services/error/error.service.js";
-import {
-  userNameValidator,
-  validateUpdateProfile,
-} from "../../../validators/auth.validator.js";
-import { responseService } from "../../../services/response/response.service.js";
-import {
-  asyncHandler,
-  isPlainObject,
-  toTitleCase,
-} from "../../../utils/common.utils.js";
+import { isValidObjectId } from "mongoose";
+import { PHONE_REGEX } from "../../../constants/regex.constants.js";
 import { httpStatusConfig } from "../../../config/http.config.js";
 import {
   genderProperties,
   propertyConstraints,
 } from "../../../config/common.config.js";
-import { googleDriveService } from "../../../services/drive/google.drive.service.js";
-import { isValidObjectId } from "mongoose";
+import Account from "../../../models/user/auth/account.model.js";
+import User from "../../../models/user/auth/user.model.js";
+import Profile from "../../../models/user/profile/profile.model.js";
+import Address from "../../../models/user/profile/address.model.js";
+import Social from "../../../models/user/profile/social.model.js";
+import {
+  asyncHandler,
+  isPlainObject,
+  toTitleCase,
+} from "../../../utils/common.utils.js";
+import {
+  uploadToCloudinary,
+  uploadToGoogleDrive,
+} from "../../../utils/upload.utils.js";
 import {
   datePropertyValidator,
   numberRegexPropertiesValidator,
   stringPropertiesValidator,
 } from "../../../validators/common.validator.js";
-import { validateExperience } from "../../../validators/profile.validator.js";
 import {
-  uploadToCloudinary,
-  uploadToGoogleDrive,
-} from "../../../utils/upload.utils.js";
+  userNameValidator,
+  validateUpdateProfile,
+} from "../../../validators/auth.validator.js";
+import { validateExperience } from "../../../validators/profile.validator.js";
 import { rbacService } from "../../../services/rbac/rbac.service.js";
-import Account from "../../../models/user/auth/account.model.js";
-import User from "../../../models/user/auth/user.model.js";
-import { PHONE_REGEX } from "../../../constants/regex.constants.js";
-import Address from "../../../models/user/profile/address.model.js";
-import Social from "../../../models/user/profile/social.model.js";
+import { googleDriveService } from "../../../services/drive/google.drive.service.js";
+import { responseService } from "../../../services/response/response.service.js";
+import AppError from "../../../services/error/error.service.js";
 
 export const getMyProfile = asyncHandler(async (req, res) => {
   const userId = req.data.userId;

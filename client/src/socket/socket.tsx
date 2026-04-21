@@ -1,5 +1,5 @@
 import io, { Socket } from "socket.io-client";
-import { HOST_URL } from "@/lib/api/apiUtils";
+import { HOST_URL } from "@/constants/env.constants";
 
 interface SocketConfig {
   token: string;

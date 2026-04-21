@@ -2,8 +2,8 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAppStore } from "@/store/store";
 import { CLIENT_URL } from "@/constants/env.constants";
+import { useAppStore } from "@/store/store";
 import { defaultRoutes } from "@/lib/routes/routes";
 
 type OAuthPayload = {

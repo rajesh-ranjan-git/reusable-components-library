@@ -4,11 +4,10 @@ import type { Metadata, Viewport } from "next";
 import { alkatra, arima, inter, poppins, tourney } from "@/config/font.config";
 import { ReactNodeProps } from "@/types/propTypes";
 import Banner from "@/services/banner/banner";
+import { ToastProvider } from "@/hooks/toast";
 import ServiceWorkerRegister from "@/components/serviceWorker/serviceWorkerRegister";
 import Orb from "@/components/background/orb";
-import { ToastProvider } from "@/hooks/toast";
 import ThemeManager from "@/components/theme/themeManager";
-import Flash from "@/components/flash/flash";
 import ErrorWrapper from "@/components/errors/errorWrapper";
 import AuthWrapper from "@/components/auth/authWrapper";
 
@@ -38,7 +37,7 @@ const RootLayout = ({ children }: Readonly<ReactNodeProps>) => {
           <Banner nodeVersion={process.version} />
           <ThemeManager />
           <Orb />
-          <Flash />
+
           <AuthWrapper>
             <ErrorWrapper>{children}</ErrorWrapper>
           </AuthWrapper>

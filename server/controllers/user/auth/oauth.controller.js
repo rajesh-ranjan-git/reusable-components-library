@@ -1,21 +1,21 @@
 import { CLIENT_URL } from "../../../constants/env.constants.js";
+import { ROLES } from "../../../constants/roles.constants.js";
 import User from "../../../models/user/auth/user.model.js";
 import Account from "../../../models/user/auth/account.model.js";
 import AuthProvider from "../../../models/user/auth/auth.provider.model.js";
 import Profile from "../../../models/user/profile/profile.model.js";
 import SocialLink from "../../../models/user/profile/social.model.js";
-import { sessionService } from "../../../services/auth/session.service.js";
-import AppError from "../../../services/error/error.service.js";
-import { responseService } from "../../../services/response/response.service.js";
+import Role from "../../../models/user/rbac/role.model.js";
+import UserRole from "../../../models/user/rbac/user.role.model.js";
 import { asyncHandler } from "../../../utils/common.utils.js";
+import { emailValidator } from "../../../validators/auth.validator.js";
+import { sessionService } from "../../../services/auth/session.service.js";
 import { activityService } from "../../../services/activity/activity.service.js";
 import { rbacService } from "../../../services/rbac/rbac.service.js";
 import { tokenService } from "../../../services/auth/token.service.js";
-import { emailValidator } from "../../../validators/auth.validator.js";
 import { authService } from "../../../services/auth/auth.service.js";
-import Role from "../../../models/user/rbac/role.model.js";
-import UserRole from "../../../models/user/rbac/user.role.model.js";
-import { ROLES } from "../../../constants/roles.constants.js";
+import { responseService } from "../../../services/response/response.service.js";
+import AppError from "../../../services/error/error.service.js";
 
 export const oauthCallback = asyncHandler(async (req, res) => {
   const { provider } = req.data.params;

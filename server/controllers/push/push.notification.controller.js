@@ -4,8 +4,8 @@ import {
   VAPID_PUBLIC_KEY,
 } from "../../constants/env.constants.js";
 import { httpStatusConfig } from "../../config/http.config.js";
-import { responseService } from "../../services/response/response.service.js";
 import PushNotificationSubscription from "../../models/push/push.notification.model.js";
+import { responseService } from "../../services/response/response.service.js";
 
 const vapidEmail = process.env.VAPID_EMAIL || "mailto:admin@example.com";
 

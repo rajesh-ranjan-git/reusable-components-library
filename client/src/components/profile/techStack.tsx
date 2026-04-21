@@ -1,5 +1,5 @@
-import { toTitleCase } from "@/utils/common.utils";
 import Image from "next/image";
+import { toTitleCase } from "@/utils/common.utils";
 
 type Skill = {
   name: string;

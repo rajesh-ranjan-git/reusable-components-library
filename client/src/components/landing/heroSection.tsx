@@ -1,7 +1,7 @@
-import { chatRoutes, defaultRoutes } from "@/lib/routes/routes";
 import Link from "next/link";
 import { FaArrowRight, FaStar } from "react-icons/fa6";
 import { LuChevronRight, LuMessageSquare } from "react-icons/lu";
+import { chatRoutes, defaultRoutes } from "@/lib/routes/routes";
 
 const HeroSection = () => {
   return (

@@ -1,9 +1,9 @@
+import Header from "@/components/layout/header";
 import HeroSection from "@/components/landing/heroSection";
 import FeaturesSection from "@/components/landing/featuresSection";
 import CommunitySection from "@/components/landing/communitySection";
-import Footer from "@/components/landing/footer";
 import SubscriptionPage from "@/components/pages/subscription/subscriptionPage";
-import Header from "@/components/layout/header";
+import Footer from "@/components/landing/footer";
 
 const LandingPage = () => {
   return (

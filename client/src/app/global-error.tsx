@@ -2,17 +2,16 @@
 
 import "@/app/globals.css";
 import "@/services/logger/logger";
+import { useState } from "react";
 import Image from "next/image";
 import { MdError } from "react-icons/md";
-import { alkatra, arima, inter, poppins, tourney } from "@/config/font.config";
 import { staticImages } from "@/config/common.config";
+import { alkatra, arima, inter, poppins, tourney } from "@/config/font.config";
 import { ToastProvider } from "@/hooks/toast";
 import ThemeManager from "@/components/theme/themeManager";
 import Orb from "@/components/background/orb";
-import Flash from "@/components/flash/flash";
-import ReloadButton from "@/components/ui/buttons/reloadButton";
 import Header from "@/components/layout/header";
-import { useState } from "react";
+import ReloadButton from "@/components/ui/buttons/reloadButton";
 
 const GlobalError = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -26,7 +25,6 @@ const GlobalError = () => {
         <ToastProvider>
           <ThemeManager />
           <Orb />
-          <Flash />
 
           <div className="flex flex-col bg-bg-page h-dvh overflow-hidden text-text-primary">
             <Header

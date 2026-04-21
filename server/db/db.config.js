@@ -1,10 +1,10 @@
 import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
-import AppError from "../services/error/error.service.js";
 import { MODE } from "../constants/env.constants.js";
 import { httpStatusConfig } from "../config/http.config.js";
 import "./db.models.config.js";
+import AppError from "../services/error/error.service.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

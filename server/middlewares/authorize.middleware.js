@@ -1,7 +1,7 @@
 import { PERMISSIONS } from "../constants/permission.constants.js";
+import { asyncHandler } from "../utils/common.utils.js";
 import { rbacService } from "../services/rbac/rbac.service.js";
 import AppError from "../services/error/error.service.js";
-import { asyncHandler } from "../utils/common.utils.js";
 
 export const authorize = ({
   permissions = [],

@@ -1,5 +1,8 @@
 import express from "express";
 import { PERMISSIONS } from "../../../constants/permission.constants.js";
+import { requestMiddleware } from "../../../middlewares/request.middleware.js";
+import { authenticate } from "../../../middlewares/authenticate.middleware.js";
+import { authorize } from "../../../middlewares/authorize.middleware.js";
 import {
   register,
   login,
@@ -12,9 +15,6 @@ import {
   resetPassword,
   resendVerification,
 } from "../../../controllers/user/auth/auth.controller.js";
-import { requestMiddleware } from "../../../middlewares/request.middleware.js";
-import { authenticate } from "../../../middlewares/authenticate.middleware.js";
-import { authorize } from "../../../middlewares/authorize.middleware.js";
 
 const authRouter = express.Router();
 

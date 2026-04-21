@@ -1,6 +1,6 @@
+import { asyncHandler, toTitleCase } from "../utils/common.utils.js";
 import AppError from "../services/error/error.service.js";
 import { oAuthService } from "../services/oauth/oauth.service.js";
-import { asyncHandler, toTitleCase } from "../utils/common.utils.js";
 
 export const oauthVerifyMiddleware = asyncHandler(async (req, res, next) => {
   const { provider } = req.data.params;

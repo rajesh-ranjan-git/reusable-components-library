@@ -1,5 +1,5 @@
-import { api, ApiErrorResponse, ApiResponse } from "../api/apiHandler";
-import { apiUrls } from "../api/apiUtils";
+import { api, ApiErrorResponse, ApiResponse } from "@/lib/api/apiHandler";
+import { apiUrls } from "@/lib/api/apiUtils";
 
 type ImageTarget = "cover" | "avatar" | null;
 

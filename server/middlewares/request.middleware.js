@@ -1,10 +1,10 @@
 import { httpStatusConfig } from "../config/http.config.js";
-import AppError from "../services/error/error.service.js";
 import {
   validateBody,
   validateParams,
   validateQuery,
 } from "../validators/request.validator.js";
+import AppError from "../services/error/error.service.js";
 
 export const requestMiddleware = (options = {}) => {
   return (req, res, next) => {

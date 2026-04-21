@@ -1,22 +1,22 @@
+import { isValidObjectId } from "mongoose";
+import {
+  DEFAULT_PAGE_SIZE,
+  MAX_PAGE_SIZE,
+} from "../../constants/common.constants.js";
+import { RESTRICTED_ROLES, ROLES } from "../../constants/roles.constants.js";
 import { httpStatusConfig } from "../../config/http.config.js";
 import User from "../../models/user/auth/user.model.js";
 import Account from "../../models/user/auth/account.model.js";
 import Profile from "../../models/user/profile/profile.model.js";
 import Role from "../../models/user/rbac/role.model.js";
+import UserRole from "../../models/user/rbac/user.role.model.js";
 import Session from "../../models/user/auth/session.model.js";
-import { sessionService } from "../../services/auth/session.service.js";
+import ActivityLog from "../../models/user/auth/activity.log.model.js";
 import { asyncHandler } from "../../utils/common.utils.js";
-import {
-  DEFAULT_PAGE_SIZE,
-  MAX_PAGE_SIZE,
-} from "../../constants/common.constants.js";
+import { sessionService } from "../../services/auth/session.service.js";
 import AppError from "../../services/error/error.service.js";
 import { activityService } from "../../services/activity/activity.service.js";
-import UserRole from "../../models/user/rbac/user.role.model.js";
 import { responseService } from "../../services/response/response.service.js";
-import { RESTRICTED_ROLES, ROLES } from "../../constants/roles.constants.js";
-import ActivityLog from "../../models/user/auth/activity.log.model.js";
-import { isValidObjectId } from "mongoose";
 
 export const listUsers = asyncHandler(async (req, res) => {
   const {

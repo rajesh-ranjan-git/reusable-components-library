@@ -1,4 +1,10 @@
 import express from "express";
+import { PERMISSIONS } from "../../../constants/permission.constants.js";
+import Profile from "../../../models/user/profile/profile.model.js";
+import { requestMiddleware } from "../../../middlewares/request.middleware.js";
+import { authenticate } from "../../../middlewares/authenticate.middleware.js";
+import { authorize } from "../../../middlewares/authorize.middleware.js";
+import { upload } from "../../../middlewares/upload.middleware.js";
 import {
   getMyProfile,
   getUserProfile,
@@ -11,12 +17,6 @@ import {
   updateDob,
   updatePhone,
 } from "../../../controllers/user/profile/profile.controller.js";
-import { requestMiddleware } from "../../../middlewares/request.middleware.js";
-import { authenticate } from "../../../middlewares/authenticate.middleware.js";
-import { authorize } from "../../../middlewares/authorize.middleware.js";
-import { PERMISSIONS } from "../../../constants/permission.constants.js";
-import Profile from "../../../models/user/profile/profile.model.js";
-import { upload } from "../../../middlewares/upload.middleware.js";
 
 const profileRouter = express.Router();
 

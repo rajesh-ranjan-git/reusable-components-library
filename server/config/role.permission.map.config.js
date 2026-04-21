@@ -1,5 +1,5 @@
-import { PERMISSIONS } from "../constants/permission.constants.js";
 import { ROLES } from "../constants/roles.constants.js";
+import { PERMISSIONS } from "../constants/permission.constants.js";
 
 export const ROLE_PERMISSIONS_MAP = {
   [ROLES.SUPER_ADMIN]: [PERMISSIONS.ALL],

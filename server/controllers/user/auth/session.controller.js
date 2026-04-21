@@ -1,7 +1,7 @@
 import { isValidObjectId } from "mongoose";
+import { asyncHandler } from "../../../utils/common.utils.js";
 import { sessionService } from "../../../services/auth/session.service.js";
 import { responseService } from "../../../services/response/response.service.js";
-import { asyncHandler } from "../../../utils/common.utils.js";
 import AppError from "../../../services/error/error.service.js";
 
 export const getActiveSessions = asyncHandler(async (req, res) => {

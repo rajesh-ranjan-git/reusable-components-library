@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import Header from "@/components/layout/header";
 import BottomNav from "@/components/layout/bottomNav";
 import ChatList from "@/components/chat/chatList";
 import ChatWindow from "@/components/chat/chatWindow";
-import Header from "@/components/layout/header";
 
 type Chat = {
   id: number;

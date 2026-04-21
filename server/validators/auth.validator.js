@@ -11,13 +11,13 @@ import {
   maritalStatusProperties,
   propertyConstraints,
 } from "../config/common.config.js";
-import AppError from "../services/error/error.service.js";
 import { toTitleCase } from "../utils/common.utils.js";
 import {
   listPropertiesValidator,
   numberPropertiesValidator,
   stringPropertiesValidator,
 } from "./common.validator.js";
+import AppError from "../services/error/error.service.js";
 
 export const validateRegister = (data) => {
   const {

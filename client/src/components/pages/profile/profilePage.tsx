@@ -1,16 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import AppSidebar from "@/components/layout/appSidebar";
-import BottomNav from "@/components/layout/bottomNav";
-import ActivitySection from "@/components/profile/activitySection";
-import ProfileHeader from "@/components/profile/profileHeader";
-import TechStack from "@/components/profile/techStack";
-import Header from "@/components/layout/header";
-import { fetchProfile } from "@/lib/actions/profileActions";
 import { useAppStore } from "@/store/store";
 import { toTitleCase } from "@/utils/common.utils";
+import { fetchProfile } from "@/lib/actions/profileActions";
+import Header from "@/components/layout/header";
+import AppSidebar from "@/components/layout/appSidebar";
+import BottomNav from "@/components/layout/bottomNav";
+import ProfileHeader from "@/components/profile/profileHeader";
+import TechStack from "@/components/profile/techStack";
 import Interests from "@/components/profile/interests";
+import ActivitySection from "@/components/profile/activitySection";
 
 interface ProfilePageProps {
   userName?: string;

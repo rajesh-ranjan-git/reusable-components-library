@@ -1,8 +1,8 @@
 "use client";
 
-import { chatRoutes, defaultRoutes, profileRoutes } from "@/lib/routes/routes";
 import { useRouter } from "next/navigation";
 import { LuCompass, LuMessageSquare, LuUser } from "react-icons/lu";
+import { chatRoutes, defaultRoutes, profileRoutes } from "@/lib/routes/routes";
 
 const BottomNav = ({ activeTab = "chats", hidden = false }) => {
   const router = useRouter();

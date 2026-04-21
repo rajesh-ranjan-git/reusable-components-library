@@ -4,6 +4,7 @@ import {
   MAX_LOGIN_ATTEMPTS,
   SALT_ROUNDS,
 } from "../../constants/common.constants.js";
+import { ROLES } from "../../constants/roles.constants.js";
 import { httpStatusConfig } from "../../config/http.config.js";
 import Account from "../../models/user/auth/account.model.js";
 import User from "../../models/user/auth/user.model.js";
@@ -12,14 +13,13 @@ import UserRole from "../../models/user/rbac/user.role.model.js";
 import Profile from "../../models/user/profile/profile.model.js";
 import SocialLink from "../../models/user/profile/social.model.js";
 import VerificationToken from "../../models/user/auth/verification.token.model.js";
-import { rbacService } from "../../services/rbac/rbac.service.js";
+import { getRemainingTime } from "../../utils/date.utils.js";
+import { rbacService } from "../rbac/rbac.service.js";
 import { tokenService } from "../auth/token.service.js";
 import { sessionService } from "../auth/session.service.js";
 import { emailService } from "../email/email.service.js";
 import { activityService } from "../activity/activity.service.js";
-import AppError from "../../services/error/error.service.js";
-import { getRemainingTime } from "../../utils/date.utils.js";
-import { ROLES } from "../../constants/roles.constants.js";
+import AppError from "../error/error.service.js";
 
 class AuthService {
   register = async (

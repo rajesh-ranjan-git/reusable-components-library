@@ -4,7 +4,6 @@ import { useEffect } from "react";
 import figlet from "figlet";
 import gradient from "gradient-string";
 import boxen from "boxen";
-
 import { appConfig } from "@/config/common.config";
 import { bannerFontsConfig, bannerThemesConfig } from "@/config/banner.config";
 import { BannerProps } from "@/types/propTypes";

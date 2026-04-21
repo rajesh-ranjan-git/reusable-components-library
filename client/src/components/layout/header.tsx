@@ -3,17 +3,17 @@
 import { MouseEvent, useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { LuBell, LuMenu, LuSearch, LuX } from "react-icons/lu";
 import { staticImages } from "@/config/common.config";
+import { HeaderProps } from "@/types/propTypes";
+import { useAppStore } from "@/store/store";
+import { toTitleCase } from "@/utils/common.utils";
+import { adminRoutes, authRoutes, defaultRoutes } from "@/lib/routes/routes";
 import ThemeToggle from "@/components/theme/themeToggle";
 import AppSidebar from "@/components/layout/appSidebar";
 import HeaderNotificationMenu from "@/components/shared/headerNotificationMenu";
 import HeaderProfileMenu from "@/components/shared/headerProfileMenu";
-import { HeaderProps } from "@/types/propTypes";
-import { adminRoutes, authRoutes, defaultRoutes } from "@/lib/routes/routes";
-import { usePathname } from "next/navigation";
-import { toTitleCase } from "@/utils/common.utils";
-import { useAppStore } from "@/store/store";
 
 const Header = ({ type, isSidebarOpen, setIsSidebarOpen }: HeaderProps) => {
   const [currentAdminPath, setCurrentAdminPath] = useState<string | null>(null);

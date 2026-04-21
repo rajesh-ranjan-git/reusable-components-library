@@ -1,8 +1,8 @@
 import Account from "../models/user/auth/account.model.js";
 import User from "../models/user/auth/user.model.js";
+import { asyncHandler } from "../utils/common.utils.js";
 import { tokenService } from "../services/auth/token.service.js";
 import AppError from "../services/error/error.service.js";
-import { asyncHandler } from "../utils/common.utils.js";
 
 export const authenticate = asyncHandler(async (req, res, next) => {
   const token = tokenService.extractBearerToken(req.headers.authorization);
