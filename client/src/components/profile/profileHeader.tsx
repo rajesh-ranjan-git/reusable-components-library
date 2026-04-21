@@ -38,6 +38,7 @@ type UserProfileType = {
   avatar: string | null;
   cover: string | null;
   bio: string | null;
+  location: string | null;
   createdAt: string;
   updatedAt: string | null;
 } | null;

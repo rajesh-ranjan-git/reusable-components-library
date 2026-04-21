@@ -31,6 +31,7 @@ import { rbacService } from "../../../services/rbac/rbac.service.js";
 import Account from "../../../models/user/auth/account.model.js";
 import User from "../../../models/user/auth/user.model.js";
 import { PHONE_REGEX } from "../../../constants/regex.constants.js";
+import Address from "../../../models/user/profile/address.model.js";
 
 export const getMyProfile = asyncHandler(async (req, res) => {
   const userId = req.data.userId;
@@ -73,12 +74,25 @@ export const getMyProfile = asyncHandler(async (req, res) => {
     });
   }
 
+  const address = await Address.findOne({
+    user: userId,
+    isDefault: true,
+  })
+    .lean()
+    .select("-_id city state country");
+
+  const location =
+    [address?.city, address?.state, address?.country]
+      .filter(Boolean)
+      .join(", ") || null;
+
   const userFields = {
     id: userId,
     email: account.email,
     emailVerified: user.emailVerified,
     phoneVerified: user.phoneVerified,
     role: userRole,
+    location,
     ...profile,
   };
 
@@ -131,9 +145,22 @@ export const getUserProfile = asyncHandler(async (req, res) => {
 
   const { _id, user, __v, ...safeProfile } = profile;
 
+  const address = await Address.findOne({
+    user: userId,
+    isDefault: true,
+  })
+    .lean()
+    .select("-_id city state country");
+
+  const location =
+    [address?.city, address?.state, address?.country]
+      .filter(Boolean)
+      .join(", ") || null;
+
   const userFields = {
     id: userId,
     email: account.email,
+    location,
     ...safeProfile,
   };
 
