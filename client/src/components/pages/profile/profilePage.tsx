@@ -198,13 +198,14 @@ const ProfilePage = ({ userName }: ProfilePageProps) => {
               </div>
             )}
 
-            {userProfile?.skills?.length && (
+            {userProfile?.skills?.length && userProfile.skills.length > 0 ? (
               <TechStack skills={userProfile?.skills} />
-            )}
+            ) : null}
 
-            {userProfile?.location?.length && (
-              <Interests interests={userProfile?.interests} />
-            )}
+            {userProfile?.location?.length &&
+              userProfile.location.length > 0 && (
+                <Interests interests={userProfile?.interests} />
+              )}
 
             <ActivitySection activities={mockActivities} />
           </div>
