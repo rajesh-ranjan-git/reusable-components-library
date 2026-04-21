@@ -167,10 +167,16 @@ const AppSidebar = ({ setIsSidebarOpen }: AppSidebarProps) => {
             Connections
           </h6>
           <div className="space-y-2">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
+            {[
+              "rajeshranjanpa98",
+              "rajeshranjanpa98",
+              "rajeshranjanpa98",
+              "rajeshranjanpa98",
+              "rajeshranjanpa98",
+            ].map((user, idx) => (
               <div
-                key={i}
-                onClick={() => router.push(`/profile/${i}`)}
+                key={idx}
+                onClick={() => router.push(`/profile/${user}`)}
                 className="group flex justify-between items-center hover:bg-glass-bg-hover p-2 rounded-md overflow-hidden"
               >
                 <div className="flex items-center gap-2 pr-1 min-w-0">
@@ -183,7 +189,7 @@ const AppSidebar = ({ setIsSidebarOpen }: AppSidebarProps) => {
                       className="shadow-glass rounded-full w-10 h-10 object-cover"
                     />
                     <div
-                      className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border border-bg ${i % 2 === 0 ? "bg-green-500" : "bg-gray-500"}`}
+                      className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border border-bg ${idx % 2 === 0 ? "bg-green-500" : "bg-gray-500"}`}
                     ></div>
                   </div>
                   <div className="flex-1 min-w-0">

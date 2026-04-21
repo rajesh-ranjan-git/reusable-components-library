@@ -44,7 +44,10 @@ type UserProfileType = {
 
 type ImageTarget = "cover" | "avatar" | null;
 
-type ProfileHeaderProps = { isOwnProfile: boolean; user: UserProfileType };
+type ProfileHeaderProps = {
+  isOwnProfile: boolean;
+  user: UserProfileType;
+};
 
 const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
   const [activeMenu, setActiveMenu] = useState<ImageTarget>(null);

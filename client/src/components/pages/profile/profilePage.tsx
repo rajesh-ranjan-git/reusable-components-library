@@ -9,7 +9,6 @@ import TechStack from "@/components/profile/techStack";
 import Header from "@/components/layout/header";
 import { fetchProfile } from "@/lib/actions/profileActions";
 import { useAppStore } from "@/store/store";
-import { ApiSuccessResponse } from "@/lib/api/apiHandler";
 
 interface ProfilePageProps {
   userName?: string;
@@ -127,7 +126,7 @@ const mockActivities = [
 const ProfilePage = ({ userName }: ProfilePageProps) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [userProfile, setUserProfile] = useState<UserProfileType>(null);
-  const [isOwnProfile] = useState(true);
+  const [isOwnProfile] = useState<boolean>(!userName);
 
   const accessToken = useAppStore((state) => state.accessToken);
 

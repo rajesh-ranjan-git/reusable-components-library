@@ -506,15 +506,16 @@ class AuthService {
       });
     }
 
-    const roles = await rbacService.getUserRoles(payload.userId);
-    const permissionsSet = await rbacService.getUserPermissions(payload.userId);
-    const permissions = [...permissionsSet];
-
-    const tokens = tokenService.generateAuthTokens(
+    const userRoles = await rbacService.getUserRoles(payload.userId);
+    const userPermissionsSet = await rbacService.getUserPermissions(
       payload.userId,
-      roles,
-      permissions,
     );
+    const userPermissions = [...userPermissionsSet];
+
+    const tokens = tokenService.generateAuthTokens(payload.userId, {
+      roles: userRoles,
+      permissions: userPermissions,
+    });
 
     await sessionService.rotateSession(
       session._id,

@@ -138,10 +138,6 @@ class RBACService {
           });
         }
 
-        req.data["resource"] = {
-          [model.modelName.toLowerCase()]: sanitizeMongoData(resource),
-        };
-
         return resource[ownerIdField].toString();
       }
 
