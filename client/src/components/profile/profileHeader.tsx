@@ -374,8 +374,8 @@ const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
 
           <div className="flex items-center gap-3 pointer-events-auto">
             {isOwnProfile ? (
-              <button className="pl-3 text-sm btn btn-secondary">
-                <MdOutlineEdit size={20} />
+              <button className="text-sm btn btn-secondary">
+                <MdOutlineEdit size={16} />
                 Update Profile
               </button>
             ) : (
@@ -490,7 +490,7 @@ const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
         createPortal(
           <AnimatePresence>
             {previewImage && (
-              <div className="z-200 fixed inset-0 flex justify-center items-center p-4">
+              <div className="z-(--z-modal) fixed inset-0 flex justify-center items-center p-4">
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}

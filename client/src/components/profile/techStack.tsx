@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { MdOutlineEdit } from "react-icons/md";
 import { toTitleCase } from "@/utils/common.utils";
+import { Dispatch, SetStateAction } from "react";
 
 type Skill = {
   name: string;
@@ -8,15 +9,28 @@ type Skill = {
   icon?: string;
 };
 
-type TechStackProps = { isOwnProfile: boolean; skills: Skill[] };
+type CurrentFormType = "about" | "skills" | "interests" | "experience" | null;
 
-const TechStack = ({ isOwnProfile, skills }: TechStackProps) => {
+type TechStackProps = {
+  isOwnProfile: boolean;
+  skills: Skill[];
+  setCurrentForm: Dispatch<SetStateAction<CurrentFormType>>;
+};
+
+const TechStack = ({
+  isOwnProfile,
+  skills,
+  setCurrentForm,
+}: TechStackProps) => {
   return (
     <div className="relative mb-6 p-6 glass">
       <h3 className="mb-4 tracking-wider">Tech Stack & Expertise</h3>
 
       {isOwnProfile ? (
-        <button className="top-2 right-2 absolute px-2 text-sm btn btn-secondary">
+        <button
+          className="top-2 right-2 absolute px-2 text-sm btn btn-secondary"
+          onClick={() => setCurrentForm("skills")}
+        >
           <MdOutlineEdit size={20} />
         </button>
       ) : null}

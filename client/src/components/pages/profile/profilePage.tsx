@@ -14,6 +14,10 @@ import TechStack from "@/components/profile/techStack";
 import Interests from "@/components/profile/interests";
 import ActivitySection from "@/components/profile/activitySection";
 import ExperienceSection from "@/components/profile/experienceSection";
+import AboutForm from "@/components/forms/aboutForm";
+import ExperienceForm from "@/components/forms/experienceForm";
+import SkillsForm from "@/components/forms/skillsForm";
+import InterestsForm from "@/components/forms/interestsForm";
 
 interface ProfilePageProps {
   userName?: string;
@@ -66,6 +70,8 @@ type UserProfileType = {
   updatedAt: string | null;
 } | null;
 
+type CurrentFormType = "about" | "skills" | "interests" | "experience" | null;
+
 const mockActivities = [
   {
     type: "commit",
@@ -99,6 +105,7 @@ const ProfilePage = ({ userName }: ProfilePageProps) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [userProfile, setUserProfile] = useState<UserProfileType>(null);
   const [isOwnProfile] = useState<boolean>(!userName);
+  const [currentForm, setCurrentForm] = useState<CurrentFormType>(null);
 
   const accessToken = useAppStore((state) => state.accessToken);
 
@@ -155,7 +162,10 @@ const ProfilePage = ({ userName }: ProfilePageProps) => {
                 {toTitleCase(userProfile?.bio)}
 
                 {isOwnProfile ? (
-                  <button className="top-2 right-2 absolute px-2 text-sm btn btn-secondary">
+                  <button
+                    className="top-2 right-2 absolute px-2 text-sm btn btn-secondary"
+                    onClick={() => setCurrentForm("about")}
+                  >
                     <MdOutlineEdit size={20} />
                   </button>
                 ) : null}
@@ -165,17 +175,28 @@ const ProfilePage = ({ userName }: ProfilePageProps) => {
                 <h3 className="mb-4 tracking-wider">About Me</h3>
                 <p className="text-text-muted">Add about to show here...</p>
 
-                <button className="top-2 right-2 absolute flex items-center gap-2 pl-3 text-sm btn btn-secondary">
+                <button
+                  className="top-2 right-2 absolute flex items-center gap-2 pl-3 text-sm btn btn-secondary"
+                  onClick={() => setCurrentForm("about")}
+                >
                   <IoMdAdd size={20} />
                   <span className="hidden md:block">Add</span>
                 </button>
               </div>
             ) : null}
 
+            <AboutForm
+              isOpen={currentForm === "about"}
+              onClose={() => setCurrentForm(null)}
+              initialData={userProfile?.bio ?? ""}
+              onSave={() => {}}
+            />
+
             {userProfile?.experiences && userProfile.experiences.length > 0 ? (
               <ExperienceSection
                 isOwnProfile={isOwnProfile}
                 experiences={userProfile.experiences}
+                setCurrentForm={setCurrentForm}
               />
             ) : isOwnProfile ? (
               <div className="relative mb-6 p-6 leading-relaxed glass">
@@ -184,17 +205,28 @@ const ProfilePage = ({ userName }: ProfilePageProps) => {
                   Add your work experiences to show here...
                 </p>
 
-                <button className="top-2 right-2 absolute flex items-center gap-2 pl-3 text-sm btn btn-secondary">
+                <button
+                  className="top-2 right-2 absolute flex items-center gap-2 pl-3 text-sm btn btn-secondary"
+                  onClick={() => setCurrentForm("experience")}
+                >
                   <IoMdAdd size={20} />
                   <span className="hidden md:block">Add</span>
                 </button>
               </div>
             ) : null}
 
+            <ExperienceForm
+              isOpen={currentForm === "experience"}
+              onClose={() => setCurrentForm(null)}
+              initialData={userProfile?.experiences ?? []}
+              onSave={() => {}}
+            />
+
             {userProfile?.skills?.length && userProfile.skills.length > 0 ? (
               <TechStack
                 isOwnProfile={isOwnProfile}
                 skills={userProfile?.skills}
+                setCurrentForm={setCurrentForm}
               />
             ) : isOwnProfile ? (
               <div className="relative mb-6 p-6 leading-relaxed glass">
@@ -203,17 +235,28 @@ const ProfilePage = ({ userName }: ProfilePageProps) => {
                   Add your skills to show here...
                 </p>
 
-                <button className="top-2 right-2 absolute flex items-center gap-2 pl-3 text-sm btn btn-secondary">
+                <button
+                  className="top-2 right-2 absolute flex items-center gap-2 pl-3 text-sm btn btn-secondary"
+                  onClick={() => setCurrentForm("skills")}
+                >
                   <IoMdAdd size={20} />
                   <span className="hidden md:block">Add</span>
                 </button>
               </div>
             ) : null}
 
+            <SkillsForm
+              isOpen={currentForm === "skills"}
+              onClose={() => setCurrentForm(null)}
+              initialData={userProfile?.skills ?? []}
+              onSave={() => {}}
+            />
+
             {userProfile?.location?.length ? (
               <Interests
                 isOwnProfile={isOwnProfile}
                 interests={userProfile?.interests}
+                setCurrentForm={setCurrentForm}
               />
             ) : isOwnProfile ? (
               <div className="relative mb-6 p-6 leading-relaxed glass">
@@ -222,12 +265,22 @@ const ProfilePage = ({ userName }: ProfilePageProps) => {
                   Add your interests and hobbies to show here...
                 </p>
 
-                <button className="top-2 right-2 absolute flex items-center gap-2 pl-3 text-sm btn btn-secondary">
+                <button
+                  className="top-2 right-2 absolute flex items-center gap-2 pl-3 text-sm btn btn-secondary"
+                  onClick={() => setCurrentForm("skills")}
+                >
                   <IoMdAdd size={20} />
                   <span className="hidden md:block">Add</span>
                 </button>
               </div>
             ) : null}
+
+            <InterestsForm
+              isOpen={currentForm === "interests"}
+              onClose={() => setCurrentForm(null)}
+              initialData={userProfile?.interests ?? []}
+              onSave={() => {}}
+            />
 
             <ActivitySection
               isOwnProfile={isOwnProfile}

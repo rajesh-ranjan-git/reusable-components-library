@@ -40,7 +40,7 @@
   --glass-blur-heavy: 28px;
   --glass-blur-light: 8px;
   --glass-border: rgba(255, 255, 255, 0.6);
-  --glass-border-accent: rgba(139, 92, 246, 0.35); /* purple-tinted border */
+  --glass-border-accent: rgba(139, 92, 246, 0.35);
   --glass-shadow:
     0 8px 32px rgba(59, 130, 246, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06);
   --glass-shadow-hover:

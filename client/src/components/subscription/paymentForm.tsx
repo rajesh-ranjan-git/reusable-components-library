@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { LuCreditCard, LuLock, LuShieldCheck, LuUser } from "react-icons/lu";
 import { TbLoader3 } from "react-icons/tb";
 import { chatRoutes } from "@/lib/routes/routes";
+import { FormButton, FormField, FormInput } from "../forms/formPrimitives";
 
 const PaymentForm = () => {
   const [cardNumber, setCardNumber] = useState("");
@@ -74,78 +75,56 @@ const PaymentForm = () => {
         </div>
 
         <div className="space-y-4">
-          <div>
-            <label className="ml-2 text-xs">Cardholder Name</label>
+          <FormField label="Cardholder Name" htmlFor="cardholder" required>
+            <FormInput
+              id="cardholder"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="rounded-xl"
+              startIcon={<LuUser size={18} />}
+            />
+          </FormField>
 
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Jane Doe"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="pl-10 rounded-xl"
-              />
-              <LuUser
-                className="top-1/2 left-4 absolute text-text-secondary -translate-y-1/2"
-                size={18}
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="ml-2 text-xs">Card Number</label>
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="0000 0000 0000 0000"
-                value={cardNumber}
-                onChange={handleCardNumberChange}
-                className="pl-10 rounded-xl"
-              />
-              <LuCreditCard
-                className="top-1/2 left-4 absolute text-text-secondary -translate-y-1/2"
-                size={18}
-              />
-            </div>
-          </div>
+          <FormField label="Card Number" htmlFor="card-number" required>
+            <FormInput
+              id="card-number"
+              placeholder="0000 0000 0000 0000"
+              value={name}
+              onChange={handleCardNumberChange}
+              className="rounded-xl"
+              startIcon={<LuCreditCard size={18} />}
+            />
+          </FormField>
 
           <div className="gap-4 grid grid-cols-2">
-            <div>
-              <label className="ml-2 text-xs">Expiry Date</label>
-              <input
-                type="text"
+            <FormField label="Expiry Date" htmlFor="expiry" required>
+              <FormInput
+                id="expiry"
                 placeholder="MM/YY"
                 value={expiry}
-                onChange={handleExpiryChange}
+                onChange={handleCardNumberChange}
                 className="rounded-xl text-center"
               />
-            </div>
-            <div>
-              <label className="ml-2 text-xs">CVV</label>
-              <input
-                type="text"
+            </FormField>
+            <FormField label="CVV" htmlFor="cvv" required>
+              <FormInput
+                id="cvv"
                 placeholder="123"
                 value={cvv}
                 onChange={handleCvvChange}
                 className="rounded-xl text-center"
               />
-            </div>
+            </FormField>
           </div>
         </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="flex justify-center items-center gap-2 py-3 border border-transparent group-hover:border-accent-purple-light rounded-xl w-full font-medium text-text-on-accent transition-all btn btn-primary"
+        <FormButton
+          variant="primary"
+          loading={loading}
+          className="justify-center rounded-xl w-full"
         >
-          {loading ? (
-            <TbLoader3 size={20} className="animate-spin" />
-          ) : (
-            <>
-              <LuLock size={16} /> Pay Now
-            </>
-          )}
-        </button>
+          <LuLock size={16} /> Pay Now
+        </FormButton>
 
         <div className="flex justify-center items-center gap-2 mt-2 text-text-secondary">
           <LuShieldCheck size={16} className="text-status-success-text" />

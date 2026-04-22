@@ -1,6 +1,7 @@
 import { LuBriefcase, LuBuilding2 } from "react-icons/lu";
 import { MdOutlineEdit } from "react-icons/md";
 import { toTitleCase } from "@/utils/common.utils";
+import { Dispatch, SetStateAction } from "react";
 
 type Experience = {
   company: string;
@@ -11,9 +12,12 @@ type Experience = {
   description: string | null;
 } | null;
 
+type CurrentFormType = "about" | "skills" | "interests" | "experience" | null;
+
 type ExperienceSectionProps = {
   isOwnProfile: boolean;
   experiences: Experience[];
+  setCurrentForm: Dispatch<SetStateAction<CurrentFormType>>;
 };
 
 const formatDate = (dateStr: string): string => {
@@ -42,13 +46,17 @@ const getDuration = (startDate: string, endDate: string | null): string => {
 const ExperienceSection = ({
   isOwnProfile,
   experiences,
+  setCurrentForm,
 }: ExperienceSectionProps) => {
   return (
     <div className="relative mb-6 p-6 glass">
       <h3 className="mb-4 tracking-wider">Work Experience</h3>
 
       {isOwnProfile ? (
-        <button className="top-2 right-2 absolute px-2 text-sm btn btn-secondary">
+        <button
+          className="top-2 right-2 absolute px-2 text-sm btn btn-secondary"
+          onClick={() => setCurrentForm("experience")}
+        >
           <MdOutlineEdit size={20} />
         </button>
       ) : null}
