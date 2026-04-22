@@ -38,7 +38,7 @@ const ModalPortal = ({
     <AnimatePresence>
       {isOpen && (
         <div
-          className="fixed inset-0 z-(--z-modal) flex items-end sm:items-center justify-center p-0 sm:p-4"
+          className="fixed inset-0 z-(--z-modal) flex items-center justify-center p-2 sm:p-4"
           role="dialog"
           aria-modal="true"
           aria-label={title}
@@ -71,7 +71,7 @@ const ModalPortal = ({
           >
             <div className="bg-(image:--gradient-brand-vivid) w-full h-0.75 shrink-0" />
 
-            <div className="flex justify-between items-start gap-4 px-6 pt-5 pb-4 border-glass-border border-b shrink-0">
+            <div className="flex justify-between items-start gap-4 px-4 sm:px-6 pt-4 sm:pt-5 pb-4 border-glass-border border-b shrink-0">
               <div>
                 <h4 className="font-semibold text-text-primary leading-tight">
                   {title}
@@ -89,7 +89,7 @@ const ModalPortal = ({
               </button>
             </div>
 
-            <div className="flex-1 space-y-5 px-6 py-5 overflow-y-auto">
+            <div className="flex-1 space-y-5 px-4 sm:px-6 py-4 sm:py-5 overflow-y-auto">
               {children}
             </div>
 

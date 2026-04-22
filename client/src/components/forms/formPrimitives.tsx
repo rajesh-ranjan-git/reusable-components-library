@@ -944,7 +944,7 @@ export const FormButton = ({
 
   const variants = {
     primary: "btn btn-primary hover:opacity-90 active:scale-[0.98]",
-    secondary: "btn btn-secondary active:scale-[0.98]",
+    secondary: "btn btn-secondary glass active:scale-[0.98]",
     ghost: "btn btn-ghost active:scale-[0.98]",
     danger: "alert alert-error active:scale-[0.98]",
   };
