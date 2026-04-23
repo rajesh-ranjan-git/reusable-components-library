@@ -259,7 +259,16 @@ const ProfilePage = ({ userName }: ProfilePageProps) => {
               isOpen={currentForm === "skills"}
               onClose={() => setCurrentForm(null)}
               initialData={userProfile?.skills ?? []}
-              onSave={() => {}}
+              onSave={(updatedSkills) => {
+                setUserProfile((prev) => {
+                  if (!prev) return prev;
+
+                  return {
+                    ...prev,
+                    skills: updatedSkills,
+                  };
+                });
+              }}
             />
 
             {userProfile?.interests?.length ? (

@@ -45,6 +45,10 @@ type ProfileFormStateType<T = any> =
       errors?: FieldErrors;
     });
 
+type HighlightedInterest = {
+  index: number;
+};
+
 const SUGGESTIONS = [
   "Open Source",
   "Machine Learning",
@@ -70,6 +74,8 @@ const InterestsForm = ({
   onSave,
 }: InterestsFormProps) => {
   const [interests, setInterests] = useState<string[]>(initialData);
+  const [highlightedInterest, setHighlightedInterest] =
+    useState<HighlightedInterest | null>(null);
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -122,23 +128,37 @@ const InterestsForm = ({
 
   const addInterest = (value: string) => {
     const trimmed = value.trim().toLowerCase();
-
     if (!trimmed) return;
 
-    const error = validateInterest(value);
+    const existingIndex = interests.findIndex(
+      (i) => i.toLowerCase() === trimmed,
+    );
 
+    if (existingIndex !== -1) {
+      setHighlightedInterest({ index: existingIndex });
+
+      setTimeout(() => {
+        setHighlightedInterest(null);
+      }, 5000);
+
+      showToast({
+        title: "INTEREST ADD FAILED",
+        message: `${toTitleCase(trimmed)} already exists!`,
+        variant: "warning",
+      });
+
+      interestInput.reset();
+      return;
+    }
+
+    const error = validateInterest(value);
     if (error) {
       interestInput.handleInput(value);
       interestInput.handleBlur();
       return;
     }
 
-    if (interests.includes(trimmed)) {
-      interestInput.handleInput(value);
-      interestInput.handleBlur();
-      return;
-    }
-
+    // 👉 finally add
     setInterests((prev) => [...prev, trimmed]);
 
     interestInput.reset();
@@ -234,14 +254,16 @@ const InterestsForm = ({
               />
             </FormField>
           </div>
-          <FormButton
-            type="button"
-            variant="primary"
-            onClick={() => addInterest(interestInput.raw)}
-          >
-            <LuPlus size={18} />
-            Add
-          </FormButton>
+          <div className="shrink-0">
+            <FormButton
+              type="button"
+              variant="primary"
+              onClick={() => addInterest(interestInput.raw)}
+            >
+              <LuPlus size={18} />
+              Add
+            </FormButton>
+          </div>
         </div>
 
         <input
@@ -254,10 +276,10 @@ const InterestsForm = ({
           <>
             <FormDivider label={`${interests.length} added`} />
             <div className="flex flex-wrap gap-2">
-              {interests.map((interest) => (
+              {interests.map((interest, idx) => (
                 <div
                   key={interest}
-                  className="group flex items-center gap-1.5 py-2 pr-1 pl-3 border border-glass-border-accent rounded-border-radius-pill transition-all glass"
+                  className={`group flex items-center gap-1.5 py-2 pr-1 pl-3 border border-glass-border-accent rounded-border-radius-pill transition-all glass ${highlightedInterest?.index === idx ? `ring-2 ring-status-warning-border alert-pulse bg-status-warning-bg alert-warning` : ""}`}
                 >
                   <span className="font-medium text-text-secondary text-sm">
                     {toTitleCase(interest)}

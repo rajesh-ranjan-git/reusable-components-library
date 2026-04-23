@@ -16,7 +16,18 @@ type ImageTarget = "cover" | "avatar" | null;
 type FieldErrors = {
   bio?: string | null;
   interests?: string | null;
+  skills?: string | null;
 };
+
+type Skill = {
+  name: string;
+  level: string;
+  icon?: string;
+};
+
+type SkillError = { index: number; name?: string; level?: string };
+
+const LEVELS = ["beginner", "intermediate", "advanced", "expert"];
 
 type ProfileFormStateType<T = any> =
   | (ApiSuccessResponse<T> & {
@@ -111,6 +122,99 @@ export const updateProfile = async (
         bio: validatedBio,
         interests: validatedInterests,
       },
+      { requireAuth: true },
+    );
+
+    return { ...response };
+  } catch (error: any) {
+    return {
+      success: false,
+      status: error?.status ?? "VALIDATION FAILED",
+      code: error?.code ?? "PROFILE UPDATE FAILED",
+      statusCode: error?.statusCode ?? 500,
+      message: error?.message ?? "Unable to update profile, please try again!",
+      details: error?.details ?? null,
+      timestamp: new Date().toISOString(),
+      metadata: error?.metadata ?? null,
+      inputs: Object.fromEntries(formData),
+    };
+  }
+};
+
+export const updateSkills = async (
+  prevState: ProfileFormStateType,
+  formData: FormData,
+): Promise<ProfileFormStateType> => {
+  const skillsRaw = formData.get("skills");
+
+  let skills: Skill[] = [];
+
+  try {
+    skills = JSON.parse(skillsRaw as string);
+  } catch {
+    skills = [];
+  }
+
+  const errors: ProfileFormStateType["errors"] = {};
+  const skillErrors: SkillError[] = [];
+
+  const seen = new Set<string>();
+
+  skills.forEach((skill, index) => {
+    const currentError: SkillError = {
+      index,
+    };
+
+    const { validatedProperty, message } = stringPropertiesValidator(
+      "skill",
+      skill?.name,
+      propertyConstraints.minStringLength,
+      propertyConstraints.maxStringLength,
+    );
+
+    if (message) {
+      currentError.name = message;
+    }
+
+    const normalized = skill?.name?.trim().toLowerCase();
+    if (seen.has(normalized)) {
+      currentError.name = `${skill.name} is already added!`;
+    } else {
+      seen.add(normalized);
+    }
+
+    if (!LEVELS.includes(skill?.level)) {
+      currentError.level = "Invalid skill level!";
+    }
+
+    if (currentError.name || currentError.level) {
+      skillErrors.push(currentError);
+    }
+
+    skill.name = validatedProperty ?? skill.name;
+  });
+
+  if (skillErrors.length > 0) {
+    errors.skills = "Some skills are invalid!";
+
+    return {
+      success: false,
+      status: "VALIDATION FAILED",
+      code: "PROFILE UPDATE FAILED",
+      statusCode: 422,
+      message: errors.skills,
+      details: { errors: skillErrors },
+      timestamp: new Date().toISOString(),
+      metadata: null,
+      errors,
+      inputs: Object.fromEntries(formData),
+    };
+  }
+
+  try {
+    const response = await api.post(
+      apiUrls.profile.updateSkills,
+      { skills },
       { requireAuth: true },
     );
 
