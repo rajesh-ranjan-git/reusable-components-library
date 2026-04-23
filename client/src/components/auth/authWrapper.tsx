@@ -83,7 +83,7 @@ const AuthWrapper = ({ children }: ReactNodeProps) => {
         }
       }
 
-      const response = await fetchMe(token as string);
+      const response = await fetchMe();
 
       if (response?.success) {
         const data = response.data as FetchMeResponseType;

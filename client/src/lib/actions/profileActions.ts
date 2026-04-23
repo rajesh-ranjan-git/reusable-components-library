@@ -26,7 +26,6 @@ type ProfileFormStateType<T = any> =
 export const uploadImage = async (
   image: File,
   type: ImageTarget,
-  token: string,
 ): Promise<ApiResponse> => {
   try {
     const formData = new FormData();
@@ -35,23 +34,18 @@ export const uploadImage = async (
     return await api.post(
       `${apiUrls.profile.uploadImageToCloudinary}/${type}`,
       formData,
-      {
-        token,
-      },
+      { requireAuth: true },
     );
   } catch (error) {
     return error as ApiErrorResponse;
   }
 };
 
-export const fetchProfile = async (
-  token: string,
-  userName?: string,
-): Promise<ApiResponse> => {
+export const fetchProfile = async (userName?: string): Promise<ApiResponse> => {
   try {
     return await api.get(
       `${userName ? `${apiUrls.profile.fetchProfile}/${userName}` : apiUrls.profile.fetchProfile}`,
-      { token },
+      { requireAuth: true },
     );
   } catch (error) {
     return error as ApiErrorResponse;

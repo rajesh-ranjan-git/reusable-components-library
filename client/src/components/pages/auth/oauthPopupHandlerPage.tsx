@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { CLIENT_URL } from "@/constants/env.constants";
+import { TbLoader3 } from "react-icons/tb";
 
 const OAuthPopupHandlerPage = () => {
   useEffect(() => {
@@ -14,8 +15,9 @@ const OAuthPopupHandlerPage = () => {
   }, []);
 
   return (
-    <div className="flex justify-center items-center bg-red-900 w-full h-full text-white">
-      Logging you in...
+    <div className="flex justify-center items-center gap-2 w-full h-screen text-white text-2xl">
+      <TbLoader3 size={40} className="animate-spin" />
+      <span>Logging you in...</span>
     </div>
   );
 };

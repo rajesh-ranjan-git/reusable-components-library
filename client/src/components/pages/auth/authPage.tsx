@@ -13,11 +13,9 @@ import {
   LuUser,
   LuMail,
 } from "react-icons/lu";
-import { TbLoader3 } from "react-icons/tb";
 import { FcGoogle } from "react-icons/fc";
 import { FaRegEye } from "react-icons/fa";
 import { staticImages } from "@/config/common.config";
-import { LoggedInUserType } from "@/types/types";
 import { useAppStore } from "@/store/store";
 import {
   emailValidator,
@@ -35,17 +33,12 @@ import { useToast } from "@/hooks/toast";
 import useInputFieldValidator from "@/hooks/useInputFieldValidation";
 import { useOAuthListener } from "@/hooks/useOAuthListener";
 import SocialButton from "@/components/auth/socialButton";
-import { loginWithProvider, providerLogin } from "@/lib/actions/oAuthActions";
+import { loginWithProvider } from "@/lib/actions/oAuthActions";
 import {
   FormButton,
   FormField,
   FormInput,
 } from "@/components/forms/formPrimitives";
-
-type ProviderLoginDataType = {
-  user: LoggedInUserType;
-  accessToken: string;
-};
 
 const DecorativeRings = () => (
   <div className="z-(--z-background) absolute inset-0 flex justify-center items-center overflow-hidden pointer-events-none">
@@ -199,30 +192,7 @@ const AuthPage = () => {
   };
 
   const handleProviderLogin = async (provider: string) => {
-    const token = await loginWithProvider(provider);
-
-    if (token) {
-      const providerLoginResponse = await providerLogin(
-        provider,
-        token as string,
-      );
-
-      if (!providerLoginResponse?.success) {
-        showToast({
-          title: providerLoginResponse.code,
-          message: providerLoginResponse.message,
-          variant: "error",
-        });
-      } else {
-        const providerLoginData =
-          providerLoginResponse.data as ProviderLoginDataType;
-
-        setAccessToken(providerLoginData.accessToken);
-        setLoggedInUser(providerLoginData.user);
-
-        router.push(defaultRoutes.landing);
-      }
-    }
+    await loginWithProvider(provider);
   };
 
   useEffect(() => {

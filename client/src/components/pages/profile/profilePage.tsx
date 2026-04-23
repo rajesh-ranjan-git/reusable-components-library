@@ -110,26 +110,14 @@ const ProfilePage = ({ userName }: ProfilePageProps) => {
   const accessToken = useAppStore((state) => state.accessToken);
 
   const getUserProfile = async (userName?: string) => {
-    if (userName) {
-      const response = await fetchProfile(accessToken!, userName);
+    const response = await fetchProfile(userName);
 
-      if (response.success && response?.data) {
-        const data = response?.data as UserProfileResponseType;
+    if (response.success && response?.data) {
+      const data = response?.data as UserProfileResponseType;
 
-        setUserProfile(data.user);
-      } else {
-        setUserProfile(null);
-      }
+      setUserProfile(data.user);
     } else {
-      const response = await fetchProfile(accessToken!);
-
-      if (response.success && response.data) {
-        const data = response?.data as UserProfileResponseType;
-
-        setUserProfile(data.user);
-      } else {
-        setUserProfile(null);
-      }
+      setUserProfile(null);
     }
   };
 
@@ -252,7 +240,7 @@ const ProfilePage = ({ userName }: ProfilePageProps) => {
               onSave={() => {}}
             />
 
-            {userProfile?.location?.length ? (
+            {userProfile?.interests?.length ? (
               <Interests
                 isOwnProfile={isOwnProfile}
                 interests={userProfile?.interests}
@@ -267,7 +255,7 @@ const ProfilePage = ({ userName }: ProfilePageProps) => {
 
                 <button
                   className="top-2 right-2 absolute flex items-center gap-2 pl-3 text-sm btn btn-secondary"
-                  onClick={() => setCurrentForm("skills")}
+                  onClick={() => setCurrentForm("interests")}
                 >
                   <IoMdAdd size={20} />
                   <span className="hidden md:block">Add</span>

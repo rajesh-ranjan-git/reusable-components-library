@@ -9,9 +9,9 @@ export const refreshTokens = async (): Promise<ApiResponse> => {
   }
 };
 
-export const fetchMe = async (token: string): Promise<ApiResponse> => {
+export const fetchMe = async (): Promise<ApiResponse> => {
   try {
-    return await api.get(apiUrls.auth.me, { token });
+    return await api.get(apiUrls.auth.me, { requireAuth: true });
   } catch (error) {
     return error as ApiErrorResponse;
   }

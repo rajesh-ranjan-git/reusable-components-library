@@ -1,7 +1,5 @@
 import { oAuthConfig } from "@/config/oauth.config";
 import { openPopup } from "@/utils/oauth.utils";
-import { apiUrls } from "@/lib/api/apiUtils";
-import { api, ApiErrorResponse, ApiResponse } from "@/lib/api/apiHandler";
 
 declare global {
   interface Window {
@@ -99,16 +97,5 @@ export const loginWithProvider = async (provider: string) => {
 
     default:
       throw new Error("Unsupported provider");
-  }
-};
-
-export const providerLogin = async (
-  provider: string,
-  token: string,
-): Promise<ApiResponse> => {
-  try {
-    return await api.post(`${apiUrls.oAuth}/${provider}`, { token });
-  } catch (error) {
-    return error as ApiErrorResponse;
   }
 };

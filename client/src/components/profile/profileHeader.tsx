@@ -162,11 +162,7 @@ const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
       if (currentImageTarget === "avatar") setLocalAvatar(imageUrl);
       if (currentImageTarget === "cover") setLocalCover(imageUrl);
 
-      const response = await uploadImage(
-        compressedImage,
-        currentImageTarget,
-        accessToken!,
-      );
+      const response = await uploadImage(compressedImage, currentImageTarget);
 
       if (!response.success) {
         showToast({
@@ -211,11 +207,7 @@ const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
 
       const compressedImage = await compressImage(image);
 
-      const response = await uploadImage(
-        compressedImage,
-        currentImageTarget,
-        accessToken!,
-      );
+      const response = await uploadImage(compressedImage, currentImageTarget);
 
       if (!response.success) {
         showToast({
