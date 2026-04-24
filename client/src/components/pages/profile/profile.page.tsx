@@ -14,7 +14,7 @@ import Header from "@/components/layout/header";
 import AppSidebar from "@/components/layout/app.sidebar";
 import BottomNav from "@/components/layout/bottom.navbar";
 import ProfileHeader from "@/components/profile/profile.header";
-import TechStack from "@/components/profile/skills";
+import Skills from "@/components/profile/skills";
 import Interests from "@/components/profile/interests";
 import Activity from "@/components/profile/activity";
 import Experience from "@/components/profile/experience";
@@ -154,7 +154,7 @@ const ProfilePage = ({ userName }: ProfilePageProps) => {
             />
 
             {userProfile?.skills?.length && userProfile.skills.length > 0 ? (
-              <TechStack
+              <Skills
                 isOwnProfile={isOwnProfile}
                 skills={userProfile?.skills}
                 setCurrentForm={setCurrentForm}
