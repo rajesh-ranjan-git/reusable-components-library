@@ -10,3 +10,4 @@ export const ALLOWED_SPECIAL_CHARACTERS_REGEX = /[@#$%&]/;
 export const PHONE_REGEX = /^\d{10}$/;
 export const COUNTRY_CODE_REGEX = /^\d{1,3}$/;
 export const PIN_CODE_REGEX = /^\d{6}$/;
+export const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;

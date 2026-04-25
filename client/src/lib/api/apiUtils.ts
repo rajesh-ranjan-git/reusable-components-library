@@ -14,5 +14,6 @@ export const apiUrls = {
     uploadImageToDrive: "/user/profile/drive/upload",
     uploadImageToCloudinary: "/user/profile/cloudinary/upload",
     updateSkills: "/user/profile/skills",
+    updateExperience: "/user/profile/experience",
   },
 };

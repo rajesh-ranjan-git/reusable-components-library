@@ -4,7 +4,11 @@ import { useEffect, useState } from "react";
 import { MdOutlineEdit } from "react-icons/md";
 import { IoMdAdd } from "react-icons/io";
 import { ProfilePageProps } from "@/types/props/profile.props.types";
-import { CurrentFormType, UserProfileType } from "@/types/types/profile.types";
+import {
+  CurrentFormType,
+  ExperienceType,
+  UserProfileType,
+} from "@/types/types/profile.types";
 import { UserProfileResponseType } from "@/types/types/response.types";
 import { useAppStore } from "@/store/store";
 import { toTitleCase } from "@/utils/common.utils";
@@ -150,7 +154,16 @@ const ProfilePage = ({ userName }: ProfilePageProps) => {
               isOpen={currentForm === "experience"}
               onClose={() => setCurrentForm(null)}
               initialData={userProfile?.experiences ?? []}
-              onSave={() => {}}
+              onSave={(updatedExperiences: ExperienceType[]) => {
+                setUserProfile((prev) => {
+                  if (!prev) return prev;
+
+                  return {
+                    ...prev,
+                    experiences: [...updatedExperiences],
+                  };
+                });
+              }}
             />
 
             {userProfile?.skills?.length && userProfile.skills.length > 0 ? (

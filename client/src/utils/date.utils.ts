@@ -25,8 +25,10 @@ export const getDateToStore = (dateString?: string | Date) => {
   return `${dateStr.toISOString().split("T")[0]} ${dateStr.toLocaleTimeString()}`;
 };
 
-export const formatLocalDate = (date: Date | null) => {
-  if (!date) return null;
+export const formatLocalDate = (d: string | Date | null) => {
+  if (!d) return null;
+
+  const date = new Date(d);
 
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");

@@ -144,9 +144,6 @@ const SkillsForm = ({
   const removeSkill = (idx: number) =>
     setSkills((prev) => prev.filter((_, i) => i !== idx));
 
-  const updateLevel = (idx: number, level: SkillLevelType) =>
-    setSkills((prev) => prev.map((s, i) => (i === idx ? { ...s, level } : s)));
-
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       e.preventDefault();

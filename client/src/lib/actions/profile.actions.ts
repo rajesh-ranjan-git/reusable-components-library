@@ -2,18 +2,20 @@ import {
   allowedSkillLevelsConfig,
   propertyConstraintsConfig,
 } from "@/config/profile.config";
-import { FormStateType } from "@/types/types/actions.types";
+import { FormStateType, SectionErrorsType } from "@/types/types/actions.types";
 import {
+  ExperienceType,
   ImageTargetType,
   SkillErrorType,
   SkillType,
 } from "@/types/types/profile.types";
 import { ApiErrorResponseType, ApiResponseType } from "@/types/types/api.types";
-import { api } from "@/lib/api/apiHandler";
 import {
+  datePropertyValidator,
   listPropertiesValidator,
   stringPropertiesValidator,
 } from "@/validators/common.validators";
+import { api } from "@/lib/api/apiHandler";
 import { apiUrls } from "@/lib/api/apiUtils";
 
 export const uploadImage = async (
@@ -205,6 +207,143 @@ export const updateSkills = async (
       code: error?.code ?? "PROFILE UPDATE FAILED",
       statusCode: error?.statusCode ?? 500,
       message: error?.message ?? "Unable to update profile, please try again!",
+      details: error?.details ?? null,
+      timestamp: new Date().toISOString(),
+      metadata: error?.metadata ?? null,
+      inputs: Object.fromEntries(formData),
+    };
+  }
+};
+
+export const experienceAction = async (
+  prevState: FormStateType,
+  formData: FormData,
+): Promise<FormStateType> => {
+  const experiencesRaw = formData.get("experiences");
+
+  let experiences: ExperienceType[] = [];
+
+  try {
+    experiences = JSON.parse(experiencesRaw as string);
+  } catch {
+    experiences = [];
+  }
+
+  const errors: FormStateType["errors"] = {};
+  const experienceErrors: SectionErrorsType<ExperienceType>[] = [];
+
+  let foundCurrent = false;
+
+  experiences.forEach((exp, index) => {
+    const currentError: SectionErrorsType<ExperienceType> = {};
+
+    const companyValidation = stringPropertiesValidator(
+      "company",
+      exp?.company,
+      propertyConstraintsConfig.minStringLength,
+      propertyConstraintsConfig.maxStringLength,
+    );
+
+    if (companyValidation.message) {
+      currentError.company = companyValidation.message;
+    }
+
+    const roleValidation = stringPropertiesValidator(
+      "role",
+      exp?.role,
+      propertyConstraintsConfig.minStringLength,
+      propertyConstraintsConfig.maxStringLength,
+    );
+
+    if (roleValidation.message) {
+      currentError.role = roleValidation.message;
+    }
+
+    const startDateValidation = datePropertyValidator(
+      "start date",
+      exp.startDate || "",
+    );
+
+    if (startDateValidation.message) {
+      currentError.startDate = startDateValidation.message;
+    }
+
+    if (!exp?.isCurrent) {
+      const endDateValidation = datePropertyValidator(
+        "end date",
+        exp?.endDate || "",
+      );
+
+      if (endDateValidation.message) {
+        currentError.endDate = endDateValidation.message;
+      }
+    }
+
+    if (exp?.isCurrent) {
+      if (foundCurrent) {
+        exp.isCurrent = false;
+      }
+      foundCurrent = true;
+    }
+
+    if (exp?.description) {
+      const descValidation = stringPropertiesValidator(
+        "description",
+        exp.description,
+        propertyConstraintsConfig.minStringLength,
+        propertyConstraintsConfig.maxStringLength,
+      );
+
+      if (descValidation.message) {
+        currentError.description = descValidation.message;
+      }
+    }
+
+    if (Object.keys(currentError).length > 0) {
+      experienceErrors[index] = currentError;
+    }
+
+    exp.company = companyValidation.validatedProperty ?? exp.company;
+    exp.role = roleValidation.validatedProperty ?? exp.role;
+    exp.description = exp.description?.trim() ?? "";
+  });
+
+  if (experienceErrors.some(Boolean)) {
+    errors.experiences = experienceErrors;
+
+    return {
+      success: false,
+      status: "VALIDATION FAILED",
+      code: "PROFILE UPDATE FAILED",
+      statusCode: 422,
+      message: "Some experiences are invalid!",
+      details: { errors: experienceErrors },
+      timestamp: new Date().toISOString(),
+      metadata: null,
+      errors,
+      inputs: Object.fromEntries(formData),
+    };
+  }
+
+  try {
+    const response = await api.post(
+      apiUrls.profile.updateExperience,
+      {
+        action: "replace",
+        experiences,
+      },
+      { requireAuth: true },
+    );
+
+    return { ...response };
+  } catch (error: any) {
+    return {
+      success: false,
+      status: error?.status ?? "EXPERIENCE UPDATE FAILED",
+      code: error?.code ?? "PROFILE UPDATE FAILED",
+      statusCode: error?.statusCode ?? 500,
+      message:
+        error?.message ?? "Unable to update experience, please try again!",
       details: error?.details ?? null,
       timestamp: new Date().toISOString(),
       metadata: error?.metadata ?? null,

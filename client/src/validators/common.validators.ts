@@ -1,4 +1,8 @@
-import { ValidatorResultType } from "@/types/types/validator.types";
+import { DATE_REGEX } from "@/constants/regex.constants";
+import {
+  DateValidatorOptionsType,
+  ValidatorResultType,
+} from "@/types/types/validator.types";
 import { toTitleCase } from "@/utils/common.utils";
 
 export const numberPropertiesValidator = ({
@@ -197,4 +201,87 @@ export const listPropertiesValidator = (
   }
 
   return { isPropertyValid: true, validatedProperty: propertyValue };
+};
+
+export const datePropertyValidator = (
+  propertyName: string,
+  propertyValue: string,
+  options: DateValidatorOptionsType = { noFuture: true, minDate: "1900-01-01" },
+) => {
+  if (!propertyValue) {
+    return {
+      isPropertyValid: true,
+      validatedProperty: null,
+    };
+  }
+
+  if (typeof propertyValue !== "string") {
+    return {
+      isPropertyValid: false,
+      message: `${toTitleCase(propertyName)} must be a string date!`,
+    };
+  }
+
+  if (!DATE_REGEX.test(propertyValue)) {
+    return {
+      isPropertyValid: false,
+      message: `${toTitleCase(propertyName)} must be in YYYY-MM-DD format!`,
+    };
+  }
+
+  const date = new Date(propertyValue);
+
+  if (isNaN(date.getTime())) {
+    return {
+      isPropertyValid: false,
+      message: `${toTitleCase(propertyName)} is not a valid date!`,
+    };
+  }
+
+  const [year, month, day] = propertyValue.split("-").map(Number);
+
+  if (
+    date.getUTCFullYear() !== year ||
+    date.getUTCMonth() + 1 !== month ||
+    date.getUTCDate() !== day
+  ) {
+    return {
+      isPropertyValid: false,
+      message: `${toTitleCase(propertyName)} is not a real calendar date!`,
+    };
+  }
+
+  const now = new Date();
+
+  if (options?.noFuture && date > now) {
+    return {
+      isPropertyValid: false,
+      message: `${toTitleCase(propertyName)} cannot be a future date!`,
+    };
+  }
+
+  if (options?.minDate) {
+    const min = new Date(options.minDate);
+    if (date < min) {
+      return {
+        isPropertyValid: false,
+        message: `${toTitleCase(propertyName)} cannot be before ${options.minDate}!`,
+      };
+    }
+  }
+
+  if (options?.maxDate) {
+    const max = new Date(options.maxDate);
+    if (date > max) {
+      return {
+        isPropertyValid: false,
+        message: `${toTitleCase(propertyName)} cannot be after ${options.maxDate}!`,
+      };
+    }
+  }
+
+  return {
+    isPropertyValid: true,
+    validatedProperty: propertyValue,
+  };
 };

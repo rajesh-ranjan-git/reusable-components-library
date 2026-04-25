@@ -1,6 +1,7 @@
 import { LoggedInUserType } from "@/types/types/auth.types";
 import { ExperienceType, UserProfileType } from "@/types/types/profile.types";
 import { toTitleCase } from "@/utils/common.utils";
+import { formatLocalDate } from "@/utils/date.utils";
 
 export const getFullName = (user?: UserProfileType | LoggedInUserType) => {
   if (!user) return "John Doe";
@@ -65,4 +66,19 @@ export const compressImage = async (image: File): Promise<File> => {
   );
 
   return new File([blob], image.name, { type: "image/jpeg" });
+};
+
+export const normalizeExperienceDates = (
+  data?: ExperienceType[],
+): ExperienceType[] => {
+  if (!data?.length) return [];
+
+  return data.map(
+    (exp) =>
+      ({
+        ...exp,
+        startDate: exp.startDate ? formatLocalDate(exp.startDate) : "",
+        endDate: exp.endDate ? formatLocalDate(exp.endDate) : null,
+      }) as ExperienceType,
+  );
 };

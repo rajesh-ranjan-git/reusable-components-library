@@ -3,3 +3,9 @@ export type ValidatorResultType<T> = {
   message?: string;
   validatedProperty?: T | null;
 };
+
+export type DateValidatorOptionsType = {
+  noFuture?: boolean;
+  minDate?: string;
+  maxDate?: string;
+};

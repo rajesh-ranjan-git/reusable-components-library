@@ -22,7 +22,7 @@ export interface ExperienceFormProps {
   isOpen: boolean;
   onClose: () => void;
   initialData?: ExperienceType[];
-  onSave: (experiences: ExperienceType[]) => Promise<void>;
+  onSave: (experiences: ExperienceType[]) => void;
 }
 
 export interface FormLabelProps {

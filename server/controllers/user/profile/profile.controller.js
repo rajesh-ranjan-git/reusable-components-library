@@ -896,7 +896,7 @@ export const updateExperience = async (req, res) => {
 
     return responseService.successResponseHandler(req, res, {
       status: "EXPERIENCE UPDATE SUCCESS",
-      message: "Experiences replaced successfully!",
+      message: "Experiences updated successfully!",
       data: updatedProfile.experiences,
     });
   }

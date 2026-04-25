@@ -1,11 +1,23 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useActionState } from "react";
+import Form from "next/form";
 import { LuPlus, LuTrash2, LuBriefcase } from "react-icons/lu";
-import { formatLocalDate } from "@/utils/date.utils";
+import {
+  emptyExperienceConfig,
+  propertyConstraintsConfig,
+} from "@/config/profile.config";
+import { initialState } from "@/config/forms.config";
 import { ExperienceType } from "@/types/types/profile.types";
-import { SectionErrorsType } from "@/types/types/actions.types";
+import { FormStateType, SectionErrorsType } from "@/types/types/actions.types";
 import { ExperienceFormProps } from "@/types/props/forms.props.types";
-import { emptyExperienceConfig } from "@/config/profile.config";
-import { validateExperience } from "@/validators/profile.validators";
+import {
+  datePropertyValidator,
+  stringPropertiesValidator,
+} from "@/validators/common.validators";
+import { normalizeExperienceDates } from "@/helpers/profile.helpers";
+import { formatLocalDate } from "@/utils/date.utils";
+import { useToast } from "@/hooks/toast";
+import useInputFieldValidator from "@/hooks/useInputFieldValidation";
+import { experienceAction } from "@/lib/actions/profile.actions";
 import ModalPortal from "@/components/forms/shared/form.modal";
 import FormField from "@/components/forms/shared/form.field";
 import FormInput from "@/components/forms/shared/form.input";
@@ -14,6 +26,7 @@ import FormCheckbox from "@/components/forms/shared/form.checkbox";
 import FormButton from "@/components/forms/shared/form.button";
 import FormDivider from "@/components/forms/shared/form.divider";
 import FormDatePicker from "@/components/forms/shared/form.date.picker";
+import FormFooter from "@/components/forms/shared/form.footer";
 
 const ExperienceForm = ({
   isOpen,
@@ -22,21 +35,82 @@ const ExperienceForm = ({
   onSave,
 }: ExperienceFormProps) => {
   const [entries, setEntries] = useState<ExperienceType[]>(
-    initialData.length > 0 ? initialData : [emptyExperienceConfig],
+    initialData.length > 0
+      ? normalizeExperienceDates(initialData)
+      : [emptyExperienceConfig],
   );
   const [errors, setErrors] = useState<SectionErrorsType<ExperienceType>[]>([]);
-  const [saving, setSaving] = useState(false);
 
-  useEffect(() => {
-    if (isOpen) {
-      setEntries(
-        initialData.length > 0 ? initialData : [emptyExperienceConfig],
+  const { showToast } = useToast();
+
+  const companyInput = useInputFieldValidator<string>({
+    initialValue: "",
+    validate: (val: string) => {
+      const { message } = stringPropertiesValidator(
+        "company",
+        val,
+        propertyConstraintsConfig.minStringLength,
+        propertyConstraintsConfig.maxStringLength,
       );
-      setErrors([]);
-    }
-  }, [isOpen]);
 
-  const update = <K extends keyof ExperienceType>(
+      return message ?? "";
+    },
+  });
+
+  const roleInput = useInputFieldValidator<string>({
+    initialValue: "",
+    validate: (val: string) => {
+      const { message } = stringPropertiesValidator(
+        "role",
+        val,
+        propertyConstraintsConfig.minStringLength,
+        propertyConstraintsConfig.maxStringLength,
+      );
+
+      return message ?? "";
+    },
+  });
+
+  const startDateInput = useInputFieldValidator<string>({
+    initialValue: "",
+    validate: (val: string) => {
+      const { message } = datePropertyValidator("start date", val);
+
+      return message ?? "";
+    },
+  });
+
+  const endDateInput = useInputFieldValidator<string>({
+    initialValue: "",
+    validate: (val: string) => {
+      const { message } = datePropertyValidator("end date", val);
+
+      return message ?? "";
+    },
+  });
+
+  const descriptionInput = useInputFieldValidator<string>({
+    initialValue: "",
+    validate: (val: string) => {
+      const { message } = stringPropertiesValidator(
+        "description",
+        val,
+        propertyConstraintsConfig.minStringLength,
+        propertyConstraintsConfig.maxStringLength,
+      );
+
+      return message ?? "";
+    },
+  });
+
+  const action = async (
+    prevState: FormStateType,
+    formData: FormData,
+  ): Promise<FormStateType> => experienceAction(prevState, formData);
+
+  const [state, formAction, isPending] = useActionState(action, initialState);
+
+  const updateEntry = <K extends keyof ExperienceType>(
     idx: number,
     key: K,
     value: ExperienceType[K],
@@ -57,11 +131,7 @@ const ExperienceForm = ({
 
     setErrors((prev) => {
       const next = [...(prev ?? [])];
-
-      if (next[idx]) {
-        delete next[idx][key];
-      }
-
+      if (next[idx]) delete next[idx][key];
       return next;
     });
   };
@@ -76,21 +146,41 @@ const ExperienceForm = ({
     setErrors((prev) => prev.filter((_, i) => i !== idx));
   };
 
-  const handleSave = async () => {
-    const allErrors = entries.map(validateExperience);
-    const hasErrors = allErrors.some((e) => Object.keys(e).length > 0);
-    if (hasErrors) {
-      setErrors(allErrors);
-      return;
+  useEffect(() => {
+    if (state && state.status === "IDLE") return;
+
+    if (!state?.success) {
+      showToast({
+        title: state.code,
+        message: state.message,
+        variant: "error",
+      });
+
+      if (state?.details?.errors) {
+        setErrors(state.details.errors);
+      }
+    } else {
+      showToast({
+        title: state.status,
+        message: state.message!,
+        variant: "success",
+      });
     }
-    setSaving(true);
-    try {
-      await onSave(entries);
-      onClose();
-    } finally {
-      setSaving(false);
+
+    onSave(entries);
+    onClose();
+  }, [state]);
+
+  useEffect(() => {
+    if (isOpen) {
+      setEntries(
+        initialData.length > 0
+          ? normalizeExperienceDates(initialData)
+          : [emptyExperienceConfig],
+      );
+      setErrors([]);
     }
-  };
+  }, [isOpen]);
 
   return (
     <ModalPortal
@@ -100,139 +190,198 @@ const ExperienceForm = ({
       subtitle="Add or edit your professional history"
       maxWidth="max-w-2xl"
       footer={
-        <>
-          <FormButton variant="ghost" onClick={onClose} disabled={saving}>
-            Cancel
-          </FormButton>
-          <FormButton variant="primary" onClick={handleSave} loading={saving}>
-            Save Changes
-          </FormButton>
-        </>
+        <FormFooter
+          formType="experience-form"
+          onClose={onClose}
+          isPending={isPending}
+        />
       }
     >
-      <div className="space-y-6">
-        {entries.map((exp, idx) => (
-          <div key={idx} className="relative p-5 glass">
-            <div className="flex justify-between items-center mb-4">
-              <div className="flex items-center gap-2 text-text-secondary">
-                <LuBriefcase size={15} />
-                <span className="font-semibold text-xs uppercase tracking-wider">
-                  Experience {entries.length > 1 ? `#${idx + 1}` : ""}
-                </span>
+      <Form action={formAction} id="experience-form" autoComplete="off">
+        <div className="space-y-6">
+          {entries.map((exp, idx) => (
+            <div key={idx} className="relative p-5 glass">
+              <div className="flex justify-between items-center mb-4">
+                <div className="flex items-center gap-2 text-text-secondary">
+                  <LuBriefcase size={15} />
+                  <span className="font-semibold text-xs uppercase tracking-wider">
+                    Experience {entries.length > 1 ? `#${idx + 1}` : ""}
+                  </span>
+                </div>
+                {entries.length > 1 && (
+                  <FormButton
+                    variant="danger"
+                    size="sm"
+                    onClick={() => removeEntry(idx)}
+                  >
+                    <LuTrash2 size={13} />
+                    Remove
+                  </FormButton>
+                )}
               </div>
-              {entries.length > 1 && (
-                <FormButton
-                  variant="danger"
-                  size="sm"
-                  onClick={() => removeEntry(idx)}
+
+              <div className="gap-4 grid grid-cols-1 sm:grid-cols-2">
+                <FormField
+                  label="Company"
+                  htmlFor={`company-${idx}`}
+                  required
+                  error={companyInput.error}
                 >
-                  <LuTrash2 size={13} />
-                  Remove
-                </FormButton>
-              )}
-            </div>
+                  <FormInput
+                    id={`company-${idx}`}
+                    name={`company-${idx}`}
+                    placeholder="e.g. India Today Group"
+                    autoComplete="off"
+                    value={exp.company || ""}
+                    onChange={(e) => {
+                      const val = e.currentTarget.value;
+                      companyInput.handleInput(val);
 
-            <div className="gap-4 grid grid-cols-1 sm:grid-cols-2">
-              <FormField
-                label="Company"
-                htmlFor={`company-${idx}`}
-                required
-                error={errors[idx]?.company}
-              >
-                <FormInput
-                  id={`company-${idx}`}
-                  placeholder="e.g. India Today Group"
-                  value={exp.company}
-                  onChange={(e) => update(idx, "company", e.target.value)}
-                  error={errors[idx]?.company}
-                />
-              </FormField>
+                      if (!companyInput.error) {
+                        updateEntry(idx, "company", val);
+                      }
+                    }}
+                    onBlur={companyInput.handleBlur}
+                    error={companyInput.error}
+                  />
+                </FormField>
 
-              <FormField
-                label="Role / Title"
-                htmlFor={`role-${idx}`}
-                required
-                error={errors[idx]?.role}
-              >
-                <FormInput
-                  id={`role-${idx}`}
-                  placeholder="e.g. Full Stack Developer"
-                  value={exp.role}
-                  onChange={(e) => update(idx, "role", e.target.value)}
-                  error={errors[idx]?.role}
-                />
-              </FormField>
+                <FormField
+                  label="Role / Title"
+                  htmlFor={`role-${idx}`}
+                  required
+                  error={roleInput.error}
+                >
+                  <FormInput
+                    id={`role-${idx}`}
+                    name={`role-${idx}`}
+                    placeholder="e.g. Full Stack Developer"
+                    autoComplete="off"
+                    value={exp.role || ""}
+                    onChange={(e) => {
+                      const val = e.currentTarget.value;
+                      roleInput.handleInput(val);
 
-              <FormField
-                label="Start Date"
-                htmlFor={`startDate-${idx}`}
-                required
-                error={errors[idx]?.startDate}
-              >
-                <FormDatePicker
-                  id={`startDate-${idx}`}
-                  value={exp.startDate ? new Date(exp.startDate) : null}
-                  onChange={(date) =>
-                    update(idx, "startDate", formatLocalDate(date) ?? "")
-                  }
-                  error={errors[idx]?.startDate}
-                />
-              </FormField>
+                      if (!roleInput.error) {
+                        updateEntry(idx, "role", val);
+                      }
+                    }}
+                    onBlur={roleInput.handleBlur}
+                    error={roleInput.error}
+                  />
+                </FormField>
 
-              <FormField
-                label="End Date"
-                htmlFor={`endDate-${idx}`}
-                error={errors[idx]?.endDate}
-              >
-                <FormDatePicker
-                  id={`endDate-${idx}`}
-                  disabled={exp.isCurrent}
-                  value={exp.endDate ? new Date(exp.endDate) : null}
-                  onChange={(date) =>
-                    update(idx, "endDate", formatLocalDate(date) ?? "")
-                  }
+                <FormField
+                  label="Start Date"
+                  htmlFor={`start-date-${idx}`}
+                  required
+                  error={startDateInput.error}
+                >
+                  <FormDatePicker
+                    id={`start-date-${idx}`}
+                    value={exp.startDate ? new Date(exp.startDate) : null}
+                    onChange={(date) => {
+                      const formatted = formatLocalDate(date)!;
+                      startDateInput.handleInput(formatted);
+
+                      if (!startDateInput.error) {
+                        updateEntry(idx, "startDate", formatted);
+                      }
+                    }}
+                    error={startDateInput.error}
+                  />
+                </FormField>
+
+                <FormField
+                  label="End Date"
+                  htmlFor={`end-date-${idx}`}
                   error={errors[idx]?.endDate}
+                >
+                  <FormDatePicker
+                    id={`end-date-${idx}`}
+                    value={exp.endDate ? new Date(exp.endDate) : null}
+                    disabled={exp.isCurrent}
+                    onChange={(date) => {
+                      if (entries[idx].isCurrent) return;
+
+                      const formatted = formatLocalDate(date)!;
+                      endDateInput.handleInput(formatted);
+
+                      if (!endDateInput.error) {
+                        updateEntry(idx, "endDate", formatted);
+                      }
+                    }}
+                    error={endDateInput.error}
+                  />
+                </FormField>
+              </div>
+
+              <div className="mt-3">
+                <FormCheckbox
+                  label="I currently work here"
+                  checked={exp.isCurrent}
+                  onChange={(e) => {
+                    const checked = e.target.checked;
+
+                    updateEntry(idx, "isCurrent", checked);
+
+                    if (checked) {
+                      endDateInput.handleInput("");
+                      updateEntry(idx, "endDate", null);
+                    }
+                  }}
                 />
-              </FormField>
+              </div>
+
+              <div className="mt-4">
+                <FormField
+                  label="Description"
+                  htmlFor={`description-${idx}`}
+                  hint="Briefly describe your responsibilities and achievements."
+                  error={descriptionInput.error}
+                >
+                  <FormTextarea
+                    id={`description-${idx}`}
+                    name={`description-${idx}`}
+                    rows={3}
+                    placeholder="e.g. Full stack developer specializing in Next.js…"
+                    autoComplete="off"
+                    value={exp?.description || ""}
+                    onChange={(e) => {
+                      const val = e.currentTarget.value;
+                      descriptionInput.handleInput(val);
+
+                      if (!descriptionInput.error) {
+                        updateEntry(idx, "description", val);
+                      }
+                    }}
+                    onBlur={descriptionInput.handleBlur}
+                    error={descriptionInput.error}
+                  />
+                </FormField>
+              </div>
             </div>
+          ))}
+        </div>
 
-            <div className="mt-3">
-              <FormCheckbox
-                label="I currently work here"
-                checked={exp.isCurrent}
-                onChange={(e) => update(idx, "isCurrent", e.target.checked)}
-              />
-            </div>
+        <FormDivider />
 
-            <div className="mt-4">
-              <FormField
-                label="Description"
-                htmlFor={`description-${idx}`}
-                hint="Briefly describe your responsibilities and achievements."
-              >
-                <FormTextarea
-                  id={`description-${idx}`}
-                  rows={3}
-                  placeholder="e.g. Full stack developer specializing in Next.js…"
-                  value={exp.description ?? ""}
-                  onChange={(e) => update(idx, "description", e.target.value)}
-                />
-              </FormField>
-            </div>
-          </div>
-        ))}
-      </div>
+        <FormButton
+          type="button"
+          variant="secondary"
+          onClick={addEntry}
+          className="justify-center w-full"
+        >
+          <LuPlus size={15} />
+          Add Another Experience
+        </FormButton>
 
-      <FormDivider />
-
-      <FormButton
-        variant="secondary"
-        onClick={addEntry}
-        className="justify-center w-full"
-      >
-        <LuPlus size={15} />
-        Add Another Experience
-      </FormButton>
+        <input
+          type="hidden"
+          name="experiences"
+          value={JSON.stringify(entries)}
+        />
+      </Form>
     </ModalPortal>
   );
 };
