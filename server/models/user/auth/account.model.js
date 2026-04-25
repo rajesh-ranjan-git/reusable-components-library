@@ -45,7 +45,11 @@ const accountSchema = new mongoose.Schema(
       default: null,
     },
   },
-  { timestamps: true },
+  {
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  },
 );
 
 accountSchema.index({ email: 1, provider: 1 }, { unique: true });
