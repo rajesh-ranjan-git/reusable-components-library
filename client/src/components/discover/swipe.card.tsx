@@ -66,35 +66,45 @@ const SwipeCard = ({ profile, onSwipe, active }: SwipeCardProps) => {
             <span className="group-hover:[-webkit-text-stroke:1px_#FFFFFF] group-hover:text-transparent transition-all duration-300">
               {getFullName(profile)}
             </span>
-            <span className="font-normal group-hover:[-webkit-text-stroke:0.5px_#FFFFFF] group-hover:text-transparent text-2xl transition-all duration-300 text-accent-blue-light">
-              , {profile?.age}
-            </span>
+            {profile?.age && (
+              <span className="font-normal group-hover:[-webkit-text-stroke:0.5px_#FFFFFF] group-hover:text-transparent text-2xl transition-all duration-300 text-accent-blue-light">
+                , {profile.age}
+              </span>
+            )}
           </h2>
 
-          <div className="flex items-center gap-2 drop-shadow-md mb-3 font-medium text-accent-blue-light">
-            <LuBriefcase size={18} />
-            {profile?.currentJobRole}
-          </div>
+          {profile?.currentJobRole && (
+            <div className="flex items-center gap-2 drop-shadow-md mb-3 font-medium text-accent-blue-light">
+              <LuBriefcase size={18} />
+              {profile.currentJobRole}
+            </div>
+          )}
 
-          <p className="mb-4 text-sm line-clamp-2 text-accent-purple-light">
-            {profile?.bio}
-          </p>
+          {profile?.bio && (
+            <p className="mb-4 text-sm line-clamp-2 text-accent-purple-light">
+              {profile.bio}
+            </p>
+          )}
 
-          <div className="flex flex-wrap gap-2 mb-4">
-            {profile?.topSkills?.map((skill, idx) => (
-              <span
-                key={`${skill.name}-${idx}`}
-                className="badge badge-gradient"
-              >
-                {skill.name}
-              </span>
-            ))}
-          </div>
+          {profile?.topSkills && (
+            <div className="flex flex-wrap gap-2 mb-4">
+              {profile.topSkills?.map((skill, idx) => (
+                <span
+                  key={`${skill.name}-${idx}`}
+                  className="badge badge-gradient"
+                >
+                  {skill.name}
+                </span>
+              ))}
+            </div>
+          )}
 
-          <div className="flex items-center gap-1.5 text-text-secondary text-xs">
-            <LuMapPin size={14} />
-            {profile?.location}
-          </div>
+          {profile?.location && (
+            <div className="flex items-center gap-1.5 text-text-secondary text-xs">
+              <LuMapPin size={14} />
+              {profile.location}
+            </div>
+          )}
         </div>
 
         <motion.div
