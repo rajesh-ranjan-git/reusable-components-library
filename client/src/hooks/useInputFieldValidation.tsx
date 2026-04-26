@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { UseInputFieldValidatorReturnType } from "@/types/types/hook.types";
+import { UseInputFieldValidatorReturnType } from "@/types/types/hooks.types";
 import { UseInputFieldOptionsProps } from "@/types/props/hooks.props.types";
 
 function useInputFieldValidator<T>({

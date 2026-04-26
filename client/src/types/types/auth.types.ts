@@ -1,12 +1,13 @@
 export type LoggedInUserType = {
-  id: string;
+  userId: string;
   status: string;
   email: string;
   role: string;
-  userName: string;
-  firstName: string;
-  lastName: string;
-  avatar: string;
+  userName?: string | null;
+  firstName?: string | null;
+  lastName?: string | null;
+  fullName?: string | null;
+  avatar?: string | null;
 } | null;
 
 export type ProviderLoginDataType = {

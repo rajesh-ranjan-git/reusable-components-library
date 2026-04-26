@@ -1,6 +1,6 @@
 import { ElementType, ReactNode } from "react";
 import { Variants } from "motion/react";
-import { UseInputFieldValidatorReturnType } from "@/types/types/hook.types";
+import { UseInputFieldValidatorReturnType } from "@/types/types/hooks.types";
 
 export interface AuthBannerProps {
   isLogin: boolean;

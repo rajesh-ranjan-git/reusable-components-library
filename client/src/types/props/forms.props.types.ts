@@ -9,7 +9,7 @@ import {
   DateRangeType,
   FormRadioOptionType,
   FormSelectOptionType,
-} from "@/types/types/form.types";
+} from "@/types/types/forms.types";
 
 export interface BioFormProps {
   isOpen: boolean;

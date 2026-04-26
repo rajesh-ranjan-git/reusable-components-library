@@ -116,8 +116,6 @@ class AuthService {
           provider: "local",
         });
 
-    logger.debug("debug account:", account);
-
     if (!account) {
       throw AppError.notFound({
         message: "User account does not exist!",

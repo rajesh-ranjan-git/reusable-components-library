@@ -5,7 +5,7 @@ import { socialPlatformsConfig } from "@/config/profile.config";
 import { ProfileMainProps } from "@/types/props/profile.props.types";
 import { getCurrentJobRole, getFullName } from "@/helpers/profile.helpers";
 import { toTitleCase } from "@/utils/common.utils";
-import { getDateToShow } from "@/utils/date.utils";
+import { formatDate, formatLocalDate, getDateToShow } from "@/utils/date.utils";
 
 const ProfileMain = ({ user }: ProfileMainProps) => {
   return (
@@ -77,7 +77,7 @@ const ProfileMain = ({ user }: ProfileMainProps) => {
         {user?.createdAt && (
           <div className="flex items-center gap-1.5">
             <LuCalendar size={16} />
-            Joined {getDateToShow(user.createdAt)}
+            Joined on {formatDate(user.createdAt)}
           </div>
         )}
       </div>

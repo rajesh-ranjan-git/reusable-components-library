@@ -54,20 +54,20 @@ export type CurrentFormType =
 export type ImageTargetType = "cover" | "avatar" | null;
 
 export type UserProfileType = {
-  id: string;
+  userId: string;
   email: string;
-  userName: string;
-  firstName: string | null;
-  lastName: string | null;
-  nickName: string | null;
-  avatar: string | null;
-  cover: string | null;
-  bio: string | null;
-  location: string | null;
-  skills: SkillType[];
-  interests: string[] | null;
-  social: SocialType;
-  experiences: ExperienceType[] | null;
+  userName?: string;
+  firstName?: string | null;
+  lastName?: string | null;
+  nickName?: string | null;
+  avatar?: string | null;
+  cover?: string | null;
+  bio?: string | null;
+  location?: string | null;
+  skills?: SkillType[];
+  interests?: string[] | null;
+  social?: SocialType;
+  experiences?: ExperienceType[] | null;
   createdAt: string;
-  updatedAt: string | null;
+  updatedAt?: string | null;
 } | null;

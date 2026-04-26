@@ -2,13 +2,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Form from "next/form";
 import { motion } from "motion/react";
-import {
-  LuGithub,
-  LuLinkedin,
-  LuEyeClosed,
-  LuUser,
-  LuMail,
-} from "react-icons/lu";
+import { LuGithub, LuLinkedin, LuEyeClosed, LuUser } from "react-icons/lu";
 import { FcGoogle } from "react-icons/fc";
 import { FaRegEye } from "react-icons/fa";
 import { LoginFormProps } from "@/types/props/auth.props.types";

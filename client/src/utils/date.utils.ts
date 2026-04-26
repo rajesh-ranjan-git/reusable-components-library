@@ -56,7 +56,7 @@ export const isSameDay = (a: Date, b: Date) => {
 export const formatDate = (date: string | Date) => {
   const incomingDate = new Date(date);
 
-  return `${incomingDate.getDate().toString().padStart(2, "0")} ${MONTHS[incomingDate.getMonth()].slice(0, 3)} ${incomingDate.getFullYear()}`;
+  return `${incomingDate.getDate().toString().padStart(2, "0")} ${MONTHS[incomingDate.getMonth()].slice(0, 3)}, ${incomingDate.getFullYear()}`;
 };
 
 export const getDuration = (

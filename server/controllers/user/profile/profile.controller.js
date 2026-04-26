@@ -89,7 +89,7 @@ export const getMyProfile = asyncHandler(async (req, res) => {
     emailVerified: user.emailVerified,
     phoneVerified: user.phoneVerified,
     role: userRole,
-    location: profile.address.location,
+    location: profile.address?.location || null,
     createdAt: account.createdAt,
     social,
     ...omitObjectProperties(sanitizeMongoData(profile), [
@@ -158,7 +158,7 @@ export const getUserProfile = asyncHandler(async (req, res) => {
     email: account.email,
     emailVerified: profile.user.emailVerified,
     phoneVerified: profile.user.phoneVerified,
-    location: profile.address.location,
+    location: profile.address?.location || null,
     createdAt: account.createdAt,
     social,
     ...omitObjectProperties(sanitizeMongoData(profile), "id __v user address"),

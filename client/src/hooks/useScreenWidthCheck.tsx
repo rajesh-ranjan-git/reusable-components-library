@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ScreenWidthType } from "@/types/types/hook.types";
+import { ScreenWidthType } from "@/types/types/hooks.types";
 import {
   MOBILE_MAX_SCREEN_WIDTH,
   TABLET_MAX_SCREEN_WIDTH,

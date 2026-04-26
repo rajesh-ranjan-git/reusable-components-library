@@ -1,6 +1,6 @@
 import { RefObject } from "react";
 import { StorageType } from "@/types/types/common.types";
-import { ValidatorType } from "@/types/types/hook.types";
+import { ValidatorType } from "@/types/types/hooks.types";
 
 export interface UseWebStorageProps<T> {
   key: string;

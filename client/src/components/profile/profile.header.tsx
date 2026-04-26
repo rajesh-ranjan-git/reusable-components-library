@@ -65,7 +65,7 @@ const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
 
       setIsImageUploading(true);
 
-      const uniqueImageName = `${currentImageTarget}-${loggedInUser?.id}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+      const uniqueImageName = `${currentImageTarget}-${loggedInUser?.userId}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
 
       const image = new File([file], uniqueImageName, {
         type: file.type,
@@ -117,7 +117,7 @@ const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
         setPreviousImage(localCover as string);
       }
 
-      const uniqueImageName = `${currentImageTarget}-${loggedInUser?.id}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}.jpg`;
+      const uniqueImageName = `${currentImageTarget}-${loggedInUser?.userId}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}.jpg`;
 
       const image = await dataURLtoImage(imgSrc, uniqueImageName);
 
