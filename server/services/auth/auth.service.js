@@ -116,6 +116,8 @@ class AuthService {
           provider: "local",
         });
 
+    logger.debug("debug account:", account);
+
     if (!account) {
       throw AppError.notFound({
         message: "User account does not exist!",
@@ -208,7 +210,7 @@ class AuthService {
     const userFields = {
       userId: user.id,
       status: user.status,
-      email,
+      email: account.email,
       role: userRoleName,
       ...omitObjectProperties(sanitizeMongoData(profile), [
         "id",
