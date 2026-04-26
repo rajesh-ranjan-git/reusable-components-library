@@ -10,9 +10,10 @@ import { responseService } from "../../../services/response/response.service.js"
 import AppError from "../../../services/error/error.service.js";
 
 export const getAddresses = asyncHandler(async (req, res) => {
-  const addresses = await Address.find({ user: req.data.userId })
-    .sort({ isDefault: -1, createdAt: -1 })
-    .lean();
+  const addresses = await Address.find({ user: req.data.userId }).sort({
+    isDefault: -1,
+    createdAt: -1,
+  });
 
   if (!addresses) {
     throw AppError.internal({

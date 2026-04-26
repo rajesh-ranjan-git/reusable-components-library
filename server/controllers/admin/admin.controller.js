@@ -13,6 +13,7 @@ import UserRole from "../../models/user/rbac/user.role.model.js";
 import Session from "../../models/user/auth/session.model.js";
 import ActivityLog from "../../models/user/auth/activity.log.model.js";
 import { asyncHandler } from "../../utils/common.utils.js";
+import { sanitizeMongoData } from "../../db/db.utils.js";
 import { sessionService } from "../../services/auth/session.service.js";
 import AppError from "../../services/error/error.service.js";
 import { activityService } from "../../services/activity/activity.service.js";
@@ -48,9 +49,7 @@ export const listUsers = asyncHandler(async (req, res) => {
         { firstName: { $regex: search, $options: "i" } },
         { lastName: { $regex: search, $options: "i" } },
       ],
-    })
-      .select("user")
-      .lean();
+    }).select("user");
 
     const accounts = await Account.find({
       email: { $regex: search, $options: "i" },
@@ -147,7 +146,7 @@ export const getUser = asyncHandler(async (req, res) => {
       .populate("role")
       .select("name permissions")
       .lean(),
-    Profile.findOne({ user: userId }).lean(),
+    Profile.findOne({ user: userId }),
     Account.find({ user: userId }).select("-password").lean(),
     Session.find({ user: userId, expiresAt: { $gt: new Date() } }).lean(),
   ]);
@@ -158,7 +157,7 @@ export const getUser = asyncHandler(async (req, res) => {
     data: {
       user,
       roles,
-      profile,
+      profile: sanitizeMongoData(profile),
       accounts,
       activeSessions: sessions.length,
     },

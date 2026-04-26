@@ -13,12 +13,14 @@ import Social from "../../../models/user/profile/social.model.js";
 import {
   asyncHandler,
   isPlainObject,
+  omitObjectProperties,
   toTitleCase,
 } from "../../../utils/common.utils.js";
 import {
   uploadToCloudinary,
   uploadToGoogleDrive,
 } from "../../../utils/upload.utils.js";
+import { sanitizeMongoData } from "../../../db/db.utils.js";
 import {
   datePropertyValidator,
   numberRegexPropertiesValidator,
@@ -67,8 +69,8 @@ export const getMyProfile = asyncHandler(async (req, res) => {
   );
 
   const profile = await Profile.findOne({ user: userId })
-    .lean()
-    .select("-_id -user -__v");
+    .populate("address", "city state country location")
+    .select("-_id -avatarFileId -coverFileId");
 
   if (!profile) {
     throw AppError.notFound({
@@ -77,32 +79,25 @@ export const getMyProfile = asyncHandler(async (req, res) => {
     });
   }
 
-  const address = await Address.findOne({
-    user: userId,
-    isDefault: true,
-  })
-    .lean()
-    .select("-_id city state country");
-
-  const location =
-    [address?.city, address?.state, address?.country]
-      .filter(Boolean)
-      .join(", ") || null;
-
   const social = await Social.findOne({ user: userId })
-    .lean()
-    .select("-_id facebook instagram twitter github linkedin youtube website");
+    .select("-_id facebook instagram twitter github linkedin youtube website")
+    .lean();
 
   const userFields = {
-    id: userId,
+    userId: userId,
     email: account.email,
     emailVerified: user.emailVerified,
     phoneVerified: user.phoneVerified,
     role: userRole,
-    location,
+    location: profile.address.location,
     createdAt: account.createdAt,
     social,
-    ...profile,
+    ...omitObjectProperties(sanitizeMongoData(profile), [
+      "id",
+      "__v",
+      "user",
+      "address",
+    ]),
   };
 
   return responseService.successResponseHandler(req, res, {
@@ -130,9 +125,9 @@ export const getUserProfile = asyncHandler(async (req, res) => {
   }
 
   const profile = await Profile.findOne({ userName: validatedUserName })
-    .select("-createdAt -updatedAt")
-    .populate("user", "status lastSeen")
-    .lean();
+    .populate("user", "emailVerified phoneVerified status lastSeen")
+    .populate("address", "city state country location")
+    .select("-_id -avatarFileId -coverFileId -createdAt -updatedAt");
 
   if (!profile || profile.user?.status !== "active") {
     throw AppError.notFound({
@@ -141,7 +136,7 @@ export const getUserProfile = asyncHandler(async (req, res) => {
     });
   }
 
-  const userId = profile.user._id;
+  const userId = profile.user.id;
 
   const account = await Account.findOne({ user: userId }).select(
     "-_id email createdAt",
@@ -154,31 +149,19 @@ export const getUserProfile = asyncHandler(async (req, res) => {
     });
   }
 
-  const { _id, user, __v, ...safeProfile } = profile;
-
-  const address = await Address.findOne({
-    user: userId,
-    isDefault: true,
-  })
-    .lean()
-    .select("-_id city state country");
-
-  const location =
-    [address?.city, address?.state, address?.country]
-      .filter(Boolean)
-      .join(", ") || null;
-
   const social = await Social.findOne({ user: userId })
-    .lean()
-    .select("-_id facebook instagram twitter github linkedin youtube website");
+    .select("-_id facebook instagram twitter github linkedin youtube website")
+    .lean();
 
   const userFields = {
-    id: userId,
+    userId: userId,
     email: account.email,
+    emailVerified: profile.user.emailVerified,
+    phoneVerified: profile.user.phoneVerified,
+    location: profile.address.location,
     createdAt: account.createdAt,
-    location,
     social,
-    ...safeProfile,
+    ...omitObjectProperties(sanitizeMongoData(profile), "id __v user address"),
   };
 
   return responseService.successResponseHandler(req, res, {

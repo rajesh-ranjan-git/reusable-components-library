@@ -1,15 +1,3 @@
-import { sanitizeMongoData } from "../db/db.utils.js";
-import { omitObjectProperties, toTitleCase } from "./common.utils.js";
-
-export const normalizedDiscoveredUser = (users) => {
-  return sanitizeMongoData(users).map((user) => ({
-    ...omitObjectProperties(user, ["id", "user"]),
-    userId: user.user.id,
-    jobRole: getCurrentJobRole(user.experiences),
-    topSkills: getTopSkills(user.skills),
-  }));
-};
-
 export const getFullName = (user) => {
   if (!user) return "John Doe";
 

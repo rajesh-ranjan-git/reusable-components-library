@@ -186,6 +186,48 @@ profileSchema.virtual("totalExperience").get(function () {
   return (totalMonths / 12).toFixed(1);
 });
 
+profileSchema.virtual("currentJobRole").get(function () {
+  if (!this.experiences?.length) return null;
+
+  let latest = null;
+
+  for (const exp of this.experiences) {
+    if (exp?.isCurrent && exp?.role) return exp.role;
+
+    if (
+      exp?.role &&
+      exp?.startDate &&
+      (!latest || new Date(exp.startDate) > new Date(latest.startDate))
+    ) {
+      latest = exp;
+    }
+  }
+
+  return latest?.role ?? null;
+});
+
+profileSchema.virtual("topSkills").get(function () {
+  if (!this.skills?.length) return null;
+
+  const skillLevelRank = {
+    beginner: 1,
+    intermediate: 2,
+    advanced: 3,
+    expert: 4,
+  };
+
+  return [...this.skills]
+    .sort((a, b) => skillLevelRank[b.level] - skillLevelRank[a.level])
+    .slice(0, 3);
+});
+
+profileSchema.virtual("address", {
+  ref: "Address",
+  localField: "user",
+  foreignField: "user",
+  justOne: true,
+});
+
 const Profile = mongoose.model("Profile", profileSchema);
 
 export default Profile;

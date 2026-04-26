@@ -14,6 +14,8 @@ import Profile from "../../models/user/profile/profile.model.js";
 import SocialLink from "../../models/user/profile/social.model.js";
 import VerificationToken from "../../models/user/auth/verification.token.model.js";
 import { getRemainingTime } from "../../utils/date.utils.js";
+import { sanitizeMongoData } from "../../db/db.utils.js";
+import { omitObjectProperties } from "../../utils/common.utils.js";
 import { rbacService } from "../rbac/rbac.service.js";
 import { tokenService } from "../auth/token.service.js";
 import { sessionService } from "../auth/session.service.js";
@@ -195,9 +197,7 @@ class AuthService {
 
     profile = await Profile.findOne({
       user: user.id,
-    })
-      .select("-_id userName firstName lastName avatar cover")
-      .lean();
+    }).select("userName firstName lastName avatar cover");
 
     const userRoleLevel = await rbacService.getHighestRoleLevel(userRoles);
     const userRoleName = userRoles.reduce(
@@ -206,11 +206,18 @@ class AuthService {
     );
 
     const userFields = {
-      id: user.id,
+      userId: user.id,
       status: user.status,
       email,
       role: userRoleName,
-      ...profile,
+      ...omitObjectProperties(sanitizeMongoData(profile), [
+        "id",
+        "cover",
+        "age",
+        "totalExperience",
+        "currentJobRole",
+        "topSkills",
+      ]),
     };
 
     await sessionService.createSession({

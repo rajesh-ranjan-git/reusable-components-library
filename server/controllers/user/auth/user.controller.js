@@ -15,7 +15,7 @@ export const getAccountInfo = asyncHandler(async (req, res) => {
     Account.findOne({ user: req.data.userId })
       .select("-password -loginAttempts -lockUntil")
       .lean(),
-    Profile.findOne({ user: req.data.userId }).lean(),
+    Profile.findOne({ user: req.data.userId }),
   ]);
 
   return responseService.successResponseHandler(req, res, {
@@ -110,7 +110,7 @@ export const deleteAccount = asyncHandler(async (req, res) => {
 export const getDashboardSummary = asyncHandler(async (req, res) => {
   const [profile, addressCount, activeSessionCount, recentActivity] =
     await Promise.all([
-      Profile.findOne({ user: req.data.userId }).lean(),
+      Profile.findOne({ user: req.data.userId }),
       Address.countDocuments({ user: req.data.userId }),
       sessionService.countActiveSessions(req.data.userId),
       ActivityLog.find({ user: req.data.userId })

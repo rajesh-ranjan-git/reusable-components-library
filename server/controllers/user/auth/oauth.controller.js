@@ -7,7 +7,11 @@ import Profile from "../../../models/user/profile/profile.model.js";
 import SocialLink from "../../../models/user/profile/social.model.js";
 import Role from "../../../models/user/rbac/role.model.js";
 import UserRole from "../../../models/user/rbac/user.role.model.js";
-import { asyncHandler } from "../../../utils/common.utils.js";
+import {
+  asyncHandler,
+  omitObjectProperties,
+} from "../../../utils/common.utils.js";
+import { sanitizeMongoData } from "../../../db/db.utils.js";
 import { emailValidator } from "../../../validators/auth.validator.js";
 import { sessionService } from "../../../services/auth/session.service.js";
 import { activityService } from "../../../services/activity/activity.service.js";
@@ -187,9 +191,7 @@ export const oauthCallback = asyncHandler(async (req, res) => {
 
   const profile = await Profile.findOne({
     user: userId,
-  })
-    .select("-_id userName firstName lastName avatar cover")
-    .lean();
+  }).select("-_id userName firstName lastName avatar cover");
 
   const userRoleLevel = await rbacService.getHighestRoleLevel(userRoles);
   const userRoleName = userRoles.reduce(
@@ -198,11 +200,18 @@ export const oauthCallback = asyncHandler(async (req, res) => {
   );
 
   const userFields = {
-    id: userId,
+    userId: user.id,
     status: user.status,
     email: validatedEmail,
     role: userRoleName,
-    ...profile,
+    ...omitObjectProperties(sanitizeMongoData(profile), [
+      "id",
+      "cover",
+      "age",
+      "totalExperience",
+      "currentJobRole",
+      "topSkills",
+    ]),
   };
 
   await activityService.logActivity({

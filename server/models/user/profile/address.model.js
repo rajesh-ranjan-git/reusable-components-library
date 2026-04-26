@@ -25,8 +25,16 @@ const addressSchema = new mongoose.Schema(
       default: false,
     },
   },
-  { timestamps: true },
+  {
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  },
 );
+
+addressSchema.virtual("location").get(function () {
+  return [this?.city, this?.state, this?.country].filter(Boolean).join(", ");
+});
 
 const Address = mongoose.model("Address", addressSchema);
 

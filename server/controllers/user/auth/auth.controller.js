@@ -1,7 +1,11 @@
 import { httpStatusConfig } from "../../../config/http.config.js";
 import Account from "../../../models/user/auth/account.model.js";
 import Profile from "../../../models/user/profile/profile.model.js";
-import { asyncHandler } from "../../../utils/common.utils.js";
+import {
+  asyncHandler,
+  omitObjectProperties,
+} from "../../../utils/common.utils.js";
+import { sanitizeMongoData } from "../../../db/db.utils.js";
 import {
   validateRegister,
   validateLogin,
@@ -262,9 +266,7 @@ export const getMe = asyncHandler(async (req, res) => {
 
   const profile = await Profile.findOne({
     user: user.id,
-  })
-    .select("-_id userName firstName lastName avatar cover")
-    .lean();
+  }).select("-_id userName firstName lastName avatar cover");
 
   const userRoles = await rbacService.getUserRoles(user._id);
   const userRoleLevel = await rbacService.getHighestRoleLevel(userRoles);
@@ -274,11 +276,18 @@ export const getMe = asyncHandler(async (req, res) => {
   );
 
   const userFields = {
-    id: user.id,
+    userId: user.id,
     status: user.status,
     email,
     role: userRoleName,
-    ...profile,
+    ...omitObjectProperties(sanitizeMongoData(profile), [
+      "id",
+      "cover",
+      "age",
+      "totalExperience",
+      "currentJobRole",
+      "topSkills",
+    ]),
   };
 
   return responseService.successResponseHandler(req, res, {
