@@ -16,4 +16,7 @@ export const apiUrls = {
     updateSkills: "/user/profile/skills",
     updateExperience: "/user/profile/experience",
   },
+  discover: {
+    fetchProfiles: "/discover/profiles",
+  },
 };

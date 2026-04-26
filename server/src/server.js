@@ -48,7 +48,7 @@ app.use("/api/v1/user", addressRouter);
 
 app.use("/api/v1/admin", adminRouter);
 
-app.use("/api/v1", discoverRouter);
+app.use("/api/v1/discover", discoverRouter);
 
 app.use("/api/v1/push-notifications", pushNotificationRouter);
 

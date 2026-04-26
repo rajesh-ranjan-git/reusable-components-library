@@ -1,8 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SwipeDirectionType } from "@/types/types/discover.types";
-import { mockProfiles } from "@/lib/data/discover.data";
+import { DiscoverProfilesResponseType } from "@/types/types/response.types";
+import { UserProfileType } from "@/types/types/profile.types";
+import { useAppStore } from "@/store/store";
+import { fetchProfiles } from "@/lib/actions/discover.actions";
 import Header from "@/components/layout/header";
 import AppSidebar from "@/components/layout/app.sidebar";
 import BottomNav from "@/components/layout/bottom.navbar";
@@ -11,16 +14,38 @@ import SwipeCard from "@/components/discover/swipe.card";
 
 const DiscoverPage = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [profiles, setProfiles] = useState(mockProfiles);
+  const [profiles, setProfiles] = useState<UserProfileType[]>([]);
+  const [page, setPage] = useState(1);
 
-  const handleSwipe = (direction: SwipeDirectionType, id?: number) => {
+  const accessToken = useAppStore((state) => state.accessToken);
+
+  const handleSwipe = (direction: SwipeDirectionType, userId?: string) => {
     const targetId =
-      id ?? (profiles.length > 0 ? profiles[profiles.length - 1].id : null);
+      userId ??
+      (profiles.length > 0 ? profiles[profiles.length - 1]?.userId : null);
 
     if (targetId !== null) {
-      setProfiles((prev) => prev.filter((p) => p.id !== targetId));
+      setProfiles((prev) => prev.filter((p) => p?.userId !== targetId));
     }
   };
+
+  const loadProfiles = async () => {
+    const response = await fetchProfiles(page);
+
+    if (response.success && response?.data) {
+      const data = response?.data as DiscoverProfilesResponseType;
+
+      setProfiles(data.users);
+    } else {
+      setProfiles([]);
+    }
+  };
+
+  useEffect(() => {
+    if (accessToken) {
+      loadProfiles();
+    }
+  }, [accessToken]);
 
   return (
     <div className="flex flex-col bg-bg-page h-dvh overflow-hidden text-text-primary">
@@ -53,7 +78,7 @@ const DiscoverPage = () => {
             ) : (
               profiles.map((profile, index) => (
                 <SwipeCard
-                  key={profile.id}
+                  key={profile?.userId}
                   profile={profile}
                   active={index === profiles.length - 1}
                   onSwipe={handleSwipe}

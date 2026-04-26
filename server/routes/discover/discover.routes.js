@@ -9,7 +9,7 @@ import { discoverProfiles } from "../../controllers/discover/discover.controller
 const discoverRouter = express.Router();
 
 discoverRouter.get(
-  "/discover",
+  "/profiles",
   requestMiddleware({}),
   authenticate,
   authorize({

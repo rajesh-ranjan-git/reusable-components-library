@@ -1,11 +1,12 @@
-import { ProfileType, SwipeDirectionType } from "@/types/types/discover.types";
+import { SwipeDirectionType } from "@/types/types/discover.types";
+import { UserProfileType } from "@/types/types/profile.types";
 
 export interface ActionBarProps {
-  onSwipe: (direction: SwipeDirectionType, id?: number) => void;
+  onSwipe: (direction: SwipeDirectionType, userId?: string) => void;
 }
 
 export interface SwipeCardProps {
-  profile: ProfileType;
-  onSwipe: (direction: SwipeDirectionType, id?: number) => void;
+  profile: UserProfileType;
+  onSwipe: (direction: SwipeDirectionType, userId?: string) => void;
   active: boolean;
 }

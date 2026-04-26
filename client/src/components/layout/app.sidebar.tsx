@@ -128,11 +128,11 @@ const AppSidebar = ({ setIsSidebarOpen }: AppSidebarProps) => {
           </h6>
           <div className="space-y-2">
             {[
-              "rajeshranjanpa98",
-              "rajeshranjanpa98",
-              "rajeshranjanpa98",
-              "rajeshranjanpa98",
-              "rajeshranjanpa98",
+              "joseparkert370",
+              "joseparkert370",
+              "joseparkert370",
+              "joseparkert370",
+              "joseparkert370",
             ].map((user, idx) => (
               <div
                 key={idx}

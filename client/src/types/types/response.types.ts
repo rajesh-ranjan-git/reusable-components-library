@@ -12,3 +12,7 @@ export type RefreshResponseType = {
 export type UserProfileResponseType = {
   user: UserProfileType;
 };
+
+export type DiscoverProfilesResponseType = {
+  users: UserProfileType[];
+};

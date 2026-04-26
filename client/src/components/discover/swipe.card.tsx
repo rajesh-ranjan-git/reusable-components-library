@@ -3,6 +3,8 @@ import Image from "next/image";
 import { motion, useMotionValue, useTransform, PanInfo } from "motion/react";
 import { LuBriefcase, LuMapPin } from "react-icons/lu";
 import { SwipeCardProps } from "@/types/props/discover.props.types";
+import { staticImagesConfig } from "@/config/common.config";
+import { getFullName } from "@/helpers/profile.helpers";
 
 const SwipeCard = ({ profile, onSwipe, active }: SwipeCardProps) => {
   const router = useRouter();
@@ -15,9 +17,9 @@ const SwipeCard = ({ profile, onSwipe, active }: SwipeCardProps) => {
     info: PanInfo,
   ) => {
     if (info.offset.x > 100) {
-      onSwipe("right", profile.id);
+      onSwipe("right", profile?.userId);
     } else if (info.offset.x < -100) {
-      onSwipe("left", profile.id);
+      onSwipe("left", profile?.userId);
     }
   };
 
@@ -35,8 +37,14 @@ const SwipeCard = ({ profile, onSwipe, active }: SwipeCardProps) => {
     >
       <div className="relative w-full h-full cursor-grab active:cursor-grabbing">
         <Image
-          src={profile.image}
-          alt={profile.name}
+          src={
+            profile?.avatar
+              ? profile.avatar
+              : profile?.cover
+                ? profile.cover
+                : staticImagesConfig.avatarPlaceholder.src
+          }
+          alt={getFullName(profile)}
           fill
           sizes="(max-width: 640px) 100vw,
                 (max-width: 1024px) 90vw,
@@ -51,38 +59,41 @@ const SwipeCard = ({ profile, onSwipe, active }: SwipeCardProps) => {
           <h2
             onClick={(e) => {
               e.stopPropagation();
-              router.push(`/profile/${profile.id}`);
+              router.push(`/profile/${profile?.userName}`);
             }}
             className="group inline-flex items-center gap-2 drop-shadow-md mb-1 font-arima font-bold text-3xl tracking-wider active:scale-95 origin-left text-accent-blue-light cursor-pointer"
           >
             <span className="group-hover:[-webkit-text-stroke:1px_#FFFFFF] group-hover:text-transparent transition-all duration-300">
-              {profile.name}
+              {getFullName(profile)}
             </span>
             <span className="font-normal group-hover:[-webkit-text-stroke:0.5px_#FFFFFF] group-hover:text-transparent text-2xl transition-all duration-300 text-accent-blue-light">
-              , {profile.age}
+              , {profile?.age}
             </span>
           </h2>
 
           <div className="flex items-center gap-2 drop-shadow-md mb-3 font-medium text-accent-blue-light">
             <LuBriefcase size={18} />
-            {profile.role}
+            {profile?.currentJobRole}
           </div>
 
           <p className="mb-4 text-sm line-clamp-2 text-accent-purple-light">
-            {profile.bio}
+            {profile?.bio}
           </p>
 
           <div className="flex flex-wrap gap-2 mb-4">
-            {profile.skills.map((skill) => (
-              <span key={skill} className="badge badge-gradient">
-                {skill}
+            {profile?.topSkills?.map((skill, idx) => (
+              <span
+                key={`${skill.name}-${idx}`}
+                className="badge badge-gradient"
+              >
+                {skill.name}
               </span>
             ))}
           </div>
 
           <div className="flex items-center gap-1.5 text-text-secondary text-xs">
             <LuMapPin size={14} />
-            {profile.location} • {profile.distance} miles away
+            {profile?.location}
           </div>
         </div>
 

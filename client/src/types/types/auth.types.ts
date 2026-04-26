@@ -3,7 +3,7 @@ export type LoggedInUserType = {
   status: string;
   email: string;
   role: string;
-  userName?: string | null;
+  userName: string;
   firstName?: string | null;
   lastName?: string | null;
   fullName?: string | null;
