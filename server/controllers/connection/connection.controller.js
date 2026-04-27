@@ -455,7 +455,9 @@ export const connections = async (req, res) => {
   const connections = await Connection.find({
     $or: [{ senderId: userId }, { receiverId: userId }],
     connectionStatus: "accepted",
-  }).lean();
+  })
+    .sort({ updatedAt: -1 })
+    .lean();
 
   const connectedUserIds = connections.map((connection) => {
     return connection.senderId.toString() === userId.toString()
@@ -521,7 +523,9 @@ export const requests = async (req, res) => {
   const connections = await Connection.find({
     receiverId: userId,
     connectionStatus: "interested",
-  }).lean();
+  })
+    .sort({ updatedAt: -1 })
+    .lean();
 
   const connectedUserIds = connections.map((connection) =>
     connection.senderId.toString(),

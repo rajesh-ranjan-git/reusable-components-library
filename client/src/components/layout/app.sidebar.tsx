@@ -10,6 +10,7 @@ import { AppSidebarProps } from "@/types/props/common.props.types";
 import { UserProfileType } from "@/types/types/profile.types";
 import { RequestDirectionType } from "@/types/types/connection.types";
 import { useToast } from "@/hooks/toast";
+import useSheet from "@/hooks/useSheet";
 import { toTitleCase } from "@/utils/common.utils";
 import { getFullName } from "@/helpers/profile.helpers";
 import { chatRoutes, defaultRoutes } from "@/lib/routes/routes";
@@ -19,25 +20,27 @@ import {
   fetchRequests,
 } from "@/lib/actions/connection.actions";
 import FormInput from "@/components/forms/shared/form.input";
+import Sheet from "@/components/ui/sheet/sheet";
 
 const AppSidebar = ({ setIsSidebarOpen }: AppSidebarProps) => {
-  const router = useRouter();
-  const [showAllRequests, setShowAllRequests] = useState(false);
   const [connectionRequests, setConnectionRequests] = useState<
     UserProfileType[]
   >([]);
   const [connections, setConnections] = useState<UserProfileType[]>([]);
-
   const [exitDirection, setExitDirection] = useState<
     Record<string, RequestDirectionType>
   >({});
 
+  const router = useRouter();
+
   const { showToast } = useToast();
+
+  const connectionRequestsSheet = useSheet({ type: "connectionRequests" });
 
   const handleAction = async (
     userId: string,
     direction: RequestDirectionType,
-  ): Promise<void> => {
+  ) => {
     const selectedRequest = connectionRequests.find(
       (request) => request.userId === userId,
     );
@@ -49,13 +52,15 @@ const AppSidebar = ({ setIsSidebarOpen }: AppSidebarProps) => {
       [userId]: direction,
     }));
 
-    setConnectionRequests((prev) =>
-      prev.filter((request) => request.userId !== userId),
-    );
+    setTimeout(() => {
+      setConnectionRequests((prev) =>
+        prev.filter((request) => request.userId !== userId),
+      );
 
-    if (direction === "right") {
-      setConnections((prev) => [selectedRequest, ...prev]);
-    }
+      if (direction === "right") {
+        setConnections((prev) => [selectedRequest, ...prev]);
+      }
+    }, 0);
 
     const status = direction === "right" ? "accepted" : "rejected";
 
@@ -77,10 +82,6 @@ const AppSidebar = ({ setIsSidebarOpen }: AppSidebarProps) => {
       });
     }
   };
-
-  const visibleRequests = showAllRequests
-    ? connectionRequests
-    : connectionRequests.slice(0, 2);
 
   const getConnectionRequests = async () => {
     const connectionRequestsResponse = await fetchRequests();
@@ -123,109 +124,213 @@ const AppSidebar = ({ setIsSidebarOpen }: AppSidebarProps) => {
         </div>
       </div>
       <div className="flex-1 p-2 overflow-y-auto">
-        {visibleRequests?.length > 0 ? (
-          <div className="mb-2">
-            <h6 className="mb-3 font-poppins text-text-secondary uppercase tracking-wider">
-              Requests
-            </h6>
-            <div className="flex items-center gap-3 mb-3 alert alert-info">
-              <LuUserPlus className="text-primary" size={20} />
-              <p className="font-medium text-status-info-text text-sm">
-                {connectionRequests.length} New Requests
-              </p>
-            </div>
+        <div className="mb-2">
+          <h6 className="mb-3 font-poppins text-text-secondary uppercase tracking-wider">
+            Requests
+          </h6>
+          <div className="flex items-center gap-3 mb-3 alert alert-info">
+            <LuUserPlus className="text-primary" size={20} />
+            <p className="font-medium text-status-info-text text-sm">
+              {connectionRequests.length} New Requests
+            </p>
+          </div>
 
-            <div className="space-y-2">
-              <AnimatePresence initial={false}>
-                {visibleRequests.map((request) => (
-                  <motion.div
-                    key={request.userId}
-                    initial={{ opacity: 0, height: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, height: "auto", scale: 1 }}
-                    exit={{
-                      opacity: 0,
-                      x: exitDirection[request.userId] === "right" ? 100 : -100,
-                      height: 0,
-                      marginTop: 0,
-                      marginBottom: 0,
-                      transition: { duration: 0.25, ease: "backIn" },
-                    }}
-                    transition={{ duration: 0.2 }}
-                    className="overflow-hidden"
-                  >
-                    <div
-                      className="group flex justify-between items-center hover:bg-glass-bg-hover p-2 rounded-md overflow-hidden cursor-pointer"
-                      onClick={() =>
-                        router.push(`/profile/${request.userName}`)
-                      }
+          <div className="space-y-2">
+            <AnimatePresence>
+              {connectionRequests?.length > 0
+                ? connectionRequests.slice(0, 2).map((request) => (
+                    <motion.div
+                      key={request.userId}
+                      initial={{ opacity: 0, height: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, height: "auto", scale: 1 }}
+                      exit={{
+                        opacity: 0,
+                        x:
+                          exitDirection[request.userId] === "right"
+                            ? 100
+                            : -100,
+                        height: 0,
+                        marginTop: 0,
+                        marginBottom: 0,
+                        transition: { duration: 0.25, ease: "backIn" },
+                      }}
+                      transition={{ duration: 0.2 }}
+                      className="overflow-hidden"
                     >
-                      <div className="flex items-center gap-2 pr-1 min-w-0">
-                        <Image
-                          src={
-                            request?.avatar
-                              ? request.avatar
-                              : staticImagesConfig.avatarPlaceholder.src
-                          }
-                          alt={
-                            request?.fullName
-                              ? request.fullName
-                              : staticImagesConfig.avatarPlaceholder.alt
-                          }
-                          width={100}
-                          height={100}
-                          className="shadow-glass rounded-full w-10 h-10 object-cover shrink-0"
-                        />
-                        <div className="flex-1 min-w-0">
-                          <h6 className="font-medium text-text-primary text-sm truncate">
-                            {getFullName(request)}
-                          </h6>
-                          {request?.currentJobRole && (
-                            <p className="text-text-secondary text-xs truncate">
-                              {request.currentJobRole}
-                            </p>
-                          )}
+                      <div
+                        className="group flex justify-between items-center hover:bg-glass-bg-hover p-2 rounded-md overflow-hidden cursor-pointer"
+                        onClick={() =>
+                          router.push(`/profile/${request.userName}`)
+                        }
+                      >
+                        <div className="flex items-center gap-2 pr-1 min-w-0">
+                          <Image
+                            src={
+                              request?.avatar
+                                ? request.avatar
+                                : staticImagesConfig.avatarPlaceholder.src
+                            }
+                            alt={
+                              request?.fullName
+                                ? request.fullName
+                                : staticImagesConfig.avatarPlaceholder.alt
+                            }
+                            width={100}
+                            height={100}
+                            className="shadow-glass rounded-full w-10 h-10 object-cover shrink-0"
+                          />
+                          <div className="flex-1 min-w-0">
+                            <h6 className="font-medium text-text-primary text-sm truncate">
+                              {getFullName(request)}
+                            </h6>
+                            {request?.currentJobRole && (
+                              <p className="text-text-secondary text-xs truncate">
+                                {request.currentJobRole}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          <div className="p-0 rounded-md alert alert-success">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleAction(request.userId, "right");
+                              }}
+                              className="p-0 w-8 h-8 font-medium text-status-success-text text-sm"
+                            >
+                              ✓
+                            </button>
+                          </div>
+                          <div className="p-0 rounded-md alert alert-error">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleAction(request.userId, "left");
+                              }}
+                              className="p-0 w-8 h-8 font-medium text-status-error-text text-sm"
+                            >
+                              ✕
+                            </button>
+                          </div>
                         </div>
                       </div>
-                      <div className="flex items-center gap-1.5 shrink-0">
-                        <div className="p-0 rounded-md alert alert-success">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleAction(request.userId, "right");
-                            }}
-                            className="p-0 w-8 h-8 font-medium text-status-success-text text-sm"
-                          >
-                            ✓
-                          </button>
+                    </motion.div>
+                  ))
+                : null}
+            </AnimatePresence>
+          </div>
+
+          {connectionRequests.length > 2 && (
+            <button
+              onClick={() => connectionRequestsSheet.toggle()}
+              className="my-2 w-full btn btn-secondary"
+            >
+              Show all requests ({connectionRequests.length})
+            </button>
+          )}
+        </div>
+
+        <Sheet
+          open={connectionRequestsSheet.isOpen}
+          onClose={() => connectionRequestsSheet.close()}
+        >
+          <div className="flex flex-col h-full">
+            <h4 className="mb-3 p-1 font-poppins text-text-secondary uppercase tracking-wider">
+              Requests
+            </h4>
+
+            <div className="flex-1 space-y-2 overflow-y-auto">
+              <AnimatePresence>
+                {connectionRequests?.length > 0 ? (
+                  connectionRequests.map((request) => (
+                    <motion.div
+                      key={request.userId}
+                      initial={{ opacity: 0, height: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, height: "auto", scale: 1 }}
+                      exit={{
+                        opacity: 0,
+                        x:
+                          exitDirection[request.userId] === "right"
+                            ? 100
+                            : -100,
+                        height: 0,
+                        marginTop: 0,
+                        marginBottom: 0,
+                        transition: { duration: 0.25, ease: "backIn" },
+                      }}
+                      transition={{ duration: 0.2 }}
+                      className="overflow-hidden"
+                    >
+                      <div
+                        className="group flex justify-between items-center hover:bg-glass-bg-hover p-2 rounded-md overflow-hidden cursor-pointer"
+                        onClick={() =>
+                          router.push(`/profile/${request.userName}`)
+                        }
+                      >
+                        <div className="flex items-center gap-2 pr-1 min-w-0">
+                          <Image
+                            src={
+                              request?.avatar
+                                ? request.avatar
+                                : staticImagesConfig.avatarPlaceholder.src
+                            }
+                            alt={
+                              request?.fullName
+                                ? request.fullName
+                                : staticImagesConfig.avatarPlaceholder.alt
+                            }
+                            width={100}
+                            height={100}
+                            className="shadow-glass rounded-full w-10 h-10 object-cover shrink-0"
+                          />
+                          <div className="flex-1 min-w-0">
+                            <h6 className="font-medium text-text-primary text-sm truncate">
+                              {getFullName(request)}
+                            </h6>
+                            {request?.currentJobRole && (
+                              <p className="text-text-secondary text-xs truncate">
+                                {request.currentJobRole}
+                              </p>
+                            )}
+                          </div>
                         </div>
-                        <div className="p-0 rounded-md alert alert-error">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleAction(request.userId, "left");
-                            }}
-                            className="p-0 w-8 h-8 font-medium text-status-error-text text-sm"
-                          >
-                            ✕
-                          </button>
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          <div className="p-0 rounded-md alert alert-success">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleAction(request.userId, "right");
+                              }}
+                              className="p-0 w-8 h-8 font-medium text-status-success-text text-sm"
+                            >
+                              ✓
+                            </button>
+                          </div>
+                          <div className="p-0 rounded-md alert alert-error">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleAction(request.userId, "left");
+                              }}
+                              className="p-0 w-8 h-8 font-medium text-status-error-text text-sm"
+                            >
+                              ✕
+                            </button>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </motion.div>
-                ))}
+                    </motion.div>
+                  ))
+                ) : (
+                  <p className="my-auto text-sm text-center">
+                    No requests available...
+                  </p>
+                )}
               </AnimatePresence>
             </div>
-
-            {!showAllRequests && connectionRequests.length > 2 && (
-              <button
-                onClick={() => setShowAllRequests(true)}
-                className="my-2 w-full btn btn-secondary"
-              >
-                Show all requests ({connectionRequests.length})
-              </button>
-            )}
           </div>
-        ) : null}
+        </Sheet>
 
         <div>
           <h6 className="mb-3 font-poppins text-text-secondary uppercase tracking-wider">

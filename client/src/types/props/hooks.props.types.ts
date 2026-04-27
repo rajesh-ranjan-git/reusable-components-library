@@ -1,4 +1,4 @@
-import { RefObject } from "react";
+import { ReactNode, RefObject } from "react";
 import { StorageType } from "@/types/types/common.types";
 import { ValidatorType } from "@/types/types/hooks.types";
 
@@ -19,4 +19,14 @@ export interface UseOutsideClickProps {
   ref: RefObject<HTMLElement | null> | RefObject<HTMLElement | null>[];
   when: boolean;
   callback: () => void;
+}
+
+export interface SheetProps {
+  open: boolean;
+  onClose: () => void;
+  children?: ReactNode;
+}
+
+export interface UseSheetProps {
+  type: string | null;
 }
