@@ -11,6 +11,9 @@ import AppSidebar from "@/components/layout/app.sidebar";
 import BottomNav from "@/components/layout/bottom.navbar";
 import ActionBar from "@/components/discover/action.bar";
 import SwipeCard from "@/components/discover/swipe.card";
+import { connect } from "@/lib/actions/connection.actions";
+import { useToast } from "@/hooks/toast";
+import { toTitleCase } from "@/utils/common.utils";
 
 const DiscoverPage = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -20,7 +23,12 @@ const DiscoverPage = () => {
   const pageRef = useRef(1);
   const isFetchingRef = useRef(false);
 
-  const handleSwipe = (direction: SwipeDirectionType, userId?: string) => {
+  const { showToast } = useToast();
+
+  const handleSwipe = async (
+    direction: SwipeDirectionType,
+    userId?: string,
+  ) => {
     const targetId =
       userId ??
       (visibleProfiles.length > 0
@@ -29,6 +37,28 @@ const DiscoverPage = () => {
 
     if (targetId) {
       setVisibleProfiles((prev) => prev.filter((p) => p?.userId !== targetId));
+    }
+
+    if (direction === "left") {
+      const notInterestedResponse = await connect(targetId!, "not-interested");
+
+      if (!notInterestedResponse.success) {
+        showToast({
+          title: toTitleCase(notInterestedResponse.code),
+          message: notInterestedResponse.message ?? "",
+          variant: "error",
+        });
+      }
+    } else {
+      const interestedResponse = await connect(targetId!, "interested");
+
+      if (!interestedResponse.success) {
+        showToast({
+          title: toTitleCase(interestedResponse.code),
+          message: interestedResponse.message ?? "",
+          variant: "error",
+        });
+      }
     }
   };
 

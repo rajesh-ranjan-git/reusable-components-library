@@ -19,4 +19,7 @@ export const apiUrls = {
   discover: {
     fetchProfiles: "/discover/profiles",
   },
+  connection: {
+    connect: "/connection/connect",
+  },
 };

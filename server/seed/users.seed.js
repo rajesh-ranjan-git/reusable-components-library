@@ -250,16 +250,25 @@ const seedUsers = async () => {
         `${firstName.slice(0, 3)}${lastName.slice(0, 3)}`.toLowerCase();
 
       const numSkills = 2 + Math.floor(Math.random() * 3);
-      const skills = Array.from({ length: numSkills }, () => ({
-        name: skillsList[Math.floor(Math.random() * skillsList.length)],
-        level: skillLevels[Math.floor(Math.random() * skillLevels.length)],
-      }));
+      const skills = [
+        ...new Set(
+          Array.from({ length: numSkills }, () => ({
+            name: skillsList[Math.floor(Math.random() * skillsList.length)],
+            level: skillLevels[Math.floor(Math.random() * skillLevels.length)],
+          })),
+        ),
+      ];
 
       const numInterests = 2 + Math.floor(Math.random() * 3);
-      const interests = Array.from(
-        { length: numInterests },
-        () => interestsList[Math.floor(Math.random() * interestsList.length)],
-      );
+      const interests = [
+        ...new Set(
+          Array.from(
+            { length: numInterests },
+            () =>
+              interestsList[Math.floor(Math.random() * interestsList.length)],
+          ),
+        ),
+      ];
 
       const numExp = 1 + Math.floor(Math.random() * 2);
       const experiences = Array.from({ length: numExp }, (_, idx) => ({

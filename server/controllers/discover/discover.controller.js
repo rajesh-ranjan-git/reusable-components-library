@@ -1,25 +1,18 @@
-import { isValidObjectId } from "mongoose";
 import {
   DEFAULT_PAGE_SIZE,
   MAX_PAGE_SIZE,
 } from "../../constants/common.constants.js";
-import { RESTRICTED_ROLES, ROLES } from "../../constants/roles.constants.js";
-import { httpStatusConfig } from "../../config/http.config.js";
-import User from "../../models/user/auth/user.model.js";
-import Account from "../../models/user/auth/account.model.js";
+import { RESTRICTED_ROLES } from "../../constants/roles.constants.js";
 import Profile from "../../models/user/profile/profile.model.js";
 import Role from "../../models/user/rbac/role.model.js";
 import UserRole from "../../models/user/rbac/user.role.model.js";
-import Session from "../../models/user/auth/session.model.js";
-import ActivityLog from "../../models/user/auth/activity.log.model.js";
+import Connection from "../../models/connection/connection.model.js";
 import {
   asyncHandler,
   omitObjectProperties,
 } from "../../utils/common.utils.js";
 import { sanitizeMongoData } from "../../db/db.utils.js";
-import { sessionService } from "../../services/auth/session.service.js";
 import AppError from "../../services/error/error.service.js";
-import { activityService } from "../../services/activity/activity.service.js";
 import { responseService } from "../../services/response/response.service.js";
 
 export const discoverProfiles = asyncHandler(async (req, res) => {
@@ -47,9 +40,28 @@ export const discoverProfiles = asyncHandler(async (req, res) => {
 
   const restrictedUserIds = restrictedUsers.map((u) => u.user.toString());
 
+  const connections = await Connection.find({
+    connectionStatus: { $in: ["interested", "accepted", "blocked"] },
+    $or: [{ senderId: currentUserId }, { receiverId: currentUserId }],
+  })
+    .select("senderId receiverId")
+    .lean();
+
+  const connectedUserIds = connections.map((connection) => {
+    return connection.senderId.toString() === currentUserId.toString()
+      ? connection.receiverId.toString()
+      : connection.senderId.toString();
+  });
+
+  const excludedUserIds = [
+    ...restrictedUserIds,
+    ...connectedUserIds,
+    currentUserId,
+  ];
+
   const filter = {
     user: {
-      $nin: [...restrictedUserIds, currentUserId],
+      $nin: excludedUserIds,
     },
   };
 
@@ -69,7 +81,7 @@ export const discoverProfiles = asyncHandler(async (req, res) => {
         path: "address",
         select: "city state country location",
       })
-      .select("-_id -updatedAt -__v -avatarFileId -coverFileId -interests")
+      .select("-_id -updatedAt -avatarFileId -coverFileId -interests")
       .skip(skip)
       .limit(limitNum),
     Profile.countDocuments(filter),
@@ -90,6 +102,7 @@ export const discoverProfiles = asyncHandler(async (req, res) => {
       "phone",
       "experiences",
       "skills",
+      "address",
     ]),
   }));
 

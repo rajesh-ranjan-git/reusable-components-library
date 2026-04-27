@@ -4,18 +4,27 @@ import User from "../../models/user/auth/user.model.js";
 import { requestMiddleware } from "../../middlewares/request.middleware.js";
 import { authenticate } from "../../middlewares/authenticate.middleware.js";
 import { authorize } from "../../middlewares/authorize.middleware.js";
-import { discoverProfiles } from "../../controllers/discover/discover.controller.js";
+import { connect } from "../../controllers/connection/connection.controller.js";
 
-const discoverRouter = express.Router();
+const connectionRouter = express.Router();
 
-discoverRouter.get(
-  "/profiles",
-  requestMiddleware({}),
+connectionRouter.post(
+  "/connect/:userId",
+  requestMiddleware({ requireParams: true, requireBody: true }),
   authenticate,
   authorize({
     permissions: [PERMISSIONS.PROFILE_READ_ANY],
+    ownership: {
+      type: "resource",
+      source: "params",
+      idKey: "userId",
+      model: User,
+      ownerIdField: "_id",
+    },
+    enforceHierarchy: true,
+    allowSameLevel: true,
   }),
-  discoverProfiles,
+  connect,
 );
 
-export default discoverRouter;
+export default connectionRouter;

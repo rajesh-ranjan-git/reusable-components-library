@@ -11,4 +11,6 @@ import "../models/user/rbac/user.role.model.js";
 import "../models/user/profile/profile.model.js";
 import "../models/user/profile/address.model.js";
 import "../models/user/profile/social.model.js";
+import "../models/connection/connection.model.js";
+import "../models/notification/notification.model.js";
 import "../models/push/push.notification.model.js";

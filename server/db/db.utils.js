@@ -27,6 +27,10 @@ export const sanitizeSingleMongoDocument = (doc) => {
     delete sanitized._id;
   }
 
+  if (sanitized.__v === 0) {
+    delete sanitized.__v;
+  }
+
   Object.keys(sanitized).forEach((key) => {
     const value = sanitized[key];
 

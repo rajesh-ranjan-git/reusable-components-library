@@ -17,6 +17,7 @@ import socialRouter from "../routes/user/profile/social.routes.js";
 import addressRouter from "../routes/user/profile/address.routes.js";
 import adminRouter from "../routes/admin/admin.routes.js";
 import discoverRouter from "../routes/discover/discover.routes.js";
+import connectionRouter from "../routes/connection/connection.routes.js";
 import pushNotificationRouter from "../routes/push/push.notification.routes.js";
 import Log from "../models/log/log.model.js";
 import { initializeSocket } from "../services/socket/socket.service.js";
@@ -49,6 +50,8 @@ app.use("/api/v1/user", addressRouter);
 app.use("/api/v1/admin", adminRouter);
 
 app.use("/api/v1/discover", discoverRouter);
+
+app.use("/api/v1/connection", connectionRouter);
 
 app.use("/api/v1/push-notifications", pushNotificationRouter);
 
