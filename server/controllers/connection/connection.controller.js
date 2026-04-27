@@ -1,9 +1,14 @@
 import { httpStatusConfig } from "../../config/http.config.js";
-import { DEFAULT_PAGE_SIZE } from "../../constants/common.constants.js";
+import {
+  DEFAULT_PAGE_SIZE,
+  MAX_PAGE_SIZE,
+} from "../../constants/common.constants.js";
 import Connection from "../../models/connection/connection.model.js";
 import Notification from "../../models/notification/notification.model.js";
 import Profile from "../../models/user/profile/profile.model.js";
 import { getNotificationBody } from "../../utils/notification.utils.js";
+import { sanitizeMongoData } from "../../db/db.utils.js";
+import { selectObjectProperties } from "../../utils/common.utils.js";
 import { validateConnectionStatus } from "../../validators/connection.validator.js";
 import AppError from "../../services/error/error.service.js";
 import { responseService } from "../../services/response/response.service.js";
@@ -435,5 +440,130 @@ export const connect = async (req, res) => {
     status: "CONNECTION REQUEST SUCCESS",
     message: "Connection request sent successfully!",
     data: { connection },
+  });
+};
+
+export const connections = async (req, res) => {
+  const { page = 1, limit = DEFAULT_PAGE_SIZE, search } = req.data.query;
+
+  const userId = req.data.userId;
+
+  const pageNum = Math.max(1, parseInt(page));
+  const limitNum = Math.min(MAX_PAGE_SIZE, Math.max(1, parseInt(limit)));
+  const skip = (pageNum - 1) * limitNum;
+
+  const connections = await Connection.find({
+    $or: [{ senderId: userId }, { receiverId: userId }],
+    connectionStatus: "accepted",
+  }).lean();
+
+  const connectedUserIds = connections.map((connection) => {
+    return connection.senderId.toString() === userId.toString()
+      ? connection.receiverId.toString()
+      : connection.senderId.toString();
+  });
+
+  const filter = {
+    user: {
+      $in: connectedUserIds,
+    },
+  };
+
+  const [profiles, total] = await Promise.all([
+    Profile.find(filter)
+      .populate("user", "status lastSeen")
+      .select("firstName lastName bio experiences")
+      .skip(skip)
+      .limit(limitNum),
+    Profile.countDocuments(filter),
+  ]);
+
+  const users = profiles.filter((profile) => profile.user?.status === "active");
+
+  const normalizedUsers = sanitizeMongoData(users).map((user) => ({
+    userId: user.user.id,
+    lastSeen: user.user.lastSeen,
+    ...selectObjectProperties(user, [
+      "firstName",
+      "lastName",
+      "fullName",
+      "currentJobRole",
+      "bio",
+    ]),
+  }));
+
+  return responseService.successResponseHandler(req, res, {
+    status: "CONNECTIONS FETCH SUCCESS",
+    message: "Connections fetched successfully!",
+    data: {
+      connections: normalizedUsers,
+      pagination: {
+        total,
+        page: pageNum,
+        limit: limitNum,
+        totalPages: Math.ceil(total / limitNum),
+      },
+    },
+  });
+};
+
+export const requests = async (req, res) => {
+  const { page = 1, limit = DEFAULT_PAGE_SIZE, search } = req.data.query;
+
+  const userId = req.data.userId;
+
+  const pageNum = Math.max(1, parseInt(page));
+  const limitNum = Math.min(MAX_PAGE_SIZE, Math.max(1, parseInt(limit)));
+  const skip = (pageNum - 1) * limitNum;
+
+  const connections = await Connection.find({
+    receiverId: userId,
+    connectionStatus: "interested",
+  }).lean();
+
+  const connectedUserIds = connections.map((connection) =>
+    connection.senderId.toString(),
+  );
+
+  const filter = {
+    user: {
+      $in: connectedUserIds,
+    },
+  };
+
+  const [profiles, total] = await Promise.all([
+    Profile.find(filter)
+      .populate("user", "status")
+      .select("firstName lastName bio experiences")
+      .skip(skip)
+      .limit(limitNum),
+    Profile.countDocuments(filter),
+  ]);
+
+  const users = profiles.filter((profile) => profile.user?.status === "active");
+
+  const normalizedUsers = sanitizeMongoData(users).map((user) => ({
+    userId: user.user.id,
+    ...selectObjectProperties(user, [
+      "firstName",
+      "lastName",
+      "fullName",
+      "currentJobRole",
+      "bio",
+    ]),
+  }));
+
+  return responseService.successResponseHandler(req, res, {
+    status: "REQUESTS FETCH SUCCESS",
+    message: "Connection requests fetched successfully!",
+    data: {
+      requests: normalizedUsers,
+      pagination: {
+        total,
+        page: pageNum,
+        limit: limitNum,
+        totalPages: Math.ceil(total / limitNum),
+      },
+    },
   });
 };

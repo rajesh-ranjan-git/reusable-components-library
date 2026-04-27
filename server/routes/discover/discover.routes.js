@@ -12,9 +12,7 @@ discoverRouter.get(
   "/profiles",
   requestMiddleware({}),
   authenticate,
-  authorize({
-    permissions: [PERMISSIONS.PROFILE_READ_ANY],
-  }),
+  authorize({ permissions: [PERMISSIONS.PROFILE_READ_ANY] }),
   discoverProfiles,
 );
 
