@@ -19,7 +19,7 @@ import { useAppStore } from "@/store/store";
 import { toTitleCase } from "@/utils/common.utils";
 import {
   adminRoutes,
-  chatRoutes,
+  conversationRoutes,
   defaultRoutes,
   profileRoutes,
   subscriptionRoutes,
@@ -46,7 +46,7 @@ const profileMenuItems = {
   },
   chats: {
     title: "Chats",
-    url: chatRoutes.chat,
+    url: conversationRoutes.conversation,
     icon: <LuMessageSquare size={16} className="text-text-secondary" />,
   },
   subscription: {

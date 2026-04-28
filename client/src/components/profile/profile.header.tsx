@@ -9,7 +9,7 @@ import { useAppStore } from "@/store/store";
 import { compressImage, dataURLtoImage } from "@/helpers/profile.helpers";
 import { validateImage } from "@/validators/profile.validators";
 import { useToast } from "@/hooks/toast";
-import { chatRoutes } from "@/lib/routes/routes";
+import { conversationRoutes } from "@/lib/routes/routes";
 import { uploadImage } from "@/lib/actions/profile.actions";
 import CameraModal from "@/components/shared/camera.modal";
 import ProfileCover from "@/components/profile/cover";
@@ -215,7 +215,7 @@ const ProfileHeader = ({ isOwnProfile, user }: ProfileHeaderProps) => {
                 </button>
                 <button
                   className="flex items-center gap-2 p-3 focus:ring-1 focus:ring-accent-purple-light glass"
-                  onClick={() => router.push(chatRoutes.chat)}
+                  onClick={() => router.push(conversationRoutes.conversation)}
                 >
                   <LuMessageSquare size={16} />
                 </button>

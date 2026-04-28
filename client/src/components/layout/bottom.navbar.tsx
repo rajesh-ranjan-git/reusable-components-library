@@ -1,6 +1,10 @@
 import { useRouter } from "next/navigation";
 import { LuCompass, LuMessageSquare, LuUser } from "react-icons/lu";
-import { chatRoutes, defaultRoutes, profileRoutes } from "@/lib/routes/routes";
+import {
+  conversationRoutes,
+  defaultRoutes,
+  profileRoutes,
+} from "@/lib/routes/routes";
 
 const BottomNavbar = ({ activeTab = "chats", hidden = false }) => {
   const router = useRouter();
@@ -18,7 +22,7 @@ const BottomNavbar = ({ activeTab = "chats", hidden = false }) => {
       icon: LuMessageSquare,
       label: "Chats",
       badge: 3,
-      path: chatRoutes.chat,
+      path: conversationRoutes.conversation,
     },
     {
       id: "profile",

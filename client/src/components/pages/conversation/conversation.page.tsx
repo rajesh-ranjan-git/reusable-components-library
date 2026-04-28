@@ -1,15 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { ChatType } from "@/types/types/chat.types";
+import { ConversationType } from "@/types/types/conversation.types";
 import Header from "@/components/layout/header";
 import BottomNavbar from "@/components/layout/bottom.navbar";
-import ChatList from "@/components/chat/chat.list";
-import ChatWindow from "@/components/chat/chat.window";
+import ConversationList from "@/components/conversation/conversation.list";
+import ConversationWindow from "@/components/conversation/conversation.window";
 
-const ChatPage = () => {
+const ConversationPage = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [selectedChat, setSelectedChat] = useState<ChatType | null>(null);
+  const [selectedChat, setSelectedChat] = useState<ConversationType | null>(
+    null,
+  );
 
   return (
     <div className="flex flex-col bg-bg-page h-dvh overflow-hidden text-text-primary">
@@ -23,17 +25,17 @@ const ChatPage = () => {
         <div
           className={`w-full h-full pb-16 md:pb-0 md:w-72 lg:w-80 shrink-0 md:flex ${selectedChat ? "hidden md:flex" : "flex"}`}
         >
-          <ChatList
-            selectedChatId={selectedChat?.id ?? null}
-            onSelectChat={setSelectedChat}
+          <ConversationList
+            selectedConversationId={selectedChat?.id ?? null}
+            onSelectConversation={setSelectedChat}
           />
         </div>
 
         <div
           className={`flex-1 h-full absolute inset-0 md:static md:flex bg-bg ${selectedChat ? "flex z-20" : "hidden md:flex"}`}
         >
-          <ChatWindow
-            chat={selectedChat}
+          <ConversationWindow
+            conversation={selectedChat}
             onBack={() => setSelectedChat(null)}
           />
         </div>
@@ -44,4 +46,4 @@ const ChatPage = () => {
   );
 };
 
-export default ChatPage;
+export default ConversationPage;

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { FaArrowRight, FaStar } from "react-icons/fa6";
 import { LuChevronRight, LuMessageSquare } from "react-icons/lu";
-import { chatRoutes, defaultRoutes } from "@/lib/routes/routes";
+import { conversationRoutes, defaultRoutes } from "@/lib/routes/routes";
 
 const HeroSection = () => {
   return (
@@ -33,7 +33,7 @@ const HeroSection = () => {
           <FaArrowRight size={18} />
         </Link>
         <Link
-          href={chatRoutes.chat}
+          href={conversationRoutes.conversation}
           className="px-6 py-3 text-lg btn btn-secondary"
         >
           <LuMessageSquare size={18} />

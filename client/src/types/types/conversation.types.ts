@@ -1,4 +1,4 @@
-export type ChatType = {
+export type ConversationType = {
   id: number;
   name: string;
   avatar: string;

@@ -1,7 +1,7 @@
 import { ChangeEvent, SubmitEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { LuCreditCard, LuLock, LuShieldCheck, LuUser } from "react-icons/lu";
-import { chatRoutes } from "@/lib/routes/routes";
+import { conversationRoutes } from "@/lib/routes/routes";
 import FormField from "@/components/forms/shared/form.field";
 import FormButton from "@/components/forms/shared/form.button";
 import FormInput from "@/components/forms/shared/form.input";
@@ -42,7 +42,7 @@ const PaymentForm = () => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      router.push(chatRoutes.chat);
+      router.push(conversationRoutes.conversation);
     }, 2000);
   };
 

@@ -1,11 +1,14 @@
 import Image from "next/image";
 import { LuSearch } from "react-icons/lu";
 import { staticImagesConfig } from "@/config/common.config";
-import { ChatListProps } from "@/types/props/chat.props";
+import { ConversationListProps } from "@/types/props/conversation.props";
 import { mockChats } from "@/lib/data/chat.data";
 import FormInput from "@/components/forms/shared/form.input";
 
-const ChatList = ({ selectedChatId, onSelectChat }: ChatListProps) => {
+const ConversationList = ({
+  selectedConversationId,
+  onSelectConversation,
+}: ConversationListProps) => {
   return (
     <div className="flex flex-col bg-surface md:bg-transparent border-glass-border md:border-r w-full md:w-72 lg:w-80 h-full shrink-0">
       <div className="bg-glass-bg p-4 pb-2 border-glass-border border-b">
@@ -22,8 +25,8 @@ const ChatList = ({ selectedChatId, onSelectChat }: ChatListProps) => {
         {mockChats.map((chat) => (
           <button
             key={chat.id}
-            onClick={() => onSelectChat(chat)}
-            className={`w-full text-left p-3 flex gap-2 items-center border-b border-glass-border duration-200 hover:bg-glass-bg-subtle ${selectedChatId === chat.id ? "bg-glass-bg-strong" : "bg-glass-bg"}`}
+            onClick={() => onSelectConversation(chat)}
+            className={`w-full text-left p-3 flex gap-2 items-center border-b border-glass-border duration-200 hover:bg-glass-bg-subtle ${selectedConversationId === chat.id ? "bg-glass-bg-strong" : "bg-glass-bg"}`}
           >
             <div className="relative shrink-0">
               <Image
@@ -66,4 +69,4 @@ const ChatList = ({ selectedChatId, onSelectChat }: ChatListProps) => {
   );
 };
 
-export default ChatList;
+export default ConversationList;

@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
 import { LuHeart, LuMessageSquare, LuUserPlus } from "react-icons/lu";
 import { HeaderNotificationMenuProps } from "@/types/props/common.props.types";
-import { chatRoutes, profileRoutes } from "@/lib/routes/routes";
+import { conversationRoutes, profileRoutes } from "@/lib/routes/routes";
 
 const HeaderNotificationMenu = ({
   isOpen,
@@ -47,7 +47,7 @@ const HeaderNotificationMenu = ({
       time: "2m ago",
       icon: LuHeart,
       color: "text-pink-500",
-      path: chatRoutes.chat,
+      path: conversationRoutes.conversation,
     },
     {
       id: 2,
@@ -56,7 +56,7 @@ const HeaderNotificationMenu = ({
       time: "1h ago",
       icon: LuMessageSquare,
       color: "text-blue-400",
-      path: chatRoutes.chat,
+      path: conversationRoutes.conversation,
     },
     {
       id: 3,

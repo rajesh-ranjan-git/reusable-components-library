@@ -13,8 +13,8 @@ export const profileRoutes = {
   profile: "/profile",
 };
 
-export const chatRoutes = {
-  chat: "/chat",
+export const conversationRoutes = {
+  conversation: "/conversation",
 };
 
 export const subscriptionRoutes = {

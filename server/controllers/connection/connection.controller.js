@@ -8,18 +8,21 @@ import Notification from "../../models/notification/notification.model.js";
 import Profile from "../../models/user/profile/profile.model.js";
 import { getNotificationBody } from "../../utils/notification.utils.js";
 import { sanitizeMongoData } from "../../db/db.utils.js";
-import { selectObjectProperties } from "../../utils/common.utils.js";
+import {
+  asyncHandler,
+  selectObjectProperties,
+} from "../../utils/common.utils.js";
 import { validateConnectionStatus } from "../../validators/connection.validator.js";
 import AppError from "../../services/error/error.service.js";
 import { responseService } from "../../services/response/response.service.js";
 
-export const connect = async (req, res) => {
+export const connect = asyncHandler(async (req, res) => {
   const userId = await req.data.userId;
   const { userId: otherUserId } = await req.data.params;
   const { status: connectionStatus } = await req.data.body;
 
   if (userId === otherUserId) {
-    throw AppError.badRequest({
+    throw AppError.forbidden({
       message: "You cannot send connection request to yourself!",
       code: "CONNECTION REQUEST FAILED",
     });
@@ -441,9 +444,9 @@ export const connect = async (req, res) => {
     message: "Connection request sent successfully!",
     data: { connection },
   });
-};
+});
 
-export const connections = async (req, res) => {
+export const connections = asyncHandler(async (req, res) => {
   const { page = 1, limit = DEFAULT_PAGE_SIZE, search } = req.data.query;
 
   const userId = req.data.userId;
@@ -509,9 +512,9 @@ export const connections = async (req, res) => {
       },
     },
   });
-};
+});
 
-export const requests = async (req, res) => {
+export const requests = asyncHandler(async (req, res) => {
   const { page = 1, limit = DEFAULT_PAGE_SIZE, search } = req.data.query;
 
   const userId = req.data.userId;
@@ -574,4 +577,4 @@ export const requests = async (req, res) => {
       },
     },
   });
-};
+});

@@ -10,12 +10,15 @@ import {
 } from "react-icons/lu";
 import { IoMdMore } from "react-icons/io";
 import { staticImagesConfig } from "@/config/common.config";
-import { ChatWindowProps } from "@/types/props/chat.props";
+import { ConversationWindowProps } from "@/types/props/conversation.props";
 import { mockMessages } from "@/lib/data/chat.data";
-import MessageBubble from "@/components/chat/message.bubble";
+import MessageBubble from "@/components/conversation/message.bubble";
 import FormTextarea from "@/components/forms/shared/form.textarea";
 
-const ChatWindow = ({ chat, onBack }: ChatWindowProps) => {
+const ConversationWindow = ({
+  conversation,
+  onBack,
+}: ConversationWindowProps) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleInput = () => {
@@ -46,7 +49,7 @@ const ChatWindow = ({ chat, onBack }: ChatWindowProps) => {
     }
   };
 
-  if (!chat) {
+  if (!conversation) {
     return (
       <div className="hidden relative md:flex flex-col flex-1 justify-center items-center gap-2">
         <div className="flex justify-center items-center mb-4 rounded-full w-16 h-16 text-text-secondary glass">
@@ -78,7 +81,7 @@ const ChatWindow = ({ chat, onBack }: ChatWindowProps) => {
               height={100}
               className="shadow-glass rounded-full w-10 h-10 object-cover shrink-0"
             />
-            {chat.online ? (
+            {conversation.online ? (
               <span className="right-0 bottom-0 absolute bg-green-500 border-[#0B0F1A] border-2 rounded-full w-3 h-3"></span>
             ) : (
               <span className="right-0 bottom-0 absolute bg-gray-500 border-[#0B0F1A] border-2 rounded-full w-3 h-3"></span>
@@ -86,12 +89,12 @@ const ChatWindow = ({ chat, onBack }: ChatWindowProps) => {
           </div>
           <div>
             <h6 className="font-medium text-text-primary truncate">
-              {chat.name}
+              {conversation.name}
             </h6>
             <p
-              className={`text-xs ${chat.online ? "text-green-500" : "text-gray-500"}`}
+              className={`text-xs ${conversation.online ? "text-green-500" : "text-gray-500"}`}
             >
-              {chat.online ? "Online" : "Offline "}
+              {conversation.online ? "Online" : "Offline "}
             </p>
           </div>
         </div>
@@ -147,4 +150,4 @@ const ChatWindow = ({ chat, onBack }: ChatWindowProps) => {
   );
 };
 
-export default ChatWindow;
+export default ConversationWindow;

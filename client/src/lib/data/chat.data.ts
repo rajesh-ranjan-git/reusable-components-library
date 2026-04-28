@@ -1,6 +1,9 @@
-import { ChatType, MessageType } from "@/types/types/chat.types";
+import {
+  ConversationType,
+  MessageType,
+} from "@/types/types/conversation.types";
 
-export const mockChats: ChatType[] = [
+export const mockChats: ConversationType[] = [
   {
     id: 1,
     name: "Alice Cooper",

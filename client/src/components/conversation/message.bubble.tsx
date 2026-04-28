@@ -1,4 +1,4 @@
-import { MessageBubbleProps } from "@/types/props/chat.props";
+import { MessageBubbleProps } from "@/types/props/conversation.props";
 
 const MessageBubble = ({ message, isOwn }: MessageBubbleProps) => {
   return (

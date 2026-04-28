@@ -13,7 +13,7 @@ import { useToast } from "@/hooks/toast";
 import useSheet from "@/hooks/useSheet";
 import { toTitleCase } from "@/utils/common.utils";
 import { getFullName } from "@/helpers/profile.helpers";
-import { chatRoutes, defaultRoutes } from "@/lib/routes/routes";
+import { conversationRoutes, defaultRoutes } from "@/lib/routes/routes";
 import {
   connect,
   fetchConnections,
@@ -381,7 +381,7 @@ const AppSidebar = ({ setIsSidebarOpen }: AppSidebarProps) => {
                       onClick={(e) => {
                         e.stopPropagation();
                         setIsSidebarOpen?.(false);
-                        router.push(chatRoutes.chat);
+                        router.push(conversationRoutes.conversation);
                       }}
                       className="p-0 w-8 h-8 font-medium text-status-info-text text-sm"
                     >
