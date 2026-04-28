@@ -9,9 +9,8 @@ import ConversationWindow from "@/components/conversation/conversation.window";
 
 const ConversationPage = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [selectedChat, setSelectedChat] = useState<ConversationType | null>(
-    null,
-  );
+  const [selectedConversation, setSelectedConversation] =
+    useState<ConversationType | null>(null);
 
   return (
     <div className="flex flex-col bg-bg-page h-dvh overflow-hidden text-text-primary">
@@ -23,25 +22,25 @@ const ConversationPage = () => {
 
       <main className="relative flex flex-1 overflow-hidden">
         <div
-          className={`w-full h-full pb-16 md:pb-0 md:w-72 lg:w-80 shrink-0 md:flex ${selectedChat ? "hidden md:flex" : "flex"}`}
+          className={`w-full h-full pb-16 md:pb-0 md:w-72 lg:w-80 shrink-0 md:flex ${selectedConversation ? "hidden md:flex" : "flex"}`}
         >
           <ConversationList
-            selectedConversationId={selectedChat?.id ?? null}
-            onSelectConversation={setSelectedChat}
+            selectedConversationId={selectedConversation?.id ?? null}
+            onSelectConversation={setSelectedConversation}
           />
         </div>
 
         <div
-          className={`flex-1 h-full absolute inset-0 md:static md:flex bg-bg ${selectedChat ? "flex z-20" : "hidden md:flex"}`}
+          className={`flex-1 h-full absolute inset-0 md:static md:flex bg-bg ${selectedConversation ? "flex z-20" : "hidden md:flex"}`}
         >
           <ConversationWindow
-            conversation={selectedChat}
-            onBack={() => setSelectedChat(null)}
+            conversation={selectedConversation}
+            onBack={() => setSelectedConversation(null)}
           />
         </div>
       </main>
 
-      <BottomNavbar activeTab="chats" hidden={!!selectedChat} />
+      <BottomNavbar activeTab="chats" hidden={!!selectedConversation} />
     </div>
   );
 };

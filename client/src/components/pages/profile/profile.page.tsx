@@ -29,7 +29,7 @@ import InterestsForm from "@/components/forms/profile/interests.form";
 
 const ProfilePage = ({ userName }: ProfilePageProps) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [userProfile, setUserProfile] = useState<UserProfileType>(null);
+  const [userProfile, setUserProfile] = useState<UserProfileType | null>(null);
   const [isOwnProfile] = useState<boolean>(!userName);
   const [currentForm, setCurrentForm] = useState<CurrentFormType>(null);
 
@@ -68,7 +68,9 @@ const ProfilePage = ({ userName }: ProfilePageProps) => {
 
         <div className="flex-1 bg-bg/50 overflow-y-auto">
           <div className="mx-auto p-4 md:p-8 pb-24 md:pb-8 max-w-7xl">
-            <ProfileHeader isOwnProfile={isOwnProfile} user={userProfile} />
+            {userProfile && (
+              <ProfileHeader isOwnProfile={isOwnProfile} user={userProfile} />
+            )}
 
             {userProfile?.bio ? (
               <div className="relative mb-6 p-6 leading-relaxed glass">
