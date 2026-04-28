@@ -83,3 +83,19 @@ export const normalizeExperienceDates = (
       }) as ExperienceType,
   );
 };
+
+export const mergeUniqueUsersByKey = <T, K extends keyof T>(
+  prev: T[],
+  next: T[],
+  key: K,
+): T[] => {
+  const existing = new Set(prev.map((item) => item[key]));
+
+  const additions = next.filter(
+    (item) => item[key] != null && !existing.has(item[key]),
+  );
+
+  if (additions.length === 0) return prev;
+
+  return [...prev, ...additions];
+};

@@ -1,6 +1,13 @@
 import { LoggedInUserType } from "@/types/types/auth.types";
 import { UserProfileType } from "@/types/types/profile.types";
 
+export type ResponsePaginationType = {
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+};
+
 export type FetchMeResponseType = {
   user: LoggedInUserType;
 };
@@ -15,4 +22,5 @@ export type ProfileResponseType = {
 
 export type ProfilesResponseType = {
   users: UserProfileType[];
+  pagination: ResponsePaginationType;
 };

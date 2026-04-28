@@ -50,7 +50,7 @@ const SwipeCard = ({ profile, onSwipe, active }: SwipeCardProps) => {
                 (max-width: 1024px) 90vw,
                 (max-width: 1280px) 600px,
                 700px"
-          className="w-full h-full object-cover pointer-events-none"
+          className="w-full h-full object-cover bg-accent-purple-dark pointer-events-none"
         />
 
         <div className="absolute inset-0 bg-linear-to-t from-white/90 dark:from-black/95 via-white/40 dark:via-black/60 to-transparent pointer-events-none"></div>

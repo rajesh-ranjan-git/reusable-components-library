@@ -19,19 +19,24 @@ export const connect = async (
   }
 };
 
-export const fetchConnections = async (): Promise<ApiResponseType> => {
+export const fetchConnections = async (
+  page: number = 1,
+): Promise<ApiResponseType> => {
   try {
-    return await api.get(apiUrls.connection.fetchConnections, {
-      requireAuth: true,
-    });
+    return await api.get(
+      `${apiUrls.connection.fetchConnections}?page=${page}`,
+      { requireAuth: true },
+    );
   } catch (error) {
     return error as ApiErrorResponseType;
   }
 };
 
-export const fetchRequests = async (): Promise<ApiResponseType> => {
+export const fetchConnectionRequests = async (
+  page: number = 1,
+): Promise<ApiResponseType> => {
   try {
-    return await api.get(apiUrls.connection.fetchRequests, {
+    return await api.get(`${apiUrls.connection.fetchRequests}?page=${page}`, {
       requireAuth: true,
     });
   } catch (error) {

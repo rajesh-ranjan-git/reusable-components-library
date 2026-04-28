@@ -5,19 +5,22 @@ import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
 import { LuMessageCircle, LuSearch, LuUserPlus } from "react-icons/lu";
 import { staticImagesConfig } from "@/config/common.config";
-import { ProfilesResponseType } from "@/types/types/response.types";
+import {
+  ProfilesResponseType,
+  ResponsePaginationType,
+} from "@/types/types/response.types";
 import { AppSidebarProps } from "@/types/props/common.props.types";
 import { UserProfileType } from "@/types/types/profile.types";
 import { RequestDirectionType } from "@/types/types/connection.types";
 import { useToast } from "@/hooks/toast";
 import useSheet from "@/hooks/useSheet";
 import { toTitleCase } from "@/utils/common.utils";
-import { getFullName } from "@/helpers/profile.helpers";
+import { getFullName, mergeUniqueUsersByKey } from "@/helpers/profile.helpers";
 import { conversationRoutes, defaultRoutes } from "@/lib/routes/routes";
 import {
   connect,
   fetchConnections,
-  fetchRequests,
+  fetchConnectionRequests,
 } from "@/lib/actions/connection.actions";
 import FormInput from "@/components/forms/shared/form.input";
 import Sheet from "@/components/ui/sheet/sheet";
@@ -30,6 +33,10 @@ const AppSidebar = ({ setIsSidebarOpen }: AppSidebarProps) => {
   const [exitDirection, setExitDirection] = useState<
     Record<string, RequestDirectionType>
   >({});
+  const [connectionRequestsPagination, setConnectionRequestsPagination] =
+    useState<ResponsePaginationType | null>(null);
+  const [connectionsPagination, setConnectionsPagination] =
+    useState<ResponsePaginationType | null>(null);
 
   const router = useRouter();
 
@@ -83,25 +90,32 @@ const AppSidebar = ({ setIsSidebarOpen }: AppSidebarProps) => {
     }
   };
 
-  const getConnectionRequests = async () => {
-    const connectionRequestsResponse = await fetchRequests();
+  const getConnectionRequests = async (page: number = 1) => {
+    const connectionRequestsResponse = await fetchConnectionRequests(page);
 
     if (!connectionRequestsResponse?.success) {
     } else {
       const data = connectionRequestsResponse.data as ProfilesResponseType;
 
-      setConnectionRequests(data.users);
+      setConnectionRequests((prev) =>
+        mergeUniqueUsersByKey(prev, data.users, "userId"),
+      );
+
+      setConnectionRequestsPagination(data.pagination);
     }
   };
 
-  const getConnections = async () => {
-    const connectionsResponse = await fetchConnections();
+  const getConnections = async (page?: number) => {
+    const connectionsResponse = await fetchConnections(page);
 
     if (!connectionsResponse?.success) {
     } else {
       const data = connectionsResponse.data as ProfilesResponseType;
 
-      setConnections(data.users);
+      setConnections((prev) =>
+        mergeUniqueUsersByKey(prev, data.users, "userId"),
+      );
+      setConnectionsPagination(data.pagination);
     }
   };
 
@@ -130,8 +144,15 @@ const AppSidebar = ({ setIsSidebarOpen }: AppSidebarProps) => {
           </h6>
           <div className="flex items-center gap-3 mb-3 alert alert-info">
             <LuUserPlus className="text-primary" size={20} />
+
             <p className="font-medium text-status-info-text text-sm">
-              {connectionRequests.length} New Requests
+              {connectionRequestsPagination?.total &&
+              connectionRequestsPagination?.total > 0 ? (
+                <span>{connectionRequestsPagination?.total}&nbsp;</span>
+              ) : (
+                "No "
+              )}
+              New Requests
             </p>
           </div>
 
@@ -226,7 +247,7 @@ const AppSidebar = ({ setIsSidebarOpen }: AppSidebarProps) => {
               onClick={() => connectionRequestsSheet.toggle()}
               className="my-2 w-full btn btn-secondary"
             >
-              Show all requests ({connectionRequests.length})
+              Show all requests
             </button>
           )}
         </div>
@@ -238,6 +259,10 @@ const AppSidebar = ({ setIsSidebarOpen }: AppSidebarProps) => {
           <div className="flex flex-col h-full">
             <h4 className="mb-3 p-1 font-poppins text-text-secondary uppercase tracking-wider">
               Requests
+              {connectionRequestsPagination?.total &&
+              connectionRequestsPagination.total > 0 ? (
+                <span>&nbsp;({connectionRequestsPagination.total})</span>
+              ) : null}
             </h4>
 
             <div className="flex-1 space-y-2 overflow-y-auto">
@@ -329,12 +354,28 @@ const AppSidebar = ({ setIsSidebarOpen }: AppSidebarProps) => {
                 )}
               </AnimatePresence>
             </div>
+
+            {connectionRequestsPagination?.total &&
+              connectionRequestsPagination.total >
+                connectionRequests.length && (
+                <button
+                  onClick={() =>
+                    getConnectionRequests(connectionRequestsPagination.page + 1)
+                  }
+                  className="my-2 w-full btn btn-secondary"
+                >
+                  Load more requests
+                </button>
+              )}
           </div>
         </Sheet>
 
         <div>
           <h6 className="mb-3 font-poppins text-text-secondary uppercase tracking-wider">
             Connections
+            {connectionsPagination?.total && connectionsPagination.total > 0 ? (
+              <span>&nbsp;({connectionsPagination.total})</span>
+            ) : null}
           </h6>
           {connections?.length > 0 ? (
             <div className="space-y-2">
@@ -390,6 +431,18 @@ const AppSidebar = ({ setIsSidebarOpen }: AppSidebarProps) => {
                   </div>
                 </div>
               ))}
+
+              {connectionsPagination?.total &&
+                connectionsPagination.total > connectionRequests.length && (
+                  <button
+                    onClick={() =>
+                      getConnections(connectionsPagination.page + 1)
+                    }
+                    className="my-2 w-full btn btn-secondary"
+                  >
+                    Load more connections
+                  </button>
+                )}
             </div>
           ) : (
             <p className="my-auto text-sm text-center">

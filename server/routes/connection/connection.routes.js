@@ -33,7 +33,7 @@ connectionRouter.post(
 
 connectionRouter.get(
   "/connections",
-  requestMiddleware({}),
+  requestMiddleware({ requireQuery: true }),
   authenticate,
   authorize({ permissions: [PERMISSIONS.PROFILE_READ_OWN] }),
   connections,
@@ -41,7 +41,7 @@ connectionRouter.get(
 
 connectionRouter.get(
   "/requests",
-  requestMiddleware({}),
+  requestMiddleware({ requireQuery: true }),
   authenticate,
   authorize({ permissions: [PERMISSIONS.PROFILE_READ_OWN] }),
   requests,

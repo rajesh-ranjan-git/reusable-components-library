@@ -14,6 +14,7 @@
     "start": "concurrently --names \"🧩 CLIENT  🧩,🤖 SERVER 🤖\" --prefix \"[{name}]\" --timestamp --timestamp-format \"HH:mm:ss\" --prefix-colors \"yellow,green\" \"cross-env PORT=1997 NODE_ENV=development next start\" \"cross-env NODE_ENV=development CONCURRENTLY=true nodemon --quiet ../server/src/server.js\"",
     "seed": "node ../server/seed/rbac.seed.js",
     "seed-users": "node ../server/seed/users.seed.js",
+    "seed-connect": "node ../server/seed/connect.seed.js",
     "lint": "eslint"
   },
   "dependencies": {

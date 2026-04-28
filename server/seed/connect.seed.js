@@ -41,7 +41,7 @@ async function login(email, password) {
 
 async function getUsers(accessToken) {
   try {
-    const res = await fetch(`${BASE_URL}/admin/user/list?page=2`, {
+    const res = await fetch(`${BASE_URL}/admin/user/list?page=1`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${accessToken}`,
