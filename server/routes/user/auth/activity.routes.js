@@ -4,9 +4,9 @@ import { requestMiddleware } from "../../../middlewares/request.middleware.js";
 import { authenticate } from "../../../middlewares/authenticate.middleware.js";
 import { authorize } from "../../../middlewares/authorize.middleware.js";
 import {
-  clearMyActivity,
+  getActivities,
   getActivityTypes,
-  getMyActivity,
+  clearActivities,
 } from "../../../controllers/user/auth/activity.controller.js";
 
 const activityRouter = express.Router();
@@ -16,7 +16,7 @@ activityRouter.get(
   requestMiddleware({}),
   authenticate,
   authorize({ permissions: [PERMISSIONS.ACTIVITY_READ_OWN] }),
-  getMyActivity,
+  getActivities,
 );
 activityRouter.get(
   "/activity/types",
@@ -30,7 +30,7 @@ activityRouter.delete(
   requestMiddleware({}),
   authenticate,
   authorize({ permissions: [PERMISSIONS.ACTIVITY_RESET_OWN] }),
-  clearMyActivity,
+  clearActivities,
 );
 
 export default activityRouter;

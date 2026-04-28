@@ -7,7 +7,7 @@ import { asyncHandler } from "../../../utils/common.utils.js";
 import { responseService } from "../../../services/response/response.service.js";
 import AppError from "../../../services/error/error.service.js";
 
-export const getMyActivity = asyncHandler(async (req, res) => {
+export const getActivities = asyncHandler(async (req, res) => {
   const {
     page = 1,
     limit = DEFAULT_PAGE_SIZE,
@@ -72,7 +72,7 @@ export const getActivityTypes = asyncHandler(async (req, res) => {
   });
 });
 
-export const clearMyActivity = asyncHandler(async (req, res) => {
+export const clearActivities = asyncHandler(async (req, res) => {
   const result = await ActivityLog.deleteMany({ user: req.data.userId });
 
   if (!result) {

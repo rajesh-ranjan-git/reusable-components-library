@@ -41,7 +41,7 @@ export const fetchProfile = async (
 ): Promise<ApiResponseType> => {
   try {
     return await api.get(
-      `${userName ? `${apiUrls.profile.fetchProfile}/${userName}` : apiUrls.profile.fetchProfile}`,
+      `${userName ? `${apiUrls.profile.actionProfile}/${userName}` : apiUrls.profile.actionProfile}`,
       { requireAuth: true },
     );
   } catch (error) {
@@ -98,7 +98,7 @@ export const updateProfile = async (
 
   try {
     const response = await api.patch(
-      apiUrls.profile.updateProfile,
+      apiUrls.profile.actionProfile,
       {
         bio: validatedBio,
         interests: validatedInterests,

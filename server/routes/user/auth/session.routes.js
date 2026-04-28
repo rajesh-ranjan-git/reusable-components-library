@@ -28,13 +28,6 @@ sessionRouter.get(
   getSessionCount,
 );
 sessionRouter.delete(
-  "/session/revoke/other",
-  requestMiddleware({}),
-  authenticate,
-  authorize({ permissions: [PERMISSIONS.SESSION_REVOKE_OWN] }),
-  revokeOtherSessions,
-);
-sessionRouter.delete(
   "/session/revoke/:sessionId",
   requestMiddleware({ requireParams: true }),
   authenticate,
@@ -50,6 +43,13 @@ sessionRouter.delete(
     enforceOwnership: true,
   }),
   revokeSession,
+);
+sessionRouter.delete(
+  "/session/revoke/other",
+  requestMiddleware({}),
+  authenticate,
+  authorize({ permissions: [PERMISSIONS.SESSION_REVOKE_OWN] }),
+  revokeOtherSessions,
 );
 
 export default sessionRouter;

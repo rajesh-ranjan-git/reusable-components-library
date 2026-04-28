@@ -108,7 +108,7 @@ export const providerLogin = async (
   token: string,
 ): Promise<ApiResponseType> => {
   try {
-    return await api.post(`${apiUrls.oAuth}/${provider}`, { token });
+    return await api.post(`${apiUrls.oAuth.login}/${provider}`, { token });
   } catch (error) {
     return error as ApiErrorResponseType;
   }
