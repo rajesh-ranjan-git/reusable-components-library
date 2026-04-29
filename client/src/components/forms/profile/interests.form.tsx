@@ -12,7 +12,7 @@ import { InterestsFormProps } from "@/types/props/profile.props.types";
 import { HighlightedInterestType } from "@/types/types/profile.types";
 import { FormStateType } from "@/types/types/actions.types";
 import { initialState } from "@/config/forms.config";
-import { toTitleCase } from "@/utils/common.utils";
+import { deepEquals, toTitleCase } from "@/utils/common.utils";
 import { validateInterest } from "@/validators/profile.validators";
 import { useToast } from "@/hooks/toast";
 import useInputFieldValidator from "@/hooks/useInputFieldValidation";
@@ -143,7 +143,8 @@ const InterestsForm = ({
         <FormFooter
           formType="interests-form"
           onClose={onClose}
-          isPending={isPending || interests.length === 0}
+          isPending={isPending}
+          isDisabled={isPending || deepEquals(interests, initialData)}
         />
       }
     >

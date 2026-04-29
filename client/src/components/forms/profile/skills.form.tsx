@@ -17,7 +17,7 @@ import {
 import { validateSkill } from "@/validators/profile.validators";
 import { useToast } from "@/hooks/toast";
 import useInputFieldValidator from "@/hooks/useInputFieldValidation";
-import { toTitleCase } from "@/utils/common.utils";
+import { deepEquals, toTitleCase } from "@/utils/common.utils";
 import { updateSkills } from "@/lib/actions/profile.actions";
 import ModalPortal from "@/components/forms/shared/form.modal";
 import FormField from "@/components/forms/shared/form.field";
@@ -75,11 +75,11 @@ const SkillsForm = ({
     if (existingIndex !== -1) {
       const existingSkill = skills[existingIndex];
 
-      const existingskillLevelPriorityConfig =
+      const existingSkillLevelPriorityConfig =
         skillLevelPriorityConfig[existingSkill.level as SkillLevelType];
-      const newskillLevelPriorityConfig = skillLevelPriorityConfig[inputLevel];
+      const newSkillLevelPriorityConfig = skillLevelPriorityConfig[inputLevel];
 
-      if (existingskillLevelPriorityConfig === newskillLevelPriorityConfig) {
+      if (existingSkillLevelPriorityConfig === newSkillLevelPriorityConfig) {
         setHighlightedSkill({ index: existingIndex, type: "error" });
 
         setTimeout(() => {
@@ -96,7 +96,7 @@ const SkillsForm = ({
         return;
       }
 
-      if (newskillLevelPriorityConfig > existingskillLevelPriorityConfig) {
+      if (newSkillLevelPriorityConfig > existingSkillLevelPriorityConfig) {
         setSkills((prev) =>
           prev.map((s, i) =>
             i === existingIndex ? { ...s, level: inputLevel } : s,
@@ -190,7 +190,8 @@ const SkillsForm = ({
         <FormFooter
           formType="skills-form"
           onClose={onClose}
-          isPending={isPending || skills.length === 0}
+          isPending={isPending}
+          isDisabled={isPending || deepEquals(skills, initialData)}
         />
       }
     >

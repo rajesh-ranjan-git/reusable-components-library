@@ -1,7 +1,12 @@
 import { FormFooterProps } from "@/types/props/forms.props.types";
 import FormButton from "@/components/forms/shared/form.button";
 
-const FormFooter = ({ formType, onClose, isPending }: FormFooterProps) => {
+const FormFooter = ({
+  formType,
+  onClose,
+  isPending,
+  isDisabled,
+}: FormFooterProps) => {
   return (
     <>
       <FormButton
@@ -18,7 +23,7 @@ const FormFooter = ({ formType, onClose, isPending }: FormFooterProps) => {
         variant="primary"
         form={formType}
         loading={isPending}
-        disabled={isPending}
+        disabled={isDisabled}
       >
         Save Changes
       </FormButton>

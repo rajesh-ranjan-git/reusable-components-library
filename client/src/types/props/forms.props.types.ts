@@ -123,6 +123,7 @@ export interface FormFooterProps {
   formType: string;
   onClose: () => void;
   isPending: boolean;
+  isDisabled: boolean;
 }
 
 export interface FormErrorMessageProps {

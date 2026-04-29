@@ -194,6 +194,7 @@ const ExperienceForm = ({
           formType="experience-form"
           onClose={onClose}
           isPending={isPending}
+          isDisabled={isPending}
         />
       }
     >

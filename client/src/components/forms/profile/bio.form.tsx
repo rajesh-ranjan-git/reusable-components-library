@@ -79,7 +79,8 @@ const BioForm = ({
         <FormFooter
           formType="bio-form"
           onClose={onClose}
-          isPending={
+          isPending={isPending}
+          isDisabled={
             isPending ||
             bioInput?.raw.trim().length < propertyConstraintsConfig.minBioLength
           }
