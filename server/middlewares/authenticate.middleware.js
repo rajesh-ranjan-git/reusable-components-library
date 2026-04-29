@@ -89,7 +89,7 @@ export const authenticate = asyncHandler(async (req, res, next) => {
   req.data = {
     ...req.data,
     userId: user.id,
-    user,
+    user: { ...user, email: account.email },
     roles: userRoles,
     permissions: userPermissions,
   };

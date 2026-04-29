@@ -38,30 +38,9 @@ import AppError from "../../../services/error/error.service.js";
 
 export const getMyProfile = asyncHandler(async (req, res) => {
   const userId = req.data.userId;
+  const user = req.data.user;
+  const userRoles = req.data.roles;
 
-  const account = await Account.findOne({ user: userId }).select(
-    "-_id email createdAt",
-  );
-
-  if (!account) {
-    throw AppError.notFound({
-      message: "User account not found!",
-      code: "ACCOUNT NOT FOUND",
-    });
-  }
-
-  const user = await User.findById(userId).select(
-    "-_id emailVerified phoneVerified",
-  );
-
-  if (!user) {
-    throw AppError.notFound({
-      message: "User details not found!",
-      code: "USER NOT FOUND",
-    });
-  }
-
-  const userRoles = await rbacService.getUserRoles(userId);
   const userHighestRole = await rbacService.getHighestRoleLevel(userRoles);
   const userRole = userRoles.reduce(
     (acc, curr) => (curr.priority === userHighestRole ? curr.name : acc),
@@ -85,12 +64,12 @@ export const getMyProfile = asyncHandler(async (req, res) => {
 
   const userFields = {
     userId: userId,
-    email: account.email,
+    email: user.email,
     emailVerified: user.emailVerified,
     phoneVerified: user.phoneVerified,
     role: userRole,
     location: profile.address?.location || null,
-    createdAt: account.createdAt,
+    createdAt: user.createdAt,
     social,
     ...omitObjectProperties(sanitizeMongoData(profile), [
       "id",
