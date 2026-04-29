@@ -32,9 +32,9 @@ const participantSchema = new mongoose.Schema(
 
 const groupSettingsSchema = new mongoose.Schema(
   {
-    name: { type: String, trim: true, maxlength: 100 },
+    groupName: { type: String, trim: true, maxlength: 100 },
     description: { type: String, trim: true, maxlength: 500 },
-    avatarUrl: { type: String, default: null },
+    groupAvatar: { type: String, default: null },
 
     sendPermission: {
       type: String,

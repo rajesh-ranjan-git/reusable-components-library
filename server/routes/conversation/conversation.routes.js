@@ -1,6 +1,7 @@
 import express from "express";
 import { PERMISSIONS } from "../../constants/permission.constants.js";
 import Profile from "../../models/user/profile/profile.model.js";
+import User from "../../models/user/auth/user.model.js";
 import { requestMiddleware } from "../../middlewares/request.middleware.js";
 import { authenticate } from "../../middlewares/authenticate.middleware.js";
 import { authorize } from "../../middlewares/authorize.middleware.js";
@@ -70,7 +71,7 @@ conversationRouter.post(
   "/group/:conversationId/members",
   requestMiddleware({ requireParams: true, requireBody: true }),
   authenticate,
-  authorize({ permissions: [PERMISSIONS.PROFILE_READ_OWN] }),
+  authorize({ permissions: [PERMISSIONS.PROFILE_READ_ANY] }),
   addGroupMembers,
 );
 
@@ -78,7 +79,18 @@ conversationRouter.delete(
   "/group/:conversationId/members/:memberId",
   requestMiddleware({ requireParams: true }),
   authenticate,
-  authorize({ permissions: [PERMISSIONS.PROFILE_READ_OWN] }),
+  authorize({
+    permissions: [PERMISSIONS.PROFILE_READ_ANY],
+    ownership: {
+      type: "resource",
+      source: "params",
+      idKey: "memberId",
+      model: User,
+      ownerIdField: "_id",
+    },
+    enforceHierarchy: true,
+    allowSameLevel: true,
+  }),
   removeGroupMember,
 );
 
@@ -86,7 +98,18 @@ conversationRouter.patch(
   "/group/:conversationId/members/:memberId/role",
   requestMiddleware({ requireParams: true, requireBody: true }),
   authenticate,
-  authorize({ permissions: [PERMISSIONS.PROFILE_READ_OWN] }),
+  authorize({
+    permissions: [PERMISSIONS.PROFILE_READ_ANY],
+    ownership: {
+      type: "resource",
+      source: "params",
+      idKey: "memberId",
+      model: User,
+      ownerIdField: "_id",
+    },
+    enforceHierarchy: true,
+    allowSameLevel: true,
+  }),
   updateMemberRole,
 );
 

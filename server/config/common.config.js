@@ -91,9 +91,9 @@ export const propertyConstraints = {
   minPasswordLength: 6,
   maxPasswordLength: 100,
   minStringLength: 2,
+  maxStringLength: 100,
   maxBioLength: 300,
   minBioLength: 2,
-  maxStringLength: 100,
   phoneLength: 10,
   pinCodeLength: 6,
 };

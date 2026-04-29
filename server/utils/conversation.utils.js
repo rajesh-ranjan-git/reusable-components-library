@@ -1,7 +1,7 @@
 import { sanitizeMongoData } from "../db/db.utils.js";
 import { omitObjectProperties } from "./common.utils.js";
 
-export const normalizeConversationParticipants = (conversation) => {
+export const normalizeConversation = (conversation) => {
   conversation.participants = conversation.participants.map((participant) => {
     const user = participant.user || {};
     const account = user.account || {};

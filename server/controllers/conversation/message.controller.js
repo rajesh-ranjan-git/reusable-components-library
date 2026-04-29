@@ -4,7 +4,7 @@ import { asyncHandler } from "../../utils/common.utils.js";
 import AppError from "../../services/error/error.service.js";
 
 const MESSAGE_POPULATE = [
-  { path: "sender", select: "name username avatarUrl" },
+  { path: "sender", select: "name username avatar" },
   { path: "replyTo", select: "content contentType sender createdAt" },
 ];
 
