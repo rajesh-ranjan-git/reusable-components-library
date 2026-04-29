@@ -299,7 +299,7 @@ export const updateGroupConversation = asyncHandler(async (req, res) => {
   const updated = await Conversation.findByIdAndUpdate(
     conversationId,
     { $set: updates },
-    { returnDocuments: "after", runValidators: true },
+    { returnDocument: "after", runValidators: true },
   ).populate({
     path: "participants.user",
     select: "status lastSeen",
@@ -420,7 +420,7 @@ export const addGroupMembers = asyncHandler(async (req, res) => {
   await Conversation.findByIdAndUpdate(
     conversationId,
     { $push: { participants: { $each: newParticipants } } },
-    { returnDocuments: "after", runValidators: true },
+    { returnDocument: "after", runValidators: true },
   ).populate({
     path: "participants.user",
     select: "status lastSeen",
