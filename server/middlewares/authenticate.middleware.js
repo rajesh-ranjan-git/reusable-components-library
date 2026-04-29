@@ -4,6 +4,7 @@ import { asyncHandler, deepEquals } from "../utils/common.utils.js";
 import { tokenService } from "../services/auth/token.service.js";
 import AppError from "../services/error/error.service.js";
 import { rbacService } from "../services/rbac/rbac.service.js";
+import { sanitizeMongoData } from "../db/db.utils.js";
 
 export const authenticate = asyncHandler(async (req, res, next) => {
   const token = tokenService.extractBearerToken(req.headers.authorization);
@@ -42,7 +43,7 @@ export const authenticate = asyncHandler(async (req, res, next) => {
 
   if (!user) {
     throw AppError.notFound({
-      message: "User account does not exist!",
+      message: "User does not exist!",
       code: "ACCOUNT NOT FOUND",
       details: { user: payload.userId },
     });
@@ -89,7 +90,7 @@ export const authenticate = asyncHandler(async (req, res, next) => {
   req.data = {
     ...req.data,
     userId: user.id,
-    user: { ...user, email: account.email },
+    user: { ...sanitizeMongoData(user), email: account.email },
     roles: userRoles,
     permissions: userPermissions,
   };

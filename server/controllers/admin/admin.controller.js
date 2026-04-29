@@ -197,7 +197,7 @@ export const updateUserStatus = asyncHandler(async (req, res) => {
 
   if (!user) {
     throw AppError.notFound({
-      message: "No user found with provided userId!",
+      message: "User does not exist!",
       code: "USER NOT FOUND",
       details: { userId },
     });
@@ -262,7 +262,7 @@ export const hardDeleteUser = asyncHandler(async (req, res) => {
 
   if (!user) {
     throw AppError.notFound({
-      message: "No user found with provided userId!",
+      message: "User does not exist!",
       code: "USER NOT FOUND",
       details: { userId },
     });
@@ -366,7 +366,7 @@ export const assignRole = asyncHandler(async (req, res) => {
 
   if (!user) {
     throw AppError.notFound({
-      message: "No user found with provided userId!",
+      message: "User does not exist!",
       code: "USER NOT FOUND",
       details: { userId },
     });

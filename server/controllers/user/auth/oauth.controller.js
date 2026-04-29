@@ -140,7 +140,7 @@ export const oauthCallback = asyncHandler(async (req, res) => {
 
   if (!user) {
     throw AppError.notFound({
-      message: "User account does not exist!",
+      message: "User does not exist!",
       code: "ACCOUNT NOT FOUND",
       details: { user },
     });

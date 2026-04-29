@@ -122,7 +122,7 @@ export const getUserProfile = asyncHandler(async (req, res) => {
 
   if (!account) {
     throw AppError.notFound({
-      message: "User account not found!",
+      message: "User account does not exist!",
       code: "ACCOUNT NOT FOUND",
     });
   }

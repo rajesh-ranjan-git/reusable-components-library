@@ -139,7 +139,7 @@ class AuthService {
 
     if (!user) {
       throw AppError.notFound({
-        message: "User account does not exist!",
+        message: "User does not exist!",
         code: "ACCOUNT NOT FOUND",
         details: { user },
       });
@@ -483,12 +483,22 @@ class AuthService {
       });
     }
 
+    const account = await Account.findOne({ user: payload.userId });
+
+    if (!account) {
+      throw AppError.notFound({
+        message: "User account does not exist!",
+        code: "ACCOUNT NOT FOUND",
+        details: { user: payload.userId },
+      });
+    }
+
     const user = await User.findById(payload.userId);
 
     if (!user) {
       throw AppError.notFound({
-        message: "User account does not exist!",
-        code: "ACCOUNT NOT FOUND",
+        message: "User does not exist!",
+        code: "USER NOT FOUND",
         details: { user: payload.userId },
       });
     }

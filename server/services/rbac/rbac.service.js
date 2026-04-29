@@ -153,7 +153,7 @@ class RBACService {
 
         if (!user) {
           throw AppError.notFound({
-            message: "User details not found!",
+            message: "User does not exist!",
             code: "USER NOT FOUND",
           });
         }

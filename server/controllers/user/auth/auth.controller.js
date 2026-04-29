@@ -259,16 +259,12 @@ export const refreshTokens = asyncHandler(async (req, res) => {
 
 export const getMe = asyncHandler(async (req, res) => {
   const user = req.data.user;
-
-  const { email } = await Account.findOne({
-    user: user.id,
-  }).select("email");
+  const userRoles = req.data.roles;
 
   const profile = await Profile.findOne({
     user: user.id,
   }).select("-_id userName firstName lastName avatar cover");
 
-  const userRoles = await rbacService.getUserRoles(user.id);
   const userRoleLevel = await rbacService.getHighestRoleLevel(userRoles);
   const userRoleName = userRoles.reduce(
     (acc, curr) => (curr.priority === userRoleLevel ? curr.name : acc),
@@ -278,7 +274,7 @@ export const getMe = asyncHandler(async (req, res) => {
   const userFields = {
     userId: user.id,
     status: user.status,
-    email,
+    email: user.email,
     role: userRoleName,
     ...omitObjectProperties(sanitizeMongoData(profile), [
       "id",
