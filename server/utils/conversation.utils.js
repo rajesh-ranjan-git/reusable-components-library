@@ -47,12 +47,6 @@ export const assertParticipant = async (conversationId, userId) => {
 
   if (!conversation) {
     throw AppError.notFound({
-      message: "Conversation not found or you are not a participant.",
-    });
-  }
-
-  if (!conversation) {
-    throw AppError.notFound({
       message: "Conversation not found or you are not a participant!",
       code: "CONVERSATION NOT FOUND",
       details: { conversation },
