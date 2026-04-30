@@ -129,7 +129,7 @@ messageSchema.index({ conversation: 1, createdAt: -1 });
 messageSchema.index({ conversation: 1, sender: 1 });
 
 messageSchema.virtual("isEdited").get(function () {
-  return this.editHistory.length > 0;
+  return this.editHistory?.length > 0;
 });
 
 messageSchema.virtual("isDeleted").get(function () {

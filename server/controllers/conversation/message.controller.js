@@ -21,7 +21,7 @@ const MESSAGE_POPULATE = [
       },
       {
         path: "profile",
-        select: "username firstName lastName fullName avatar",
+        select: "userName firstName lastName fullName avatar",
       },
     ],
   },

@@ -17,6 +17,7 @@ export const normalizeConversation = (conversation) => {
         status: user.status,
         lastSeen: user.lastSeen,
         email: account.email,
+        userName: profile.userName,
         firstName: profile.firstName,
         lastName: profile.lastName,
         fullName: profile.fullName,

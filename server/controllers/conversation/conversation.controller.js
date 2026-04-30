@@ -30,7 +30,7 @@ export const getOrCreateDirectConversation = asyncHandler(async (req, res) => {
         },
         {
           path: "profile",
-          select: "username firstName lastName fullName avatar experiences",
+          select: "userName firstName lastName fullName avatar experiences",
         },
       ],
     })
@@ -58,7 +58,7 @@ export const getOrCreateDirectConversation = asyncHandler(async (req, res) => {
         },
         {
           path: "profile",
-          select: "username firstName lastName fullName avatar experiences",
+          select: "userName firstName lastName fullName avatar experiences",
         },
       ],
     });
@@ -217,7 +217,7 @@ export const createGroupConversation = asyncHandler(async (req, res) => {
       },
       {
         path: "profile",
-        select: "username firstName lastName fullName avatar experiences",
+        select: "userName firstName lastName fullName avatar experiences",
       },
     ],
   });
@@ -335,7 +335,7 @@ export const updateGroupConversation = asyncHandler(async (req, res) => {
       },
       {
         path: "profile",
-        select: "username firstName lastName fullName avatar experiences",
+        select: "userName firstName lastName fullName avatar experiences",
       },
     ],
   });
@@ -456,7 +456,7 @@ export const addGroupMembers = asyncHandler(async (req, res) => {
       },
       {
         path: "profile",
-        select: "username firstName lastName fullName avatar experiences",
+        select: "userName firstName lastName fullName avatar experiences",
       },
     ],
   });
@@ -601,7 +601,7 @@ export const listConversations = asyncHandler(async (req, res) => {
         },
         {
           path: "profile",
-          select: "username firstName lastName fullName avatar experiences",
+          select: "userName firstName lastName fullName avatar experiences",
         },
       ],
     })
@@ -648,7 +648,7 @@ export const getConversation = asyncHandler(async (req, res) => {
         },
         {
           path: "profile",
-          select: "username firstName lastName fullName avatar experiences",
+          select: "userName firstName lastName fullName avatar experiences",
         },
       ],
     })

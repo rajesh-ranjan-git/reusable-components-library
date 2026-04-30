@@ -34,26 +34,16 @@ export type ProfilesResponseType = {
 };
 
 export interface ConversationResponseType {
-  id?: string;
-  conversationId: string;
-
+  id: string;
   type: ConversationType;
-
   participants: ConversationParticipantType[];
-
   lastMessage: ConversationLastMessageType | null;
-
   pinnedMessages: string[];
-
   deletedAt: string | null;
-
   groupSettings: GroupSettingsType | null;
-
   callHistory: ConversationCallHistoryType[];
-
   createdAt: string;
   updatedAt: string;
-
   activeParticipantCount: number;
 }
 
@@ -63,20 +53,6 @@ export type ConversationListResponseType = {
 
 export type DirectConversationResponseType = {
   conversation: ConversationResponseType;
-};
-
-export type NormalizeConversationResponseType = Omit<
-  ConversationResponseType,
-  "conversationId"
-> & {
-  _id?: string;
-  conversationId?: string;
-  groupSettings?:
-    | (NonNullable<ConversationResponseType["groupSettings"]> & {
-        groupName?: string;
-        groupAvatar?: string | null;
-      })
-    | null;
 };
 
 export type MessagesResponseType = {

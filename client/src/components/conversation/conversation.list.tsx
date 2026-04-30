@@ -1,17 +1,14 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { LuSearch } from "react-icons/lu";
 import { ConversationListProps } from "@/types/props/conversation.props";
-import {
-  ConversationListResponseType,
-  ConversationResponseType,
-} from "@/types/types/response.types";
+import { ConversationListResponseType } from "@/types/types/response.types";
+import { ConversationDisplayType } from "@/types/types/conversation.types";
+import { LoggedInUserType } from "@/types/types/auth.types";
 import { useAppStore } from "@/store/store";
-import {
-  getConversationDisplay,
-  normalizeConversationResponse,
-} from "@/utils/conversation.utils";
+import { getConversationDisplay } from "@/utils/conversation.utils";
 import { fetchConversationsList } from "@/lib/actions/conversation.action";
+import { conversationRoutes } from "@/lib/routes/routes";
 import FormInput from "@/components/forms/shared/form.input";
 
 const ConversationList = ({
@@ -19,20 +16,12 @@ const ConversationList = ({
   onSelectConversation,
 }: ConversationListProps) => {
   const [conversationList, setConversationList] = useState<
-    ConversationResponseType[]
+    ConversationDisplayType[]
   >([]);
 
   const loggedInUser = useAppStore((state) => state.loggedInUser);
 
-  const conversations = useMemo(
-    () =>
-      conversationList.map((conversation) =>
-        getConversationDisplay(conversation, loggedInUser),
-      ),
-    [conversationList, loggedInUser],
-  );
-
-  const getConversationList = async () => {
+  const getConversationList = async (loggedInUser: LoggedInUserType) => {
     const fetchConversationsListResponse = await fetchConversationsList();
 
     if (
@@ -44,7 +33,7 @@ const ConversationList = ({
 
       setConversationList(
         data.conversations.map((conversation) =>
-          normalizeConversationResponse(conversation),
+          getConversationDisplay(conversation, loggedInUser),
         ),
       );
     } else {
@@ -53,8 +42,10 @@ const ConversationList = ({
   };
 
   useEffect(() => {
-    getConversationList();
-  }, []);
+    if (loggedInUser) {
+      getConversationList(loggedInUser);
+    }
+  }, [loggedInUser]);
 
   return (
     <div className="flex flex-col bg-surface md:bg-transparent border-glass-border md:border-r w-full md:w-72 lg:w-80 h-full shrink-0">
@@ -69,11 +60,21 @@ const ConversationList = ({
       </div>
 
       <div className="flex-1 overflow-y-auto">
-        {conversations.length > 0 ? (
-          conversations.map((conversation) => (
+        {conversationList.length > 0 ? (
+          conversationList.map((conversation) => (
             <button
               key={conversation.id}
-              onClick={() => onSelectConversation(conversation.conversation)}
+              onClick={() => {
+                if (window) {
+                  window.history.pushState(
+                    {},
+                    "",
+                    conversationRoutes.conversation,
+                  );
+                }
+
+                onSelectConversation(conversation.conversation);
+              }}
               className={`w-full text-left p-3 flex gap-2 items-center border-b border-glass-border duration-200 hover:bg-glass-bg-subtle ${selectedConversationId === conversation.id ? "bg-glass-bg-strong" : "bg-glass-bg"}`}
             >
               <div className="relative shrink-0">

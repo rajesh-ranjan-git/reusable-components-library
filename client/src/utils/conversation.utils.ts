@@ -1,15 +1,7 @@
 import { staticImagesConfig } from "@/config/common.config";
 import { ConversationDisplayType } from "@/types/types/conversation.types";
 import { LoggedInUserType } from "@/types/types/auth.types";
-import {
-  ConversationResponseType,
-  NormalizeConversationResponseType,
-} from "@/types/types/response.types";
-import {
-  MessageDisplayType,
-  MessageResponseType,
-} from "@/types/types/message.types";
-import { UserProfileType } from "@/types/types/profile.types";
+import { ConversationResponseType } from "@/types/types/response.types";
 import { formatTime } from "@/utils/date.utils";
 import { getFullName } from "@/helpers/profile.helpers";
 
@@ -21,25 +13,6 @@ const getInitials = (value: string) =>
     .map((part) => part[0])
     .join("")
     .toUpperCase();
-
-export const normalizeConversationResponse = (
-  conversation: NormalizeConversationResponseType,
-): ConversationResponseType => {
-  const groupSettings = conversation.groupSettings;
-
-  return {
-    ...conversation,
-    conversationId:
-      conversation.conversationId ?? conversation.id ?? conversation._id ?? "",
-    groupSettings: groupSettings
-      ? {
-          ...groupSettings,
-          groupName: groupSettings.groupName ?? "",
-          groupAvatar: groupSettings.groupAvatar ?? null,
-        }
-      : null,
-  };
-};
 
 export const getConversationDisplay = (
   conversation: ConversationResponseType,
@@ -59,15 +32,13 @@ export const getConversationDisplay = (
   const groupName = conversation.groupSettings?.groupName;
   const title = isGroup
     ? groupName || `${conversation.activeParticipantCount} members`
-    : fallbackParticipant?.user.fullName ||
-      fallbackParticipant?.user.userName ||
-      "Unknown user";
+    : getFullName(fallbackParticipant?.user) || "Unknown user";
 
   const subtitle =
     conversation.lastMessage?.content ||
     (isGroup
       ? otherParticipants
-          .map((participant) => participant.user.fullName)
+          .map((participant) => getFullName(participant.user))
           .join(", ")
       : fallbackParticipant?.user.currentJobRole) ||
     "No messages yet";
@@ -78,7 +49,7 @@ export const getConversationDisplay = (
 
   return {
     conversation,
-    id: conversation.conversationId,
+    id: conversation.id,
     title,
     subtitle,
     avatar:
@@ -97,43 +68,6 @@ export const getConversationDisplay = (
         ? "Online"
         : "Offline",
     otherParticipants,
-  };
-};
-
-const getMessageSenderId = (sender: UserProfileType) => {
-  if (typeof sender === "string") return sender;
-
-  return sender.userId ?? "";
-};
-
-const getMessagePreview = (message: MessageResponseType) => {
-  if (message.contentType === "deleted" || message.deletedAt) {
-    return "This message was deleted";
-  }
-
-  if (message.contentType === "text") return message.content;
-
-  return `[${message.contentType}]`;
-};
-
-export const getMessageDisplay = (
-  message: MessageResponseType,
-  loggedInUser: LoggedInUserType,
-): MessageDisplayType => {
-  const senderId = getMessageSenderId(message.sender);
-  const isDeleted = message.isDeleted || message.contentType === "deleted";
-
-  return {
-    messageId:
-      message.messageId ?? message.id ?? `${message.createdAt}-${senderId}`,
-    content: getMessagePreview(message),
-    contentType: message.contentType,
-    time: formatTime(message.createdAt),
-    senderName:
-      senderId === loggedInUser?.userId ? "You" : getFullName(message.sender),
-    isOwn: senderId === loggedInUser?.userId,
-    isEdited: Boolean(message.isEdited || message.editHistory?.length),
-    isDeleted,
   };
 };
 

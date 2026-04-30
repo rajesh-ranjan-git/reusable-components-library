@@ -48,9 +48,12 @@ export type MessageCallDataType = {
   status: "completed" | "missed" | "rejected";
 };
 
+export type MessageDeliveryStatusType = "sending" | "sent" | "failed";
+
 export type MessageResponseType = {
   id?: string;
   messageId?: string;
+  clientMessageId?: string;
 
   conversation: string;
   sender: UserProfileType;
@@ -78,6 +81,8 @@ export type MessageResponseType = {
 
   isEdited?: boolean;
   isDeleted?: boolean;
+  deliveryStatus?: MessageDeliveryStatusType;
+  errorMessage?: string;
 };
 
 export type MessageDisplayType = {
@@ -89,4 +94,6 @@ export type MessageDisplayType = {
   isOwn: boolean;
   isEdited: boolean;
   isDeleted: boolean;
+  deliveryStatus: MessageDeliveryStatusType;
+  errorMessage?: string;
 };

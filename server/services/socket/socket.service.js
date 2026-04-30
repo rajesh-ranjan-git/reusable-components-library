@@ -1,6 +1,7 @@
 import { Server } from "socket.io";
 import { HOST_URL, CLIENT_URL } from "../../constants/env.constants.js";
 import User from "../../models/user/auth/user.model.js";
+import Connection from "../../models/connection/connection.model.js";
 import { tokenService } from "../auth/token.service.js";
 import AppError from "../error/error.service.js";
 
@@ -8,7 +9,7 @@ export const generateRoomId = async (users) => {
   if (!users || users.length < 2) {
     throw AppError.internal({
       message: "Two user IDs are required to generate a room ID.",
-      code: "SOCKET_ROOM_ERROR",
+      code: "SOCKET ROOM ERROR",
       details: { users },
     });
   }
@@ -28,7 +29,7 @@ export const generateRoomId = async (users) => {
 };
 
 export const isConnectedSocket = async (socket, targetUserId) => {
-  const currentUserId = socket.user.id;
+  const currentUserId = socket.data.userId?.toString();
 
   const connection = await Connection.findOne({
     $or: [
@@ -71,14 +72,13 @@ export const initializeSocket = (server) => {
       return next(
         AppError.unauthorized({
           message: "Authentication token is missing.",
-          code: "SOCKET_NO_TOKEN",
+          code: "SOCKET NO TOKEN",
         }),
       );
     }
 
     try {
       const payload = tokenService.verifyAccessToken(token);
-      logger.debug("[SOCKET SERVICE] payload:", payload);
       socket.data.userId = payload.sub ?? payload.id ?? payload._id;
       next();
     } catch (err) {

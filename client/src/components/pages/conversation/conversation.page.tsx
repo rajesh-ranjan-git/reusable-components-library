@@ -6,7 +6,6 @@ import {
   ConversationResponseType,
   DirectConversationResponseType,
 } from "@/types/types/response.types";
-import { normalizeConversationResponse } from "@/utils/conversation.utils";
 import { fetchDirectConversation } from "@/lib/actions/conversation.action";
 import Header from "@/components/layout/header";
 import BottomNavbar from "@/components/layout/bottom.navbar";
@@ -19,12 +18,13 @@ const ConversationPage = ({ userName }: ConversationPageProps) => {
     useState<ConversationResponseType | null>(null);
 
   const getDirectConversation = async (userName: string) => {
-    const response = await fetchDirectConversation(userName);
+    const directConversationResponse = await fetchDirectConversation(userName);
 
-    if (response.success && response.data) {
-      const data = response.data as DirectConversationResponseType;
+    if (directConversationResponse.success && directConversationResponse.data) {
+      const data =
+        directConversationResponse.data as DirectConversationResponseType;
 
-      setSelectedConversation(normalizeConversationResponse(data.conversation));
+      setSelectedConversation(data.conversation);
     }
   };
 
@@ -47,9 +47,7 @@ const ConversationPage = ({ userName }: ConversationPageProps) => {
           className={`w-full h-full pb-16 md:pb-0 md:w-72 lg:w-80 shrink-0 md:flex ${selectedConversation ? "hidden md:flex" : "flex"}`}
         >
           <ConversationList
-            selectedConversationId={
-              selectedConversation?.conversationId ?? null
-            }
+            selectedConversationId={selectedConversation?.id ?? null}
             onSelectConversation={setSelectedConversation}
           />
         </div>

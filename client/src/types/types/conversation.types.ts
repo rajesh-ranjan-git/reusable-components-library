@@ -30,10 +30,8 @@ export type GroupSettingsType = {
   groupName: string;
   description: string;
   groupAvatar: string | null;
-
   sendPermission: "all" | "admins";
   editPermission: "all" | "admins";
-
   inviteLink: string | null;
   inviteLinkExpiry: string | null;
 };
