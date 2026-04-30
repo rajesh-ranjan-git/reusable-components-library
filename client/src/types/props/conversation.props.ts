@@ -1,7 +1,4 @@
-import {
-  ConversationType,
-  MessageType,
-} from "@/types/types/conversation.types";
+import { ConversationResponseType } from "@/types/types/response.types";
 
 export interface ConversationProps {
   params: {
@@ -14,16 +11,11 @@ export interface ConversationPageProps {
 }
 
 export interface ConversationListProps {
-  selectedConversationId: number | null;
-  onSelectConversation: (conversation: ConversationType) => void;
+  selectedConversationId: string | null;
+  onSelectConversation: (conversation: ConversationResponseType) => void;
 }
 
 export interface ConversationWindowProps {
-  conversation: ConversationType | null;
+  conversation: ConversationResponseType | null;
   onBack: () => void;
-}
-
-export interface MessageBubbleProps {
-  message: MessageType;
-  isOwn: boolean;
 }

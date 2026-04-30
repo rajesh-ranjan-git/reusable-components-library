@@ -1,4 +1,5 @@
 import { isValidObjectId } from "mongoose";
+import Conversation from "../models/conversation/conversation.model.js";
 import { sanitizeMongoData } from "../db/db.utils.js";
 import { omitObjectProperties } from "./common.utils.js";
 import AppError from "../services/error/error.service.js";

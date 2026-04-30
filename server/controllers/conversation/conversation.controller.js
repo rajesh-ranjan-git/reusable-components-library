@@ -617,7 +617,7 @@ export const listConversations = asyncHandler(async (req, res) => {
   return responseService.successResponseHandler(req, res, {
     status: "CONVERSATIONS FETCH SUCCESS",
     message: "Conversations fetched successfully!",
-    data: { conversation: normalizedConversations },
+    data: { conversations: normalizedConversations },
   });
 });
 

@@ -1,5 +1,13 @@
 import { LoggedInUserType } from "@/types/types/auth.types";
+import { MessageResponseType } from "@/types/types/message.types";
 import { UserProfileType } from "@/types/types/profile.types";
+import {
+  ConversationCallHistoryType,
+  ConversationLastMessageType,
+  ConversationParticipantType,
+  ConversationType,
+  GroupSettingsType,
+} from "@/types/types/conversation.types";
 
 export type ResponsePaginationType = {
   total: number;
@@ -23,4 +31,59 @@ export type ProfileResponseType = {
 export type ProfilesResponseType = {
   users: UserProfileType[];
   pagination: ResponsePaginationType;
+};
+
+export interface ConversationResponseType {
+  id?: string;
+  conversationId: string;
+
+  type: ConversationType;
+
+  participants: ConversationParticipantType[];
+
+  lastMessage: ConversationLastMessageType | null;
+
+  pinnedMessages: string[];
+
+  deletedAt: string | null;
+
+  groupSettings: GroupSettingsType | null;
+
+  callHistory: ConversationCallHistoryType[];
+
+  createdAt: string;
+  updatedAt: string;
+
+  activeParticipantCount: number;
+}
+
+export type ConversationListResponseType = {
+  conversations: ConversationResponseType[];
+};
+
+export type DirectConversationResponseType = {
+  conversation: ConversationResponseType;
+};
+
+export type NormalizeConversationResponseType = Omit<
+  ConversationResponseType,
+  "conversationId"
+> & {
+  _id?: string;
+  conversationId?: string;
+  groupSettings?:
+    | (NonNullable<ConversationResponseType["groupSettings"]> & {
+        groupName?: string;
+        groupAvatar?: string | null;
+      })
+    | null;
+};
+
+export type MessagesResponseType = {
+  messages: MessageResponseType[];
+  nextCursor: string | null;
+};
+
+export type MessageResponseDataType = {
+  message: MessageResponseType;
 };

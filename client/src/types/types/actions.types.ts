@@ -1,4 +1,7 @@
-import { ApiErrorResponseType, ApiSuccessResponseType } from "./api.types";
+import {
+  ApiErrorResponseType,
+  ApiSuccessResponseType,
+} from "@/types/types/api.types";
 import { ExperienceType } from "@/types/types/profile.types";
 
 export type SectionErrorsType<T> = Partial<Record<keyof T, string>>;

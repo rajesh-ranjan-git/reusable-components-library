@@ -1,4 +1,4 @@
-import { useRef, KeyboardEvent } from "react";
+import { useEffect, useMemo, useRef, useState, KeyboardEvent } from "react";
 import Image from "next/image";
 import {
   LuArrowLeft,
@@ -9,9 +9,22 @@ import {
   LuVideo,
 } from "react-icons/lu";
 import { IoMdMore } from "react-icons/io";
-import { staticImagesConfig } from "@/config/common.config";
 import { ConversationWindowProps } from "@/types/props/conversation.props";
-import { mockMessages } from "@/lib/data/chat.data";
+import {
+  ConversationResponseType,
+  MessageResponseDataType,
+  MessagesResponseType,
+} from "@/types/types/response.types";
+import { MessageResponseType } from "@/types/types/message.types";
+import { useAppStore } from "@/store/store";
+import {
+  getConversationDisplay,
+  getMessageDisplay,
+} from "@/utils/conversation.utils";
+import {
+  fetchConversationMessages,
+  sendConversationMessage,
+} from "@/lib/actions/conversation.action";
 import MessageBubble from "@/components/conversation/message.bubble";
 import FormTextarea from "@/components/forms/shared/form.textarea";
 
@@ -20,6 +33,48 @@ const ConversationWindow = ({
   onBack,
 }: ConversationWindowProps) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [draft, setDraft] = useState("");
+  const [messages, setMessages] = useState<MessageResponseType[]>([]);
+  const [isLoadingMessages, setIsLoadingMessages] = useState(false);
+  const [isSending, setIsSending] = useState(false);
+
+  const loggedInUser = useAppStore((state) => state.loggedInUser);
+
+  const conversationDisplay = useMemo(
+    () =>
+      conversation ? getConversationDisplay(conversation, loggedInUser) : null,
+    [conversation, loggedInUser],
+  );
+  const displayMessages = useMemo(
+    () => messages.map((message) => getMessageDisplay(message, loggedInUser)),
+    [messages, loggedInUser],
+  );
+
+  const getConversationMessages = async (
+    conversation: ConversationResponseType,
+  ) => {
+    const fetchConversationMessagesResponse = await fetchConversationMessages(
+      conversation.conversationId,
+    );
+
+    if (
+      fetchConversationMessagesResponse.success &&
+      fetchConversationMessagesResponse.data
+    ) {
+      const data =
+        fetchConversationMessagesResponse.data as MessagesResponseType;
+
+      setMessages(data.messages);
+    } else {
+      setMessages([]);
+    }
+  };
+
+  useEffect(() => {
+    if (!conversation?.conversationId) return;
+
+    getConversationMessages(conversation);
+  }, [conversation?.conversationId]);
 
   const handleInput = () => {
     const el = textareaRef.current;
@@ -32,6 +87,7 @@ const ConversationWindow = ({
     const maxHeight = lineHeight * 3;
 
     el.style.height = Math.min(el.scrollHeight, maxHeight) + "px";
+    setDraft(el.value);
   };
 
   const resetHeight = () => {
@@ -41,11 +97,34 @@ const ConversationWindow = ({
     el.style.height = "auto";
   };
 
+  const handleSend = async () => {
+    const content = draft.trim();
+    if (!content || !conversation?.conversationId || isSending) return;
+
+    setIsSending(true);
+
+    const response = await sendConversationMessage(
+      conversation.conversationId,
+      content,
+    );
+
+    if (response.success && response.data) {
+      const data = response.data as MessageResponseDataType;
+      if (data.message) {
+        setMessages((currentMessages) => [...currentMessages, data.message]);
+      }
+    }
+
+    setDraft("");
+    if (textareaRef.current) textareaRef.current.value = "";
+    resetHeight();
+    setIsSending(false);
+  };
+
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-
-      resetHeight();
+      handleSend();
     }
   };
 
@@ -75,13 +154,13 @@ const ConversationWindow = ({
           </button>
           <div className="relative shrink-0">
             <Image
-              src={staticImagesConfig.avatarPlaceholder.src}
-              alt={staticImagesConfig.avatarPlaceholder.alt}
+              src={conversationDisplay?.avatar ?? ""}
+              alt={conversationDisplay?.title ?? "Conversation"}
               width={100}
               height={100}
               className="shadow-glass rounded-full w-10 h-10 object-cover shrink-0"
             />
-            {conversation.online ? (
+            {conversationDisplay?.isOnline ? (
               <span className="right-0 bottom-0 absolute bg-green-500 border-[#0B0F1A] border-2 rounded-full w-3 h-3"></span>
             ) : (
               <span className="right-0 bottom-0 absolute bg-gray-500 border-[#0B0F1A] border-2 rounded-full w-3 h-3"></span>
@@ -89,12 +168,12 @@ const ConversationWindow = ({
           </div>
           <div>
             <h6 className="font-medium text-text-primary truncate">
-              {conversation.name}
+              {conversationDisplay?.title}
             </h6>
             <p
-              className={`text-xs ${conversation.online ? "text-green-500" : "text-gray-500"}`}
+              className={`text-xs ${conversationDisplay?.isOnline ? "text-green-500" : "text-gray-500"}`}
             >
-              {conversation.online ? "Online" : "Offline "}
+              {conversationDisplay?.participantsLabel}
             </p>
           </div>
         </div>
@@ -112,18 +191,19 @@ const ConversationWindow = ({
       </div>
 
       <div className="z-(--z-base) relative flex flex-col flex-1 p-4 pb-20 md:pb-4 overflow-y-auto">
-        <div className="my-4 font-medium text-text-secondary text-xs text-center">
-          Yesterday
-        </div>
-        {mockMessages.map((msg) => (
-          <MessageBubble key={msg.id} message={msg} isOwn={msg.isOwn} />
-        ))}
-        <div className="my-4 font-medium text-text-secondary text-xs text-center">
-          Today
-        </div>
-        {mockMessages.map((msg) => (
-          <MessageBubble key={msg.id} message={msg} isOwn={msg.isOwn} />
-        ))}
+        {isLoadingMessages ? (
+          <div className="flex flex-1 justify-center items-center text-text-secondary text-sm">
+            Loading messages...
+          </div>
+        ) : displayMessages.length > 0 ? (
+          displayMessages.map((message) => (
+            <MessageBubble key={message.messageId} message={message} />
+          ))
+        ) : (
+          <div className="flex flex-1 justify-center items-center text-text-secondary text-sm">
+            No messages yet.
+          </div>
+        )}
       </div>
 
       <div className="bottom-0 z-(--z-raised) md:static gap-2 md:gap-3 flex items-center absolute p-2 pb-1 glass-nav border-glass-border border-b-0 border-t border w-full">
@@ -138,11 +218,16 @@ const ConversationWindow = ({
             onChange={handleInput}
             onKeyDown={handleKeyDown}
             placeholder="Type a message..."
+            disabled={isSending}
             className="[&::-webkit-scrollbar]:hidden mt-1 pl-4 h-auto [-ms-overflow-style:none] overflow-y-auto resize-none [scrollbar-width:none]"
           />
         </div>
 
-        <button className="p-2 rounded-full h-max text-text-secondary hover:text-text-primary glass">
+        <button
+          onClick={handleSend}
+          disabled={!draft.trim() || isSending}
+          className="disabled:opacity-50 p-2 rounded-full h-max text-text-secondary hover:text-text-primary disabled:cursor-not-allowed glass"
+        >
           <LuSend size={18} />
         </button>
       </div>

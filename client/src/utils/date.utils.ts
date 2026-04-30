@@ -79,3 +79,18 @@ export const getDuration = (
 
   return parts.join(" ") || "< 1 mo";
 };
+
+export const formatTime = (date?: string | null) => {
+  if (!date) return "";
+
+  const incomingDate = new Date(date);
+  if (Number.isNaN(incomingDate.getTime())) return "";
+
+  return incomingDate
+    .toLocaleTimeString("en-IN", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    })
+    .toUpperCase();
+};

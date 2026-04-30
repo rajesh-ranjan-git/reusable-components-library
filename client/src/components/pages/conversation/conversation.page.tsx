@@ -1,8 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ConversationType } from "@/types/types/conversation.types";
 import { ConversationPageProps } from "@/types/props/conversation.props";
+import {
+  ConversationResponseType,
+  DirectConversationResponseType,
+} from "@/types/types/response.types";
+import { normalizeConversationResponse } from "@/utils/conversation.utils";
 import { fetchDirectConversation } from "@/lib/actions/conversation.action";
 import Header from "@/components/layout/header";
 import BottomNavbar from "@/components/layout/bottom.navbar";
@@ -12,21 +16,22 @@ import ConversationWindow from "@/components/conversation/conversation.window";
 const ConversationPage = ({ userName }: ConversationPageProps) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [selectedConversation, setSelectedConversation] =
-    useState<ConversationType | null>(null);
+    useState<ConversationResponseType | null>(null);
 
   const getDirectConversation = async (userName: string) => {
-    const directConversationResponse = await fetchDirectConversation(userName);
+    const response = await fetchDirectConversation(userName);
 
-    logger.debug(
-      "debug directConversationResponse:",
-      directConversationResponse,
-    );
+    if (response.success && response.data) {
+      const data = response.data as DirectConversationResponseType;
+
+      setSelectedConversation(normalizeConversationResponse(data.conversation));
+    }
   };
 
   useEffect(() => {
-    if (userName) {
-      getDirectConversation(userName);
-    }
+    if (!userName) return;
+
+    getDirectConversation(userName);
   }, [userName]);
 
   return (
@@ -42,7 +47,9 @@ const ConversationPage = ({ userName }: ConversationPageProps) => {
           className={`w-full h-full pb-16 md:pb-0 md:w-72 lg:w-80 shrink-0 md:flex ${selectedConversation ? "hidden md:flex" : "flex"}`}
         >
           <ConversationList
-            selectedConversationId={selectedConversation?.id ?? null}
+            selectedConversationId={
+              selectedConversation?.conversationId ?? null
+            }
             onSelectConversation={setSelectedConversation}
           />
         </div>

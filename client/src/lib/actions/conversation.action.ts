@@ -25,3 +25,35 @@ export const fetchDirectConversation = async (
     return error as ApiErrorResponseType;
   }
 };
+
+export const fetchConversationMessages = async (
+  conversationId: string,
+): Promise<ApiResponseType> => {
+  try {
+    return await api.get(
+      `${apiUrls.conversation.actionMessage}/${conversationId}/messages`,
+      { requireAuth: true },
+    );
+  } catch (error) {
+    return error as ApiErrorResponseType;
+  }
+};
+
+export const sendConversationMessage = async (
+  conversationId: string,
+  content: string,
+): Promise<ApiResponseType> => {
+  try {
+    return await api.post(
+      `${apiUrls.conversation.actionMessage}/${conversationId}/messages`,
+      {
+        conversationId,
+        contentType: "text",
+        content,
+      },
+      { requireAuth: true },
+    );
+  } catch (error) {
+    return error as ApiErrorResponseType;
+  }
+};

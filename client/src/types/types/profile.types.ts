@@ -55,6 +55,7 @@ export type ImageTargetType = "cover" | "avatar" | null;
 
 export type UserProfileType = {
   userId: string;
+  status?: string;
   email: string;
   emailVerified: boolean;
   phoneVerified: boolean;
