@@ -79,7 +79,7 @@ export const initializeSocket = (server) => {
 
     try {
       const payload = tokenService.verifyAccessToken(token);
-      socket.data.userId = payload.sub ?? payload.id ?? payload._id;
+      socket.data.userId = payload.userId;
       next();
     } catch (err) {
       next(
