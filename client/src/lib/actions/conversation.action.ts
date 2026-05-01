@@ -45,7 +45,7 @@ export const sendConversationMessage = async (
 ): Promise<ApiResponseType> => {
   try {
     return await api.post(
-      `${apiUrls.conversation.actionMessage}/${conversationId}/messages`,
+      `${apiUrls.conversation.actionMessage}/${conversationId}/message`,
       {
         conversationId,
         contentType: "text",

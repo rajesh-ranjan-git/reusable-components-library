@@ -21,7 +21,7 @@ import {
 const messageRouter = express.Router();
 
 messageRouter.post(
-  "/message/:conversationId/messages",
+  "/message/:conversationId/message",
   requestMiddleware({ requireParams: true, requireBody: true }),
   authenticate,
   authorize({ permissions: [PERMISSIONS.PROFILE_READ_OWN] }),

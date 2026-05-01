@@ -30,6 +30,25 @@ export const normalizeConversation = (conversation) => {
   return conversation;
 };
 
+export const normalizeMessage = (message) => {
+  const normalizedMessage = {
+    ...message,
+    sender: {
+      userId: message.sender.id,
+      status: message.sender.status,
+      lastSeen: message.sender.lastSeen,
+      email: message.sender.account.email,
+      userName: message.sender.profile.userName,
+      firstName: message.sender.profile.firstName,
+      lastName: message.sender.profile.lastName,
+      fullName: message.sender.profile.fullName,
+      avatar: message.sender.profile.avatar,
+    },
+  };
+
+  return normalizedMessage;
+};
+
 export const assertParticipant = async (conversationId, userId) => {
   if (!isValidObjectId(conversationId)) {
     throw AppError.unprocessable({

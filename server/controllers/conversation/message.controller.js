@@ -4,8 +4,10 @@ import { httpStatusConfig } from "../../config/http.config.js";
 import Conversation from "../../models/conversation/conversation.model.js";
 import Message from "../../models/conversation/message.model.js";
 import { asyncHandler } from "../../utils/common.utils.js";
+import { sanitizeMongoData } from "../../db/db.utils.js";
 import {
   assertParticipant,
+  normalizeMessage,
   updateConversationAfterSend,
 } from "../../utils/conversation.utils.js";
 import AppError from "../../services/error/error.service.js";
@@ -74,11 +76,13 @@ export const sendMessage = asyncHandler(async (req, res) => {
   await message.populate(MESSAGE_POPULATE);
   await updateConversationAfterSend(conversationId, message, sender);
 
+  const normalizedMessage = normalizeMessage(sanitizeMongoData(message));
+
   return responseService.successResponseHandler(req, res, {
     statusCode: httpStatusConfig.created.statusCode,
     status: "MESSAGE SEND SUCCESS",
     message: "Message sent successfully!",
-    data: { message },
+    data: { message: normalizedMessage },
   });
 });
 
@@ -102,8 +106,11 @@ export const getMessages = asyncHandler(async (req, res) => {
   const messages = await Message.find(query)
     .sort({ createdAt: -1 })
     .limit(clampedLimit)
-    .populate(MESSAGE_POPULATE)
-    .lean();
+    .populate(MESSAGE_POPULATE);
+
+  const normalizedMessages = sanitizeMongoData(messages).map((message) =>
+    normalizeMessage(message),
+  );
 
   const nextCursor =
     messages.length === clampedLimit
@@ -113,7 +120,7 @@ export const getMessages = asyncHandler(async (req, res) => {
   return responseService.successResponseHandler(req, res, {
     status: "MESSAGES FETCH SUCCESS",
     message: "Messages fetched successfully!",
-    data: { messages: messages.reverse(), nextCursor },
+    data: { messages: normalizedMessages.reverse(), nextCursor },
   });
 });
 
@@ -185,10 +192,12 @@ export const editMessage = asyncHandler(async (req, res) => {
     { returnDocument: "after", runValidators: true },
   ).populate(MESSAGE_POPULATE);
 
+  const normalizedMessage = normalizeMessage(sanitizeMongoData(editedMessage));
+
   return responseService.successResponseHandler(req, res, {
     status: "MESSAGE EDIT SUCCESS",
     message: "Message edited successfully!",
-    data: { message: editedMessage },
+    data: { message: normalizedMessage },
   });
 });
 
@@ -468,9 +477,13 @@ export const searchMessages = asyncHandler(async (req, res) => {
     .limit(Math.min(Number(limit), 50))
     .populate(MESSAGE_POPULATE);
 
+  const normalizedMessages = sanitizeMongoData(messages).map((message) =>
+    normalizeMessage(message),
+  );
+
   return responseService.successResponseHandler(req, res, {
     status: "MESSAGE SEARCH SUCCESS",
     message: "Messages searched successfully!",
-    data: { messages },
+    data: { messages: normalizedMessages },
   });
 });
