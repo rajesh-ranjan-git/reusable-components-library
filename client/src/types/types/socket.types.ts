@@ -1,3 +1,3 @@
 export type SocketConfigType = {
-  token: string;
+  token?: string | null;
 };
