@@ -170,14 +170,13 @@ export const oauthCallback = asyncHandler(async (req, res) => {
   }
 
   const userRoles = await rbacService.getUserRoles(userId);
-  const permissionsSet = await rbacService.getUserPermissions(userId);
-  const permissions = [...permissionsSet];
+  const userPermissionsSet = await rbacService.getUserPermissions(userId);
+  const userPermissions = [...userPermissionsSet];
 
-  const tokens = tokenService.generateAuthTokens(
-    userId,
-    userRoles,
-    permissions,
-  );
+  const tokens = tokenService.generateAuthTokens(userId, {
+    roles: userRoles,
+    permissions: userPermissions,
+  });
 
   await sessionService.createSession({
     userId,
