@@ -30,7 +30,7 @@ export const discoverProfiles = asyncHandler(async (req, res) => {
     .select("_id")
     .lean();
 
-  const restrictedRoleIds = restrictedRoles.map((r) => r.id);
+  const restrictedRoleIds = restrictedRoles.map((r) => r._id);
 
   const restrictedUsers = await UserRole.find({
     role: { $in: restrictedRoleIds },
@@ -38,7 +38,7 @@ export const discoverProfiles = asyncHandler(async (req, res) => {
     .select("user")
     .lean();
 
-  const restrictedUserIds = restrictedUsers.map((u) => u.user.toString());
+  const restrictedUserIds = restrictedUsers.map((u) => u.user);
 
   const connections = await Connection.find({
     connectionStatus: { $in: ["interested", "accepted", "blocked"] },
