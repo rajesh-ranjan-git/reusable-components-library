@@ -1,11 +1,4 @@
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  KeyboardEvent,
-} from "react";
+import { useEffect, useRef, useState, KeyboardEvent } from "react";
 import Image from "next/image";
 import { Socket } from "socket.io-client";
 import {
@@ -23,54 +16,47 @@ import {
   MessageResponseDataType,
   MessagesResponseType,
 } from "@/types/types/response.types";
-import { MessageResponseType } from "@/types/types/message.types";
+import {
+  MessageDisplayType,
+  MessageResponseType,
+} from "@/types/types/message.types";
+import { UserProfileType } from "@/types/types/profile.types";
+import { ConversationDisplayType } from "@/types/types/conversation.types";
 import { useAppStore } from "@/store/store";
+import { createSocketConnection } from "@/socket/socket";
 import { getConversationDisplay } from "@/utils/conversation.utils";
 import { getMessageDisplay } from "@/utils/message.utils";
 import {
   fetchConversationMessages,
   sendConversationMessage,
 } from "@/lib/actions/conversation.action";
-import { createSocketConnection } from "@/socket/socket";
-import { UserProfileType } from "@/types/types/profile.types";
 import MessageBubble from "@/components/conversation/message.bubble";
 import FormTextarea from "@/components/forms/shared/form.textarea";
+import { staticImagesConfig } from "@/config/common.config";
 
 const ConversationWindow = ({
   conversation,
   onBack,
 }: ConversationWindowProps) => {
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const socketRef = useRef<Socket | null>(null);
-  const activeConversationIdRef = useRef<string | null>(null);
+  const [targetUserId, setTargetUserId] = useState<string | null>(null);
+  const [conversationDisplay, setConversationDisplay] =
+    useState<ConversationDisplayType | null>(null);
   const [draft, setDraft] = useState("");
+  const [displayMessages, setDisplayMessages] = useState<MessageDisplayType[]>(
+    [],
+  );
   const [messages, setMessages] = useState<MessageResponseType[]>([]);
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const [isSending, setIsSending] = useState(false);
 
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const socketRef = useRef<Socket | null>(null);
+  const activeConversationIdRef = useRef<string | null>(null);
+
   const loggedInUser = useAppStore((state) => state.loggedInUser);
   const accessToken = useAppStore((state) => state.accessToken);
 
-  const conversationDisplay = useMemo(
-    () =>
-      conversation ? getConversationDisplay(conversation, loggedInUser) : null,
-    [conversation, loggedInUser],
-  );
-  const targetUserId = useMemo(() => {
-    if (!conversation || conversation.type !== "direct") return null;
-
-    return (
-      conversation.participants.find(
-        (participant) => participant.user.userId !== loggedInUser?.userId,
-      )?.user.userId ?? null
-    );
-  }, [conversation, loggedInUser?.userId]);
-  const displayMessages = useMemo(
-    () => messages.map((message) => getMessageDisplay(message, loggedInUser)),
-    [messages, loggedInUser],
-  );
-
-  const upsertMessage = useCallback((message: MessageResponseType) => {
+  const upsertMessage = (message: MessageResponseType) => {
     const incomingId = message.messageId ?? message.id;
 
     setMessages((currentMessages) => {
@@ -97,82 +83,31 @@ const ConversationWindow = ({
         index === matchedIndex ? message : currentMessage,
       );
     });
-  }, []);
+  };
 
-  const getConversationMessages = useCallback(
-    async (conversation: ConversationResponseType) => {
-      setIsLoadingMessages(true);
+  const getConversationMessages = async (
+    conversation: ConversationResponseType,
+  ) => {
+    setIsLoadingMessages(true);
 
-      const fetchConversationMessagesResponse = await fetchConversationMessages(
-        conversation.conversationId,
-      );
+    const fetchConversationMessagesResponse = await fetchConversationMessages(
+      conversation.id,
+    );
 
-      if (
-        fetchConversationMessagesResponse.success &&
-        fetchConversationMessagesResponse.data
-      ) {
-        const data =
-          fetchConversationMessagesResponse.data as MessagesResponseType;
+    if (
+      fetchConversationMessagesResponse.success &&
+      fetchConversationMessagesResponse.data
+    ) {
+      const data =
+        fetchConversationMessagesResponse.data as MessagesResponseType;
 
-        setMessages(data.messages);
-      } else {
-        setMessages([]);
-      }
-
-      setIsLoadingMessages(false);
-    },
-    [],
-  );
-
-  useEffect(() => {
-    activeConversationIdRef.current = conversation?.conversationId ?? null;
-
-    if (!conversation?.conversationId) return;
-
-    void Promise.resolve().then(() => getConversationMessages(conversation));
-  }, [conversation, getConversationMessages]);
-
-  useEffect(() => {
-    if (!accessToken) return;
-
-    const socket = createSocketConnection({ token: accessToken });
-    socketRef.current = socket;
-
-    socket.on("received-message", upsertMessage);
-    socket.on("received-group-message", upsertMessage);
-
-    return () => {
-      socket.off("received-message", upsertMessage);
-      socket.off("received-group-message", upsertMessage);
-      socket.disconnect();
-      socketRef.current = null;
-    };
-  }, [accessToken, upsertMessage]);
-
-  useEffect(() => {
-    const socket = socketRef.current;
-    if (!socket || !conversation?.conversationId) return;
-
-    if (conversation.type === "direct" && targetUserId) {
-      socket.emit("join-chat", { targetUserId });
-      return;
+      setMessages(data.messages);
+    } else {
+      setMessages([]);
     }
 
-    socket.emit("join-group-chat", {
-      conversationId: conversation.conversationId,
-    });
-
-    return () => {
-      socket.emit("leave-group-chat", {
-        conversationId: conversation.conversationId,
-      });
-    };
-  }, [
-    accessToken,
-    conversation?.conversationId,
-    conversation?.type,
-    targetUserId,
-  ]);
+    setIsLoadingMessages(false);
+  };
 
   const handleInput = () => {
     const el = textareaRef.current;
@@ -205,7 +140,7 @@ const ConversationWindow = ({
     }
 
     socket.emit("send-group-message", {
-      conversationId: conversation.conversationId,
+      conversationId: conversation.id,
       message,
     });
   };
@@ -232,7 +167,7 @@ const ConversationWindow = ({
       id: clientMessageId,
       messageId: clientMessageId,
       clientMessageId,
-      conversation: conversation?.conversationId ?? "",
+      conversation: conversation?.id ?? "",
       sender,
       contentType: "text",
       content,
@@ -255,7 +190,7 @@ const ConversationWindow = ({
     clientMessageId: string,
     content: string,
   ) => {
-    if (!conversation?.conversationId) return;
+    if (!conversation?.id) return;
 
     setIsSending(true);
     setMessages((currentMessages) =>
@@ -271,10 +206,7 @@ const ConversationWindow = ({
       ),
     );
 
-    const response = await sendConversationMessage(
-      conversation.conversationId,
-      content,
-    );
+    const response = await sendConversationMessage(conversation.id, content);
 
     if (response.success && response.data) {
       const data = response.data as MessageResponseDataType;
@@ -308,7 +240,7 @@ const ConversationWindow = ({
 
   const handleSend = async () => {
     const content = draft.trim();
-    if (!content || !conversation?.conversationId || isSending) return;
+    if (!content || !conversation?.id || isSending) return;
 
     const pendingMessage = createPendingMessage(content);
     upsertMessage(pendingMessage);
@@ -343,6 +275,65 @@ const ConversationWindow = ({
     }
   };
 
+  useEffect(() => {
+    setTargetUserId(
+      conversation?.participants.find(
+        (participant) => participant.user.userId !== loggedInUser?.userId,
+      )?.user.userId ?? null,
+    );
+
+    setConversationDisplay(
+      conversation ? getConversationDisplay(conversation, loggedInUser) : null,
+    );
+
+    if (conversation) {
+      getConversationMessages(conversation);
+    }
+  }, [conversation, loggedInUser]);
+
+  useEffect(() => {
+    setDisplayMessages(
+      messages.map((message) => getMessageDisplay(message, loggedInUser)),
+    );
+  }, [messages, loggedInUser]);
+
+  useEffect(() => {
+    if (!accessToken) return;
+
+    const socket = createSocketConnection({ token: accessToken });
+    socketRef.current = socket;
+
+    socket.on("received-message", upsertMessage);
+    socket.on("received-group-message", upsertMessage);
+
+    return () => {
+      socket.off("received-message", upsertMessage);
+      socket.off("received-group-message", upsertMessage);
+      socket.disconnect();
+      socketRef.current = null;
+    };
+  }, [accessToken]);
+
+  useEffect(() => {
+    const socket = socketRef.current;
+    if (!socket || !conversation?.id) return;
+
+    if (conversation.type === "direct" && targetUserId) {
+      socket.emit("join-chat", { targetUserId });
+      return;
+    }
+
+    socket.emit("join-group-chat", {
+      conversationId: conversation.id,
+    });
+
+    return () => {
+      socket.emit("leave-group-chat", {
+        conversationId: conversation.id,
+      });
+    };
+  }, [accessToken, conversation?.id, conversation?.type, targetUserId]);
+
   if (!conversation) {
     return (
       <div className="hidden relative md:flex flex-col flex-1 justify-center items-center gap-2">
@@ -369,8 +360,14 @@ const ConversationWindow = ({
           </button>
           <div className="relative shrink-0">
             <Image
-              src={conversationDisplay?.avatar ?? ""}
-              alt={conversationDisplay?.title ?? "Conversation"}
+              src={
+                conversationDisplay?.avatar ??
+                staticImagesConfig.avatarPlaceholder.src
+              }
+              alt={
+                conversationDisplay?.title ??
+                staticImagesConfig.avatarPlaceholder.alt
+              }
               width={100}
               height={100}
               className="shadow-glass rounded-full w-10 h-10 object-cover shrink-0"
