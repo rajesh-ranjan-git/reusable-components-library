@@ -48,7 +48,12 @@ export type MessageCallDataType = {
   status: "completed" | "missed" | "rejected";
 };
 
-export type MessageDeliveryStatusType = "sending" | "sent" | "failed";
+export type MessageDeliveryStatusType =
+  | "sending"
+  | "sent"
+  | "delivered"
+  | "seen"
+  | "failed";
 
 export type MessageResponseType = {
   id?: string;

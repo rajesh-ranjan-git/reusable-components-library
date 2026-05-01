@@ -38,6 +38,105 @@ export const useAppStore = create<AppStateType>()(
               ? isLoggingOutUpdater(state.isLoggingOut)
               : isLoggingOutUpdater,
         })),
+      conversationList: [],
+      setConversationList: (conversationListUpdater) =>
+        set((state) => ({
+          conversationList:
+            typeof conversationListUpdater === "function"
+              ? conversationListUpdater(state.conversationList)
+              : conversationListUpdater,
+        })),
+      resetConversationUnread: (conversationId) =>
+        set((state) => ({
+          conversationList: state.conversationList.map((conversation) =>
+            conversation.id === conversationId
+              ? {
+                  ...conversation,
+                  unreadCount: 0,
+                  conversation: {
+                    ...conversation.conversation,
+                    participants: conversation.conversation.participants.map(
+                      (participant) =>
+                        participant.user.userId ===
+                        state.loggedInUser?.userId
+                          ? { ...participant, unreadCount: 0 }
+                          : participant,
+                    ),
+                  },
+                }
+              : conversation,
+          ),
+        })),
+      updateConversationWithMessage: (message, options) =>
+        set((state) => {
+          const senderId =
+            typeof message.sender === "string"
+              ? message.sender
+              : message.sender.userId;
+          const isOwnMessage = senderId === state.loggedInUser?.userId;
+
+          return {
+            conversationList: state.conversationList
+              .map((conversation) => {
+                if (conversation.id !== message.conversation) {
+                  return conversation;
+                }
+
+                const isActive =
+                  options?.activeConversationId === conversation.id;
+                const shouldIncrementUnread =
+                  options?.incrementUnread !== false &&
+                  !isOwnMessage &&
+                  !isActive;
+                const unreadCount = isActive
+                  ? 0
+                  : conversation.unreadCount + (shouldIncrementUnread ? 1 : 0);
+
+                return {
+                  ...conversation,
+                  subtitle: message.content,
+                  lastActivity: new Date(message.createdAt).toLocaleTimeString(
+                    [],
+                    {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    },
+                  ),
+                  unreadCount,
+                  conversation: {
+                    ...conversation.conversation,
+                    lastMessage: {
+                      messageId: message.messageId ?? message.id ?? "",
+                      content: message.content,
+                      contentType: message.contentType,
+                      sentBy: senderId,
+                      sentAt: message.createdAt,
+                    },
+                    updatedAt: message.createdAt,
+                    participants: conversation.conversation.participants.map(
+                      (participant) =>
+                        participant.user.userId ===
+                        state.loggedInUser?.userId
+                          ? { ...participant, unreadCount }
+                          : participant,
+                    ),
+                  },
+                };
+              })
+              .sort((a, b) => {
+                const aTime = new Date(
+                  a.conversation.lastMessage?.sentAt ??
+                    a.conversation.updatedAt,
+                ).getTime();
+                const bTime = new Date(
+                  b.conversation.lastMessage?.sentAt ??
+                    b.conversation.updatedAt,
+                ).getTime();
+
+                return bTime - aTime;
+              }),
+          };
+        }),
     }),
     {
       name: "app-storage",

@@ -1,6 +1,8 @@
 import { Dispatch, SetStateAction } from "react";
 import { ThemeType } from "@/types/types/common.types";
 import { LoggedInUserType } from "@/types/types/auth.types";
+import { ConversationDisplayType } from "@/types/types/conversation.types";
+import { MessageResponseType } from "@/types/types/message.types";
 
 export type AppStateType = {
   activeTheme: ThemeType;
@@ -11,4 +13,11 @@ export type AppStateType = {
   setLoggedInUser: Dispatch<SetStateAction<LoggedInUserType>>;
   isLoggingOut: boolean;
   setIsLoggingOut: Dispatch<SetStateAction<boolean>>;
+  conversationList: ConversationDisplayType[];
+  setConversationList: Dispatch<SetStateAction<ConversationDisplayType[]>>;
+  resetConversationUnread: (conversationId: string) => void;
+  updateConversationWithMessage: (
+    message: MessageResponseType,
+    options?: { activeConversationId?: string | null; incrementUnread?: boolean },
+  ) => void;
 };

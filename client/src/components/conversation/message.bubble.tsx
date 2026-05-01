@@ -1,8 +1,30 @@
+import { LuCheck, LuCheckCheck, LuClock3 } from "react-icons/lu";
 import { MessageBubbleProps } from "@/types/props/message.props";
 
 const MessageBubble = ({ message, onResend }: MessageBubbleProps) => {
   const isFailed = message.deliveryStatus === "failed";
   const isSending = message.deliveryStatus === "sending";
+  const isSeen = message.deliveryStatus === "seen";
+  const isDelivered = message.deliveryStatus === "delivered";
+
+  const renderDeliveryStatus = () => {
+    if (!message.isOwn || isFailed) return null;
+
+    if (isSending) {
+      return <LuClock3 size={12} className="text-text-secondary" />;
+    }
+
+    if (isDelivered || isSeen) {
+      return (
+        <LuCheckCheck
+          size={14}
+          className={isSeen ? "text-status-info-text" : "text-text-secondary"}
+        />
+      );
+    }
+
+    return <LuCheck size={13} className="text-text-secondary" />;
+  };
 
   return (
     <div
@@ -20,17 +42,25 @@ const MessageBubble = ({ message, onResend }: MessageBubbleProps) => {
         {!message.isOwn && (
           <p className="mb-1 font-medium text-[11px]">{message.senderName}</p>
         )}
-        <p className="text-sm wrap-break-word whitespace-pre-wrap">
+        <p className="text-sm whitespace-pre-wrap wrap-anywhere">
           {message.content}
         </p>
-        <span
-          className={`text-[10px] block text-text-secondary mt-1 ${message.isOwn ? "text-right" : ""}`}
+        <div
+          className={`flex items-center gap-1 mt-1 text-[10px] text-text-secondary ${
+            message.isOwn ? "justify-between" : "justify-start"
+          }`}
         >
-          {message.isEdited && !message.isDeleted ? "Edited - " : ""}
-          {message.time}
-          {isSending ? " - Sending..." : ""}
-          {isFailed ? " - Failed" : ""}
-        </span>
+          <span
+            className={`items-center min-w-0 ${message.isOwn ? "flex" : "hidden"}`}
+          >
+            {renderDeliveryStatus()}
+          </span>
+          <span>
+            {message.isEdited && !message.isDeleted ? "Edited - " : ""}
+            {message.time}
+            {isFailed ? " - Failed" : ""}
+          </span>
+        </div>
         {isFailed && message.isOwn && (
           <div className="flex justify-end items-center gap-2 mt-2">
             <span className="text-[10px] text-text-secondary">

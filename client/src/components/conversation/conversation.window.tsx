@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, KeyboardEvent } from "react";
 import Image from "next/image";
 import { Socket } from "socket.io-client";
 import {
+  LuArrowDown,
   LuArrowLeft,
   LuMessageSquare,
   LuPaperclip,
@@ -18,6 +19,7 @@ import {
 } from "@/types/types/response.types";
 import {
   MessageDisplayType,
+  MessageDeliveryStatusType,
   MessageResponseType,
 } from "@/types/types/message.types";
 import { UserProfileType } from "@/types/types/profile.types";
@@ -28,6 +30,9 @@ import { getConversationDisplay } from "@/utils/conversation.utils";
 import { getMessageDisplay } from "@/utils/message.utils";
 import {
   fetchConversationMessages,
+  markConversationAsRead,
+  markMessageDelivered,
+  markMessageSeen,
   sendConversationMessage,
 } from "@/lib/actions/conversation.action";
 import MessageBubble from "@/components/conversation/message.bubble";
@@ -48,16 +53,35 @@ const ConversationWindow = ({
   const [messages, setMessages] = useState<MessageResponseType[]>([]);
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const [isSending, setIsSending] = useState(false);
+  const [newMessagesCount, setNewMessagesCount] = useState(0);
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   const socketRef = useRef<Socket | null>(null);
+  const conversationRef = useRef<ConversationResponseType | null>(null);
   const activeConversationIdRef = useRef<string | null>(null);
+  const shouldAutoScrollRef = useRef(true);
+  const previousMessagesLengthRef = useRef(0);
+  const seenMessageIdsRef = useRef(new Set<string>());
 
   const loggedInUser = useAppStore((state) => state.loggedInUser);
+  const loggedInUserRef = useRef(loggedInUser);
   const accessToken = useAppStore((state) => state.accessToken);
+  const updateConversationWithMessage = useAppStore(
+    (state) => state.updateConversationWithMessage,
+  );
+  const resetConversationUnread = useAppStore(
+    (state) => state.resetConversationUnread,
+  );
+
+  const getMessageSenderId = (message: MessageResponseType) =>
+    typeof message.sender === "string" ? message.sender : message.sender.userId;
+
+  const getMessageId = (message: MessageResponseType) =>
+    message.messageId ?? message.id;
 
   const upsertMessage = (message: MessageResponseType) => {
-    const incomingId = message.messageId ?? message.id;
+    const incomingId = getMessageId(message);
 
     setMessages((currentMessages) => {
       if (
@@ -68,7 +92,7 @@ const ConversationWindow = ({
       }
 
       const matchedIndex = currentMessages.findIndex((currentMessage) => {
-        const currentId = currentMessage.messageId ?? currentMessage.id;
+        const currentId = getMessageId(currentMessage);
 
         return (
           (incomingId && currentId === incomingId) ||
@@ -83,6 +107,91 @@ const ConversationWindow = ({
         index === matchedIndex ? message : currentMessage,
       );
     });
+  };
+
+  const updateMessageDeliveryStatus = (
+    messageId: string,
+    status: Exclude<MessageDeliveryStatusType, "sending" | "failed">,
+    userId: string,
+  ) => {
+    const now = new Date().toISOString();
+
+    setMessages((currentMessages) =>
+      currentMessages.map((message) => {
+        const currentId = getMessageId(message);
+
+        if (currentId !== messageId) return message;
+
+        const receipts = message.receipts ?? [];
+        const matchedReceipt = receipts.find(
+          (receipt) => receipt.user === userId,
+        );
+        const nextReceipt = {
+          user: userId,
+          deliveredAt:
+            matchedReceipt?.deliveredAt ??
+            (status === "delivered" || status === "seen" ? now : null),
+          seenAt: matchedReceipt?.seenAt ?? (status === "seen" ? now : null),
+        };
+
+        return {
+          ...message,
+          deliveryStatus:
+            status === "seen" || message.deliveryStatus !== "seen"
+              ? status
+              : message.deliveryStatus,
+          receipts: matchedReceipt
+            ? receipts.map((receipt) =>
+                receipt.user === userId ? nextReceipt : receipt,
+              )
+            : [...receipts, nextReceipt],
+        };
+      }),
+    );
+  };
+
+  const emitMessageReceipt = (
+    message: MessageResponseType,
+    status: "delivered" | "seen",
+  ) => {
+    const socket = socketRef.current;
+    const messageId = getMessageId(message);
+    const senderId = getMessageSenderId(message);
+    const activeConversation = conversationRef.current;
+
+    if (!socket || !activeConversation?.id || !messageId || !senderId) return;
+    if (senderId === loggedInUserRef.current?.userId) return;
+
+    void (status === "seen"
+      ? markMessageSeen(activeConversation.id, messageId)
+      : markMessageDelivered(activeConversation.id, messageId));
+
+    if (activeConversation.type === "direct") {
+      socket.emit(status === "seen" ? "message-seen" : "message-delivered", {
+        targetUserId: senderId,
+        messageId,
+      });
+      return;
+    }
+
+    socket.emit(
+      status === "seen" ? "group-message-seen" : "group-message-delivered",
+      {
+        conversationId: activeConversation.id,
+        messageId,
+      },
+    );
+  };
+
+  const handleReceivedMessage = (message: MessageResponseType) => {
+    if (message.conversation !== activeConversationIdRef.current) return;
+
+    upsertMessage(message);
+    updateConversationWithMessage(message, {
+      activeConversationId: activeConversationIdRef.current,
+    });
+    emitMessageReceipt(message, "delivered");
+    emitMessageReceipt(message, "seen");
   };
 
   const getConversationMessages = async (
@@ -107,6 +216,10 @@ const ConversationWindow = ({
     }
 
     setIsLoadingMessages(false);
+  };
+
+  const persistConversationReadState = async (conversationId: string) => {
+    await markConversationAsRead(conversationId);
   };
 
   const handleInput = () => {
@@ -217,6 +330,10 @@ const ConversationWindow = ({
           deliveryStatus: "sent" as const,
         };
 
+        updateConversationWithMessage(savedMessage, {
+          activeConversationId: conversation.id,
+          incrementUnread: false,
+        });
         upsertMessage(savedMessage);
         emitMessage(savedMessage);
       }
@@ -243,6 +360,11 @@ const ConversationWindow = ({
     if (!content || !conversation?.id || isSending) return;
 
     const pendingMessage = createPendingMessage(content);
+    shouldAutoScrollRef.current = true;
+    updateConversationWithMessage(pendingMessage, {
+      activeConversationId: conversation.id,
+      incrementUnread: false,
+    });
     upsertMessage(pendingMessage);
     setDraft("");
     if (textareaRef.current) textareaRef.current.value = "";
@@ -275,7 +397,53 @@ const ConversationWindow = ({
     }
   };
 
+  const isMessagesContainerNearBottom = () => {
+    const el = messagesContainerRef.current;
+    if (!el) return true;
+
+    const distanceFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight;
+
+    return distanceFromBottom <= 64;
+  };
+
+  const scrollMessagesToBottom = (behavior: ScrollBehavior = "smooth") => {
+    const el = messagesContainerRef.current;
+    if (!el) return;
+
+    requestAnimationFrame(() => {
+      el.scrollTo({ top: el.scrollHeight, behavior });
+    });
+  };
+
+  const handleMessagesScroll = () => {
+    const isNearBottom = isMessagesContainerNearBottom();
+
+    shouldAutoScrollRef.current = isNearBottom;
+
+    if (isNearBottom) {
+      setNewMessagesCount(0);
+    }
+  };
+
+  const handleNewMessagesClick = () => {
+    shouldAutoScrollRef.current = true;
+    setNewMessagesCount(0);
+    scrollMessagesToBottom();
+  };
+
   useEffect(() => {
+    conversationRef.current = conversation;
+    loggedInUserRef.current = loggedInUser;
+    activeConversationIdRef.current = conversation?.id ?? null;
+    shouldAutoScrollRef.current = true;
+    previousMessagesLengthRef.current = 0;
+    seenMessageIdsRef.current = new Set();
+    setNewMessagesCount(0);
+    if (conversation?.id) {
+      resetConversationUnread(conversation.id);
+      void persistConversationReadState(conversation.id);
+    }
+
     setTargetUserId(
       conversation?.participants.find(
         (participant) => participant.user.userId !== loggedInUser?.userId,
@@ -298,17 +466,71 @@ const ConversationWindow = ({
   }, [messages, loggedInUser]);
 
   useEffect(() => {
+    if (!conversation?.id || !socketRef.current) return;
+
+    messages.forEach((message) => {
+      const messageId = getMessageId(message);
+      const senderId = getMessageSenderId(message);
+
+      if (!messageId || senderId === loggedInUser?.userId) return;
+      if (seenMessageIdsRef.current.has(messageId)) return;
+
+      seenMessageIdsRef.current.add(messageId);
+      emitMessageReceipt(message, "seen");
+    });
+  }, [conversation?.id, loggedInUser?.userId, messages]);
+
+  useEffect(() => {
+    if (!conversation?.id || !shouldAutoScrollRef.current) return;
+
+    scrollMessagesToBottom(isLoadingMessages ? "auto" : "smooth");
+  }, [conversation?.id, displayMessages.length, isLoadingMessages]);
+
+  useEffect(() => {
+    const previousMessagesLength = previousMessagesLengthRef.current;
+    const nextMessagesLength = displayMessages.length;
+    const newMessagesLength = nextMessagesLength - previousMessagesLength;
+
+    previousMessagesLengthRef.current = nextMessagesLength;
+
+    if (!conversation?.id || newMessagesLength <= 0) return;
+
+    if (shouldAutoScrollRef.current) {
+      setNewMessagesCount(0);
+      return;
+    }
+
+    setNewMessagesCount((count) => count + newMessagesLength);
+  }, [conversation?.id, displayMessages.length]);
+
+  useEffect(() => {
     if (!accessToken) return;
 
     const socket = createSocketConnection({ token: accessToken });
     socketRef.current = socket;
 
-    socket.on("received-message", upsertMessage);
-    socket.on("received-group-message", upsertMessage);
+    socket.on("received-message", handleReceivedMessage);
+    socket.on("received-group-message", handleReceivedMessage);
+    socket.on("message-delivered", ({ messageId, deliveredTo }) => {
+      updateMessageDeliveryStatus(messageId, "delivered", deliveredTo);
+    });
+    socket.on("group-message-delivered", ({ messageId, deliveredTo }) => {
+      updateMessageDeliveryStatus(messageId, "delivered", deliveredTo);
+    });
+    socket.on("message-seen", ({ messageId, seenBy }) => {
+      updateMessageDeliveryStatus(messageId, "seen", seenBy);
+    });
+    socket.on("group-message-seen", ({ messageId, seenBy }) => {
+      updateMessageDeliveryStatus(messageId, "seen", seenBy);
+    });
 
     return () => {
-      socket.off("received-message", upsertMessage);
-      socket.off("received-group-message", upsertMessage);
+      socket.off("received-message", handleReceivedMessage);
+      socket.off("received-group-message", handleReceivedMessage);
+      socket.off("message-delivered");
+      socket.off("group-message-delivered");
+      socket.off("message-seen");
+      socket.off("group-message-seen");
       socket.disconnect();
       socketRef.current = null;
     };
@@ -402,7 +624,11 @@ const ConversationWindow = ({
         </div>
       </div>
 
-      <div className="z-(--z-base) relative flex flex-col flex-1 p-4 pb-20 md:pb-4 overflow-y-auto">
+      <div
+        ref={messagesContainerRef}
+        onScroll={handleMessagesScroll}
+        className="z-(--z-base) relative flex flex-col flex-1 p-4 pb-20 md:pb-4 overflow-y-auto"
+      >
         {isLoadingMessages ? (
           <div className="flex flex-1 justify-center items-center text-text-secondary text-sm">
             Loading messages...
@@ -421,6 +647,17 @@ const ConversationWindow = ({
           </div>
         )}
       </div>
+
+      {newMessagesCount > 0 && (
+        <button
+          onClick={handleNewMessagesClick}
+          className="right-4 bottom-24 md:bottom-20 z-(--z-raised) absolute flex items-center gap-2 px-3 py-2 rounded-full text-sm font-medium text-text-primary glass shadow-glass"
+        >
+          <LuArrowDown size={16} />
+          {newMessagesCount} new{" "}
+          {newMessagesCount === 1 ? "message" : "messages"}
+        </button>
+      )}
 
       <div className="bottom-0 z-(--z-raised) md:static gap-2 md:gap-3 flex items-center absolute p-2 pb-1 glass-nav border-glass-border border-b-0 border-t border w-full">
         <button className="p-2 rounded-full h-max text-text-secondary hover:text-text-primary glass">

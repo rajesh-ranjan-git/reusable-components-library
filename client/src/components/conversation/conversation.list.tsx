@@ -1,25 +1,45 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 import Image from "next/image";
+import { Socket } from "socket.io-client";
 import { LuSearch } from "react-icons/lu";
 import { ConversationListProps } from "@/types/props/conversation.props";
 import { ConversationListResponseType } from "@/types/types/response.types";
-import { ConversationDisplayType } from "@/types/types/conversation.types";
 import { LoggedInUserType } from "@/types/types/auth.types";
+import { MessageResponseType } from "@/types/types/message.types";
 import { useAppStore } from "@/store/store";
 import { getConversationDisplay } from "@/utils/conversation.utils";
-import { fetchConversationsList } from "@/lib/actions/conversation.action";
+import {
+  fetchConversationsList,
+  markMessageDelivered,
+} from "@/lib/actions/conversation.action";
 import { conversationRoutes } from "@/lib/routes/routes";
+import { createSocketConnection } from "@/socket/socket";
 import FormInput from "@/components/forms/shared/form.input";
 
 const ConversationList = ({
   selectedConversationId,
   onSelectConversation,
 }: ConversationListProps) => {
-  const [conversationList, setConversationList] = useState<
-    ConversationDisplayType[]
-  >([]);
-
   const loggedInUser = useAppStore((state) => state.loggedInUser);
+  const conversationList = useAppStore((state) => state.conversationList);
+  const setConversationList = useAppStore((state) => state.setConversationList);
+  const resetConversationUnread = useAppStore(
+    (state) => state.resetConversationUnread,
+  );
+  const accessToken = useAppStore((state) => state.accessToken);
+  const updateConversationWithMessage = useAppStore(
+    (state) => state.updateConversationWithMessage,
+  );
+  const socketRef = useRef<Socket | null>(null);
+  const conversationRoomKey = conversationList
+    .map((conversation) => conversation.id)
+    .join("|");
+
+  const getMessageSenderId = (message: MessageResponseType) =>
+    typeof message.sender === "string" ? message.sender : message.sender.userId;
+
+  const getMessageId = (message: MessageResponseType) =>
+    message.messageId ?? message.id;
 
   const getConversationList = async (loggedInUser: LoggedInUserType) => {
     const fetchConversationsListResponse = await fetchConversationsList();
@@ -46,6 +66,78 @@ const ConversationList = ({
       getConversationList(loggedInUser);
     }
   }, [loggedInUser]);
+
+  useEffect(() => {
+    if (!accessToken || conversationList.length === 0) return;
+
+    const socket = createSocketConnection({ token: accessToken });
+    socketRef.current = socket;
+
+    conversationList.forEach((conversation) => {
+      if (conversation.conversation.type === "direct") {
+        const targetUserId = conversation.otherParticipants[0]?.user.userId;
+        if (targetUserId) socket.emit("join-chat", { targetUserId });
+        return;
+      }
+
+      socket.emit("join-group-chat", {
+        conversationId: conversation.id,
+      });
+    });
+
+    const handleLiveMessage = (message: MessageResponseType) => {
+      updateConversationWithMessage(message, {
+        activeConversationId: selectedConversationId,
+      });
+
+      const messageId = getMessageId(message);
+      const senderId = getMessageSenderId(message);
+      const matchedConversation = conversationList.find(
+        (conversation) => conversation.id === message.conversation,
+      );
+
+      if (
+        !messageId ||
+        !senderId ||
+        senderId === loggedInUser?.userId ||
+        selectedConversationId === message.conversation ||
+        !matchedConversation
+      ) {
+        return;
+      }
+
+      void markMessageDelivered(message.conversation, messageId);
+
+      if (matchedConversation.conversation.type === "direct") {
+        socket.emit("message-delivered", {
+          targetUserId: senderId,
+          messageId,
+        });
+        return;
+      }
+
+      socket.emit("group-message-delivered", {
+        conversationId: message.conversation,
+        messageId,
+      });
+    };
+
+    socket.on("received-message", handleLiveMessage);
+    socket.on("received-group-message", handleLiveMessage);
+
+    return () => {
+      socket.off("received-message", handleLiveMessage);
+      socket.off("received-group-message", handleLiveMessage);
+      socket.disconnect();
+      socketRef.current = null;
+    };
+  }, [
+    accessToken,
+    conversationRoomKey,
+    loggedInUser?.userId,
+    selectedConversationId,
+    updateConversationWithMessage,
+  ]);
 
   return (
     <div className="flex flex-col bg-surface md:bg-transparent border-glass-border md:border-r w-full md:w-72 lg:w-80 h-full shrink-0">
@@ -74,6 +166,7 @@ const ConversationList = ({
                 }
 
                 onSelectConversation(conversation.conversation);
+                resetConversationUnread(conversation.id);
               }}
               className={`w-full text-left p-3 flex gap-2 items-center border-b border-glass-border duration-200 hover:bg-glass-bg-subtle ${selectedConversationId === conversation.id ? "bg-glass-bg-strong" : "bg-glass-bg"}`}
             >

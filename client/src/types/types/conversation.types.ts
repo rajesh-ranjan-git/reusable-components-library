@@ -1,19 +1,13 @@
 import { UserProfileType } from "@/types/types/profile.types";
 import { ConversationResponseType } from "@/types/types/response.types";
+import { MessageContentType } from "@/types/types/message.types";
 
 export type ConversationType = "direct" | "group" | "channel";
 
 export type ConversationLastMessageType = {
   messageId: string;
   content: string;
-  contentType:
-    | "text"
-    | "image"
-    | "video"
-    | "audio"
-    | "file"
-    | "location"
-    | "deleted";
+  contentType: MessageContentType;
   sentBy: string;
   sentAt: string;
 };

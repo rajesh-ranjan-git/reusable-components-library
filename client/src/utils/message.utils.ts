@@ -29,6 +29,13 @@ export const getMessageDisplay = (
 ): MessageDisplayType => {
   const senderId = getMessageSenderId(message.sender);
   const isDeleted = message.isDeleted || message.contentType === "deleted";
+  const deliveryStatus =
+    message.deliveryStatus ??
+    (message.receipts?.some((receipt) => receipt.seenAt)
+      ? "seen"
+      : message.receipts?.some((receipt) => receipt.deliveredAt)
+        ? "delivered"
+        : "sent");
 
   return {
     messageId:
@@ -41,7 +48,7 @@ export const getMessageDisplay = (
     isOwn: senderId === loggedInUser?.userId,
     isEdited: Boolean(message.isEdited || message.editHistory?.length),
     isDeleted,
-    deliveryStatus: message.deliveryStatus ?? "sent",
+    deliveryStatus,
     errorMessage: message.errorMessage,
   };
 };

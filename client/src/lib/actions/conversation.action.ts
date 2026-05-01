@@ -57,3 +57,47 @@ export const sendConversationMessage = async (
     return error as ApiErrorResponseType;
   }
 };
+
+export const markConversationAsRead = async (
+  conversationId: string,
+): Promise<ApiResponseType> => {
+  try {
+    return await api.patch(
+      `${apiUrls.conversation.actionConversations}/${conversationId}/read`,
+      {},
+      { requireAuth: true },
+    );
+  } catch (error) {
+    return error as ApiErrorResponseType;
+  }
+};
+
+export const markMessageDelivered = async (
+  conversationId: string,
+  messageId: string,
+): Promise<ApiResponseType> => {
+  try {
+    return await api.patch(
+      `${apiUrls.conversation.actionMessage}/${conversationId}/messages/${messageId}/delivered`,
+      {},
+      { requireAuth: true },
+    );
+  } catch (error) {
+    return error as ApiErrorResponseType;
+  }
+};
+
+export const markMessageSeen = async (
+  conversationId: string,
+  messageId: string,
+): Promise<ApiResponseType> => {
+  try {
+    return await api.patch(
+      `${apiUrls.conversation.actionMessage}/${conversationId}/messages/${messageId}/seen`,
+      {},
+      { requireAuth: true },
+    );
+  } catch (error) {
+    return error as ApiErrorResponseType;
+  }
+};

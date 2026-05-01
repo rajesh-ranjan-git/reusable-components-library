@@ -127,10 +127,6 @@ export const initializeSocket = (server) => {
       return;
     }
 
-    logger.info(
-      `[SOCKET SERVICE] Socket connected: user=${userId} socket=${socket.id}`,
-    );
-
     const originalOn = socket.on.bind(socket);
 
     socket.on = (event, handler) => {
@@ -348,8 +344,6 @@ export const initializeSocket = (server) => {
     });
 
     socket.on("disconnect", async () => {
-      logger.info(`Socket disconnected: user=${userId} socket=${socket.id}`);
-
       removeSocketFromUser(userId, socket.id);
 
       if (!onlineUsers.has(userId)) {
