@@ -11,10 +11,10 @@ import { httpStatusConfig } from "../../config/http.config.js";
 import AppError from "../../services/error/error.service.js";
 import logger from "../../services/logger/logger.service.js";
 import {
-  AccountLockedEmail,
-  PasswordResetEmail,
-  VerificationEmail,
-  WelcomeEmail,
+  accountLockedEmail,
+  passwordResetEmail,
+  verificationEmail,
+  welcomeEmail,
 } from "./email.templates.js";
 
 class EmailService {
@@ -78,7 +78,7 @@ class EmailService {
       await this.send({
         to: EMAIL_TO_ADDRESS,
         subject: `Verify your email - ${appConfig.name}`,
-        template: VerificationEmail({
+        template: verificationEmail({
           appName: appConfig.name,
           verificationUrl,
         }),
@@ -104,7 +104,7 @@ class EmailService {
       await this.send({
         to: EMAIL_TO_ADDRESS,
         subject: `Reset your password - ${appConfig.name}`,
-        template: PasswordResetEmail({
+        template: passwordResetEmail({
           appName: appConfig.name,
           resetUrl,
         }),
@@ -128,7 +128,7 @@ class EmailService {
       await this.send({
         to: EMAIL_TO_ADDRESS,
         subject: `Welcome to ${appConfig.name}!`,
-        template: WelcomeEmail({
+        template: welcomeEmail({
           appName: appConfig.name,
           dashboardUrl: `${CLIENT_URL}/dashboard`,
           userName,
@@ -153,7 +153,7 @@ class EmailService {
       await this.send({
         to: EMAIL_TO_ADDRESS,
         subject: `Your account has been temporarily locked - ${appConfig.name}`,
-        template: AccountLockedEmail({
+        template: accountLockedEmail({
           appName: appConfig.name,
           resetPasswordUrl: `${CLIENT_URL}/forgot-password`,
         }),

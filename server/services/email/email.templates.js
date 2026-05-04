@@ -73,7 +73,7 @@ const styles = {
   },
 };
 
-const EmailLayout = ({ appName, children, preview }) => {
+const emailLayout = ({ appName, children, preview }) => {
   return e(
     "html",
     null,
@@ -91,7 +91,7 @@ const EmailLayout = ({ appName, children, preview }) => {
   );
 };
 
-const ActionLink = ({ href, label, variant }) => {
+const actionLink = ({ href, label, variant }) => {
   const variantStyle =
     variant === "danger"
       ? styles.dangerButton
@@ -112,7 +112,7 @@ const ActionLink = ({ href, label, variant }) => {
   );
 };
 
-const FallbackUrl = ({ url }) => {
+const fallbackUrl = ({ url }) => {
   return e(
     React.Fragment,
     null,
@@ -126,7 +126,7 @@ const FallbackUrl = ({ url }) => {
   );
 };
 
-export const VerificationEmail = ({ appName, verificationUrl }) => {
+export const verificationEmail = ({ appName, verificationUrl }) => {
   return e(
     EmailLayout,
     {
@@ -151,7 +151,7 @@ export const VerificationEmail = ({ appName, verificationUrl }) => {
   );
 };
 
-export const PasswordResetEmail = ({ appName, resetUrl }) => {
+export const passwordResetEmail = ({ appName, resetUrl }) => {
   return e(
     EmailLayout,
     {
@@ -180,7 +180,7 @@ export const PasswordResetEmail = ({ appName, resetUrl }) => {
   );
 };
 
-export const WelcomeEmail = ({ appName, dashboardUrl, userName }) => {
+export const welcomeEmail = ({ appName, dashboardUrl, userName }) => {
   return e(
     EmailLayout,
     {
@@ -213,7 +213,7 @@ export const WelcomeEmail = ({ appName, dashboardUrl, userName }) => {
   );
 };
 
-export const AccountLockedEmail = ({ appName, resetPasswordUrl }) => {
+export const accountLockedEmail = ({ appName, resetPasswordUrl }) => {
   return e(
     EmailLayout,
     {
