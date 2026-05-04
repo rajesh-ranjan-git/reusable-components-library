@@ -21,12 +21,9 @@ export const HOST_URL = process.env.HOST_URL;
 export const CLIENT_PORT = process.env.CLIENT_PORT;
 export const CLIENT_URL = process.env.CLIENT_URL;
 
-export const EMAIL_FROM_ADDRESS = process.env.SMTP_FROM;
-export const SMTP_HOST = process.env.SMTP_HOST;
-export const SMTP_PORT = process.env.SMTP_PORT;
-export const SMTP_SECURE = process.env.SMTP_SECURE;
-export const SMTP_USER = process.env.SMTP_USER;
-export const SMTP_PASS = process.env.SMTP_PASS;
+export const EMAIL_FROM_ADDRESS = process.env.RESEND_FROM;
+export const EMAIL_TO_ADDRESS = process.env.RESEND_TO;
+export const RESEND_API_KEY = process.env.RESEND_API_KEY;
 
 export const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
 export const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;

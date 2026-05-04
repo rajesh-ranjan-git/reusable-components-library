@@ -103,8 +103,6 @@ async function main() {
     console.log("Fetching users...");
     const users = await getUsers(adminAccessToken);
 
-    console.log("users:", users);
-
     const emails = users.map((user) => user.accounts[0].email).filter(Boolean);
 
     console.log(`Found ${emails.length} users`);
@@ -119,7 +117,7 @@ async function main() {
         continue;
       }
 
-      await connectUser(userAccessToken, "69f2c35a8c0f9cc694b30cd4");
+      await connectUser(userAccessToken, "69f8451e090fd53675160bae");
     }
 
     console.log("\nDone.");

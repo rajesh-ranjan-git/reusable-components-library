@@ -94,7 +94,7 @@ const seedRBAC = async () => {
     );
 
     await authService.register({
-      email: "rajesh@gmail.com",
+      email: "rajesh@server.com",
       password: "Rajesh@0",
     });
 

@@ -40,12 +40,9 @@ VAPID_PRIVATE_KEY=JtsYc4J2re1utpCyI4L3GqNBg6iCQ2y1ADPlNMZxFdo
 
 # Email Configurations
 
-SMTP_FROM=noreply@yourappname.com
-SMTP_HOST=your-app-smtp-host
-SMTP_PORT=587
-SMTP_SECURE=true
-SMTP_USER=your-app-smtp-user
-SMTP_PASS=your-app-smtp-password
+RESEND_FROM=onboarding@resend.dev
+RESEND_FROM=rajeshranjan8271@gmail.com
+RESEND_API_KEY=your-resend-api-key
 
 # Database Configurations
 
