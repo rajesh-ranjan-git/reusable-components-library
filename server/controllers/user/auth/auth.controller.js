@@ -109,6 +109,7 @@ export const verifyEmail = asyncHandler(async (req, res) => {
   return responseService.successResponseHandler(req, res, {
     status: "EMAIL VERIFICATION SUCCESS",
     message: result.message,
+    data: { email: result.email },
   });
 });
 

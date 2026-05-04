@@ -7,6 +7,7 @@ export const authRoutes = {
   register: "/register",
   login: "/login",
   forgotPassword: "/forgot-password",
+  verifyEmail: "/verify-email",
 };
 
 export const profileRoutes = {

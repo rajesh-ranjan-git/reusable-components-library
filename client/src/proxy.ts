@@ -19,8 +19,8 @@ export function proxy(request: NextRequest) {
 
   const token = request.cookies.get("refreshToken")?.value ?? null;
 
-  const isAuthRoute = Object.values(authRoutes).some((route) =>
-    pathname.startsWith(route),
+  const isAuthRoute = Object.values(authRoutes).some(
+    (route) => pathname.startsWith(route) && route !== authRoutes.verifyEmail,
   );
 
   const isProtected = !isAuthRoute && pathname !== defaultRoutes.landing;

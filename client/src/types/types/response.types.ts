@@ -24,6 +24,10 @@ export type RefreshResponseType = {
   accessToken: string;
 };
 
+export type VerifyEmailResponseType = {
+  email: string;
+};
+
 export type ProfileResponseType = {
   user: UserProfileType;
 };

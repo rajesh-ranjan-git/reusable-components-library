@@ -272,10 +272,24 @@ class AuthService {
       });
     }
 
-    await User.findByIdAndUpdate(verificationRecord.user, {
-      emailVerified: true,
-      emailVerifiedAt: new Date(),
-    });
+    const verifiedUser = await User.findByIdAndUpdate(
+      verificationRecord.user,
+      {
+        emailVerified: true,
+        emailVerifiedAt: new Date(),
+      },
+      {
+        returnDocument: "after",
+        runValidators: true,
+      },
+    ).populate("account", "email");
+
+    if (!user) {
+      throw AppError.notFound({
+        message: "User does not exist!",
+        code: "USER NOT FOUND",
+      });
+    }
 
     await verificationRecord.deleteOne();
     await activityService.logActivity({
@@ -283,7 +297,10 @@ class AuthService {
       action: "email_verified",
     });
 
-    return { message: "Your email has been verified successfully!" };
+    return {
+      email: verifiedUser.account.email,
+      message: "Your email has been verified successfully!",
+    };
   };
 
   resendVerificationEmail = async (email) => {

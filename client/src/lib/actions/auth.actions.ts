@@ -1,5 +1,5 @@
 import { FormStateType } from "@/types/types/actions.types";
-import { ApiErrorResponseType } from "@/types/types/api.types";
+import { ApiErrorResponseType, ApiResponseType } from "@/types/types/api.types";
 import {
   emailValidator,
   nameValidator,
@@ -224,5 +224,17 @@ export const forgotPasswordAction = async (
       metadata: error?.metadata ?? null,
       inputs: Object.fromEntries(formData),
     };
+  }
+};
+
+export const verifyEmail = async (token: string): Promise<ApiResponseType> => {
+  try {
+    return await api.post(
+      apiUrls.auth.verifyEmail,
+      { token },
+      { requireAuth: true },
+    );
+  } catch (error) {
+    return error as ApiErrorResponseType;
   }
 };

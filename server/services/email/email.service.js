@@ -73,7 +73,7 @@ class EmailService {
         });
       }
 
-      const verificationUrl = `${CLIENT_URL}/auth/verify-email?token=${token}`;
+      const verificationUrl = `${CLIENT_URL}/verify-email?token=${token}`;
 
       await this.send({
         to: EMAIL_TO_ADDRESS,
@@ -99,7 +99,7 @@ class EmailService {
         });
       }
 
-      const resetUrl = `${CLIENT_URL}/auth/reset-password?token=${token}`;
+      const resetUrl = `${CLIENT_URL}/reset-password?token=${token}`;
 
       await this.send({
         to: EMAIL_TO_ADDRESS,
@@ -155,7 +155,7 @@ class EmailService {
         subject: `Your account has been temporarily locked - ${appConfig.name}`,
         template: AccountLockedEmail({
           appName: appConfig.name,
-          resetPasswordUrl: `${CLIENT_URL}/auth/forgot-password`,
+          resetPasswordUrl: `${CLIENT_URL}/forgot-password`,
         }),
       });
     } catch (error) {
