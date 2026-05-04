@@ -17,10 +17,14 @@ export function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
+  if (pathname.startsWith(authRoutes.verifyEmail)) {
+    return NextResponse.next();
+  }
+
   const token = request.cookies.get("refreshToken")?.value ?? null;
 
-  const isAuthRoute = Object.values(authRoutes).some(
-    (route) => pathname.startsWith(route) && route !== authRoutes.verifyEmail,
+  const isAuthRoute = Object.values(authRoutes).some((route) =>
+    pathname.startsWith(route),
   );
 
   const isProtected = !isAuthRoute && pathname !== defaultRoutes.landing;

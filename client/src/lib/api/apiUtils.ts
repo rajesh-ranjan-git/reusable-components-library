@@ -8,7 +8,7 @@ export const apiUrls = {
     updatePassword: "/auth/password",
     forgotPassword: "/auth/password/forgot",
     resetPassword: "/auth/password/reset",
-    verifyEmail: "/auth/verify/email",
+    verifyEmail: "/auth/email/verify",
     resendVerification: "/auth/email/verification/resend",
   },
   oAuth: {

@@ -284,7 +284,7 @@ class AuthService {
       },
     ).populate("account", "email");
 
-    if (!user) {
+    if (!verificationRecord.user) {
       throw AppError.notFound({
         message: "User does not exist!",
         code: "USER NOT FOUND",
