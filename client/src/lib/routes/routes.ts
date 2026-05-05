@@ -7,6 +7,7 @@ export const authRoutes = {
   register: "/register",
   login: "/login",
   forgotPassword: "/forgot-password",
+  resetPassword: "/reset-password",
   verifyEmail: "/verify-email",
 };
 

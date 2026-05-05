@@ -12,11 +12,14 @@ import {
   validateResetPassword,
   validateUpdatePassword,
   emailValidator,
+  passwordValidator,
 } from "../../../validators/auth.validator.js";
 import { authService } from "../../../services/auth/auth.service.js";
 import { rbacService } from "../../../services/rbac/rbac.service.js";
 import { responseService } from "../../../services/response/response.service.js";
 import AppError from "../../../services/error/error.service.js";
+import { stringPropertiesValidator } from "../../../validators/common.validator.js";
+import { propertyConstraints } from "../../../config/common.config.js";
 
 export const register = asyncHandler(async (req, res) => {
   const value = validateRegister(req.data.body);
@@ -180,7 +183,7 @@ export const forgotPassword = asyncHandler(async (req, res) => {
 export const resetPassword = asyncHandler(async (req, res) => {
   const { token, password } = validateResetPassword(req.data.body);
 
-  const result = await authService.resetPassword(token, password);
+  const result = await authService.resetPassword(token, password, req.ip);
 
   if (!result) {
     throw AppError.internal({

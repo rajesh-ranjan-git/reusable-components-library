@@ -374,7 +374,7 @@ class AuthService {
     };
   };
 
-  resetPassword = async (token, newPassword) => {
+  resetPassword = async (token, newPassword, ipAddress) => {
     const record = await VerificationToken.findOne({
       token,
       type: "password_reset",

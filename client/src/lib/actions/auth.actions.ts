@@ -8,6 +8,8 @@ import {
 } from "@/validators/auth.validators";
 import { api } from "@/lib/api/apiHandler";
 import { apiUrls } from "@/lib/api/apiUtils";
+import { stringPropertiesValidator } from "@/validators/common.validators";
+import { propertyConstraintsConfig } from "@/config/profile.config";
 
 export const registerAction = async (
   prevState: FormStateType,
@@ -207,6 +209,86 @@ export const forgotPasswordAction = async (
   try {
     const response = await api.post(apiUrls.auth.forgotPassword, {
       email: validatedEmail,
+    });
+
+    return { ...response };
+  } catch (error: any) {
+    return {
+      success: false,
+      status: error?.status ?? "FORGOT PASSWORD FAILED",
+      code: error?.code ?? "FORGOT PASSWORD FAILED",
+      statusCode: error?.statusCode ?? 500,
+      message:
+        error?.message ??
+        "Unable to process forgot password request, please try again!",
+      details: error?.details ?? null,
+      timestamp: new Date().toISOString(),
+      metadata: error?.metadata ?? null,
+      inputs: Object.fromEntries(formData),
+    };
+  }
+};
+
+export const resetPasswordAction = async (
+  prevState: FormStateType,
+  formData: FormData,
+): Promise<FormStateType> => {
+  const password = formData.get("password");
+  const confirmPassword = formData.get("confirmPassword");
+  const token = formData.get("token");
+
+  const errors: FormStateType["errors"] = {};
+
+  if (password !== confirmPassword) {
+    errors.password = "Password and confirm password must match!";
+  }
+
+  if (!token) {
+    errors.token = "Provided reset password token is invalid!";
+  }
+
+  const { isPropertyValid: isTokenValid, message: tokenError } =
+    stringPropertiesValidator(
+      "token",
+      token,
+      propertyConstraintsConfig.minStringLength,
+      propertyConstraintsConfig.maxStringLength,
+    );
+
+  if (!isTokenValid) {
+    errors.token = tokenError;
+  }
+
+  const { validatedPassword, message: passwordError } =
+    passwordValidator(password);
+
+  const {
+    validatedPassword: validatedConfirmPassword,
+    message: confirmPasswordError,
+  } = passwordValidator(confirmPassword);
+
+  errors.password = passwordError ?? null;
+  errors.confirmPassword = confirmPasswordError ?? null;
+
+  if (Object.values(errors).some((error) => error !== null)) {
+    return {
+      success: false,
+      status: "VALIDATION FAILED",
+      code: "FORGOT PASSWORD FAILED",
+      statusCode: 422,
+      message: "Please provide valid inputs to reset your password!",
+      details: errors,
+      timestamp: new Date().toISOString(),
+      metadata: null,
+      errors,
+      inputs: Object.fromEntries(formData),
+    };
+  }
+
+  try {
+    const response = await api.post(apiUrls.auth.resetPassword, {
+      password: validatedPassword,
+      token,
     });
 
     return { ...response };

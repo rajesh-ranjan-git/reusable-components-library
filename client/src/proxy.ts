@@ -17,7 +17,10 @@ export function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  if (pathname.startsWith(authRoutes.verifyEmail)) {
+  if (
+    pathname.startsWith(authRoutes.verifyEmail) ||
+    pathname.startsWith(authRoutes.resetPassword)
+  ) {
     return NextResponse.next();
   }
 

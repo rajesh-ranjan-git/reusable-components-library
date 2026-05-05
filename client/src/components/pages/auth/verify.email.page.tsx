@@ -18,6 +18,7 @@ const VerifyEmailPage = () => {
 
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
+
   const { showToast } = useToast();
 
   const emailVerification = async (token: string) => {
@@ -97,9 +98,7 @@ const VerifyEmailPage = () => {
                   Email Verification Failed
                 </h3>
                 <p className="mb-4 text-status-error-text leading-relaxed">
-                  <span>
-                    We were not able to verify your email, please try again!
-                  </span>
+                  We were not able to verify your email, please try again!
                 </p>
 
                 <Link

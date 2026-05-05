@@ -144,6 +144,19 @@ export const validateUpdatePassword = (data) => {
   }
 
   const {
+    isCurrentPasswordValid,
+    message: currentPasswordErrorMessage,
+    validatedCurrentPassword,
+  } = passwordValidator(currentPassword, "current");
+
+  if (!isCurrentPasswordValid) {
+    throw AppError.unprocessable({
+      message: currentPasswordErrorMessage,
+      code: "PASSWORD VALIDATION FAILED",
+    });
+  }
+
+  const {
     isPasswordValid: isNewPasswordValid,
     message: newPasswordErrorMessage,
     validatedPassword: validatedNewPassword,
@@ -158,17 +171,34 @@ export const validateUpdatePassword = (data) => {
   }
 
   return {
-    currentPassword,
+    currentPassword: validatedCurrentPassword,
     newPassword: validatedNewPassword,
   };
 };
 
 export const validateResetPassword = (data) => {
   if (!data.token) {
-    throw AppError.unprocessable({
+    throw AppError.badRequest({
       message: "Password reset token is required!",
       code: "TOKEN VALIDATION FAILED",
-      details: { token: data.token },
+    });
+  }
+
+  const {
+    isPropertyValid: isTokenValid,
+    validatedProperty: validatedToken,
+    message: tokenError,
+  } = stringPropertiesValidator(
+    "token",
+    data.token,
+    propertyConstraints.minStringLength,
+    propertyConstraints.maxStringLength,
+  );
+
+  if (!isTokenValid) {
+    throw AppError.badRequest({
+      message: tokenError,
+      code: "TOKEN VALIDATION FAILED",
     });
   }
 
@@ -186,7 +216,7 @@ export const validateResetPassword = (data) => {
     });
   }
 
-  return { token: data.token, password: validatedPassword };
+  return { token: validatedToken, password: validatedPassword };
 };
 
 export const validateUpdateProfile = (data) => {
