@@ -128,7 +128,7 @@ const fallbackUrl = ({ url }) => {
 
 export const verificationEmail = ({ appName, verificationUrl }) => {
   return e(
-    EmailLayout,
+    emailLayout,
     {
       appName,
       preview: `Verify your ${appName} email address`,
@@ -141,19 +141,19 @@ export const verificationEmail = ({ appName, verificationUrl }) => {
       e("strong", null, appName),
       ". Confirm your email address to finish setting up your account.",
     ),
-    e(ActionLink, { href: verificationUrl, label: "Verify email" }),
+    e(actionLink, { href: verificationUrl, label: "Verify email" }),
     e(
       "p",
       { style: styles.muted },
       "This link expires in 24 hours. If you did not create an account, you can ignore this email.",
     ),
-    e(FallbackUrl, { url: verificationUrl }),
+    e(fallbackUrl, { url: verificationUrl }),
   );
 };
 
 export const passwordResetEmail = ({ appName, resetUrl }) => {
   return e(
-    EmailLayout,
+    emailLayout,
     {
       appName,
       preview: `Reset your ${appName} password`,
@@ -166,7 +166,7 @@ export const passwordResetEmail = ({ appName, resetUrl }) => {
       e("strong", null, appName),
       " account.",
     ),
-    e(ActionLink, {
+    e(actionLink, {
       href: resetUrl,
       label: "Reset password",
       variant: "danger",
@@ -176,13 +176,13 @@ export const passwordResetEmail = ({ appName, resetUrl }) => {
       { style: styles.muted },
       "This link expires in 1 hour. If you did not request a password reset, you can safely ignore this email.",
     ),
-    e(FallbackUrl, { url: resetUrl }),
+    e(fallbackUrl, { url: resetUrl }),
   );
 };
 
 export const welcomeEmail = ({ appName, dashboardUrl, userName }) => {
   return e(
-    EmailLayout,
+    emailLayout,
     {
       appName,
       preview: `Welcome to ${appName}`,
@@ -200,7 +200,7 @@ export const welcomeEmail = ({ appName, dashboardUrl, userName }) => {
       { style: styles.paragraph },
       "Your account is all set up and ready to go.",
     ),
-    e(ActionLink, {
+    e(actionLink, {
       href: dashboardUrl,
       label: "Go to dashboard",
       variant: "success",
@@ -215,7 +215,7 @@ export const welcomeEmail = ({ appName, dashboardUrl, userName }) => {
 
 export const accountLockedEmail = ({ appName, resetPasswordUrl }) => {
   return e(
-    EmailLayout,
+    emailLayout,
     {
       appName,
       preview: `Your ${appName} account is temporarily locked`,
@@ -240,7 +240,7 @@ export const accountLockedEmail = ({ appName, resetPasswordUrl }) => {
       { style: styles.muted },
       "If this was not you, reset your password immediately.",
     ),
-    e(ActionLink, {
+    e(actionLink, {
       href: resetPasswordUrl,
       label: "Reset password",
       variant: "danger",

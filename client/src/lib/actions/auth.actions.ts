@@ -195,7 +195,7 @@ export const forgotPasswordAction = async (
       status: "VALIDATION FAILED",
       code: "FORGOT PASSWORD FAILED",
       statusCode: 422,
-      message: emailError ?? "Please provide valid email to register!",
+      message: emailError ?? "Please provide valid email!",
       details: errors,
       timestamp: new Date().toISOString(),
       metadata: null,
